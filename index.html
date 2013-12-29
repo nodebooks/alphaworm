@@ -7,6 +7,10 @@
 
         <script src="./client/messagebroker.js" type="text/javascript"></script>
         <script src="./client/messagehandler.js" type="text/javascript"></script>
+        <script src="./common/messages.js" type="text/javascript"></script>
+
+        <script src="./client/sha-hash.js" type="text/javascript"></script>
+
 
         <!-- Pass the websocketURI to the client -->
         <script src="/websocketURI.js"></script>
@@ -14,16 +18,63 @@
         <script type="text/javascript">
             function initAlphaworm() {
                 // TODO: Improve game init in the near future
-                var messageBroker = new MessageBroker();
-                var messageHandler = new MessageHandler();
+                //var messageBroker = new MessageBroker();
+                messageHandler = new MessageHandler();
             }
+
+        function logout() {
+            // Not the most elegant way to logout, but now we'll just reload the webpage
+            location.reload();
+        }
+
+        function login() {
+
+            // Check user input fields
+            if (document.getElementById("username").value && document.getElementById("password").value) {
+                // Send login request
+                var msg = messages.message.LOGIN_REQUEST.new();
+                msg.username = document.getElementById("username").value;
+                msg.passwordhash = Sha1.hash(document.getElementById("password").value);
+                messageHandler.send(msg);
+                messageHandler.username = msg.username;
+            }
+        }
+
+        function register() {
+            
+            // Check user input fields
+            if (document.getElementById("username").value && document.getElementById("password").value) {
+                // Send registration request
+                var msg = messages.message.REGISTRATION_REQUEST.new();
+                msg.username = document.getElementById("username").value;
+                msg.passwordhash = Sha1.hash(document.getElementById("password").value);
+                messageHandler.send(msg);
+            }
+        }
 
         </script>
     </head>
 
     <body onload="initAlphaworm();">
-	    <div id="system-messages">
-	    	System messages appear here!
-	    </div>
+        <div id="container">
+            <div id="login">
+                <div id="loginwindow">
+                <fieldset>
+                    <legend><strong>Login</strong></legend>
+                    <div id="infotext">
+                        <p>
+                            Player: <input type="text" id="username" length="10">
+                            Password: <input type="password" id="password" length="20">
+                            <input id="login_button" type="submit" value="Login" onclick="login()">
+                            <input id="register_button" type="submit" value="Register" onclick="register()">
+                        </p>
+                    </div>
+                </fieldset>
+                </div>
+            </div>
+    	    <div id="system-messages">
+    	    	System messages appear here!
+    	    </div>
+        </div>
     </body>
 </html>

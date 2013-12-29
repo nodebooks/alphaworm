@@ -60,7 +60,6 @@ var GameServer = function() {
         self.messageBroker = new MessageBroker(self);
         self.messageHandler = new MessageHandler();
         self.gameAPI = new GameAPI();
-        self.gameServer = new GameAPI(self.messageHandler);
 
         // Link the objects:
         // Incoming: MessageBroker -> MessageHandler -> GameAPI

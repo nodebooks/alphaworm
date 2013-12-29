@@ -1,7 +1,7 @@
-var MessageBroker = function() {
+var MessageBroker = function(messageHandler) {
 
     var self = this;
-    self.messageHandler = undefined;
+    self.messageHandler = messageHandler;
 
     self.init = function() {
         console.log("MessageBroker started");
@@ -11,8 +11,8 @@ var MessageBroker = function() {
         self.ws = new WebSocket('ws://' + websocketURI);
 
         self.ws.onmessage = function (event) {
-            console.log("received message:", event);
-            document.getElementById('system-messages').innerHTML += "<br />Received message:", JSON.parse(event.data);
+            console.log("MSG:", JSON.parse(event.data));
+            self.receive(event.data);
         };
 
         self.ws.onerror = function (event) {
@@ -32,9 +32,15 @@ var MessageBroker = function() {
         };
     },
 
-    self.attachHandler = function(messageHandler) {
-        self.messageHandler = messageHandler;
+    self.receive = function(msg) {
+        // Use JSON.parse() to deserialize the JavaScript object
+        self.messageHandler.receive(JSON.parse(msg));
     },
+
+    self.send = function(msg) {
+        // Use JSON.stringify() to serialize message to a JavaScript object
+        self.ws.send(JSON.stringify(msg));
+    }
 
     self.init();
 }

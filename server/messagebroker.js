@@ -3,9 +3,7 @@ var MessageBroker = function(server) {
     // Define JavaScript scope
     var self = this;
 
-    self.clients  = {}; // Index with username
     self.serverapp = server.serverapp;
-
 
     self.init = function() {
         console.log("MessageBroker: initializing websocket");
@@ -18,18 +16,73 @@ var MessageBroker = function(server) {
             // CONNECTION CLOSE
             websocket.on('close', function() {
                 console.log("MessageBroker: client disconnected");
+                self.logout(websocket);
             });
 
             // RECEIVE A MESSAGE
             websocket.on('message', function(data, flags) {
-                console.log("MessageBroker: received message:", JSON.parse(data));
+                var msg = JSON.parse(data);
+                console.log("MessageBroker: received message:", msg);
+
+                // Do some filtering at the very early phase
+                if(typeof websocket.username !== 'undefined') {
+                    // User has logged in, proceed the message
+                    self.receive(websocket.username, msg);
+                }
+                else {
+                    console.log("Received a message from unauthenticated user");
+                    // Separate authentication process from other messages
+                    self.authenticate(websocket, msg);
+                }
             });
         });
     },
 
     self.attachMessageHandler = function(messageHandler) {
-        self.messageHandler = messageHandler;
         console.log("MessageBroker: MessageHandler attached");
+
+        self.messageHandler = messageHandler;
+    },
+
+    // Received data from Client
+    self.receive = function(from, data) {
+
+        if(self.messageHandler) {   // Make sure that MessageHandler is attached
+            self.messageHandler.receive(from, data);
+        }
+        else {
+            console.log("MessageBroker: MessageHandler is not attached");
+        }
+    },
+
+    // Sending data to Client
+    self.send = function(to, msg) {
+        // TODO: Make sure that websocket is still open, sending to closed socket will crash the server
+        var stringified_msg = JSON.stringify(msg);
+        var websocket = self.clients[to.toLowerCase()];
+        
+        websocket.send(stringified_msg);
+    },
+
+    self.authenticate = function(websocket, msg) {
+        
+        switch(msg.name) {
+            case 'REGISTRATION_REQUEST':
+                self.messageHandler.gameAPI.createUser(websocket, msg);
+            break;
+
+            case 'LOGIN_REQUEST':
+                self.messageHandler.gameAPI.login(websocket, msg);
+            break;
+
+            default:
+                // TODO: what to do?
+            break;
+        }
+    },
+
+    self.logout = function(websocket) {
+        self.messageHandler.gameAPI.logout(websocket);
     }
     
     // Initialize MessageBroker when the object is created
