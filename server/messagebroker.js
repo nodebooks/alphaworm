@@ -58,10 +58,14 @@ var MessageBroker = function(server) {
     // Sending data to Client
     self.send = function(to, msg) {
         // TODO: Make sure that websocket is still open, sending to closed socket will crash the server
-        var stringified_msg = JSON.stringify(msg);
-        var websocket = self.clients[to.toLowerCase()];
-        
-        websocket.send(stringified_msg);
+        var websocket = self.messageHandler.gameAPI.players[to];
+        if(require('ws').OPEN == websocket.readyState) {
+            console.log("MessageBroker.send:", msg);
+            websocket.send(JSON.stringify(msg));
+        }
+        else {
+            console.log("skipped msg as websocket is not open", msg);
+        }
     },
 
     self.authenticate = function(websocket, msg) {

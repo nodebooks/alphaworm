@@ -11,16 +11,17 @@
 
         <script src="./client/sha-hash.js" type="text/javascript"></script>
 
+        <link rel="stylesheet" href="client/uistyle.css">
 
         <!-- Pass the websocketURI to the client -->
         <script src="/websocketURI.js"></script>
 
         <script type="text/javascript">
-            function initAlphaworm() {
-                // TODO: Improve game init in the near future
-                //var messageBroker = new MessageBroker();
-                messageHandler = new MessageHandler();
-            }
+        function initAlphaworm() {
+            // TODO: Improve game init in the near future
+            //var messageBroker = new MessageBroker();
+            messageHandler = new MessageHandler();
+        }
 
         function logout() {
             // Not the most elegant way to logout, but now we'll just reload the webpage
@@ -52,19 +53,36 @@
             }
         }
 
+        function chatKeypress(event) {
+            event.preventDefault;
+            //console.log("event.which:", event.which, "event.keyCode:", event.keyCode, "event.charCode:", event.charCode);
+            if (event.which == 13 || event.keyCode == 13) {
+                // Lähetä tekstirimpsu jos sen length > 0
+                var chatmsg = document.getElementById('chatmessage').value;
+                if (chatmsg) {
+                    var msg = messages.message.CHAT_MESSAGE.new();
+                    msg.username = messageHandler.getUsername();
+                    msg.text = chatmsg;
+                    messageHandler.send(msg);
+                    document.getElementById('chatmessage').value = "";
+                }
+            }
+            return true; // NOTE! return false; does not update textbox
+        }
+
         </script>
     </head>
 
     <body onload="initAlphaworm();">
-        <div id="container">
+        <div class="container">
             <div id="login">
                 <div id="loginwindow">
                 <fieldset>
                     <legend><strong>Login</strong></legend>
                     <div id="infotext">
                         <p>
-                            Player: <input type="text" id="username" length="10">
-                            Password: <input type="password" id="password" length="20">
+                            Player: <input type="text" id="username" size="10" maxlength="10">
+                            Password: <input type="password" id="password" size="10" maxlength="20">
                             <input id="login_button" type="submit" value="Login" onclick="login()">
                             <input id="register_button" type="submit" value="Register" onclick="register()">
                         </p>
@@ -72,9 +90,36 @@
                 </fieldset>
                 </div>
             </div>
-    	    <div id="system-messages">
-    	    	System messages appear here!
-    	    </div>
+            <div id="onlineplayers">
+                <fieldset>
+                    <legend><strong>Online players</strong></legend>
+                    <div id="onlineplayerlist">
+                        <div id="onlineplayer">Wobot</div>
+                    </div>
+                </fieldset>
+            </div>
+            <div id="rankinglist">
+                <fieldset>
+                    <legend><strong>Player ranking</strong></legend>
+                    <div id="rankedplayers">
+                        <div id="rankedplayer">Wobot</div>
+                    </div>
+                </fieldset>
+            </div>
+            <div id="gameboard">
+                <p>This is a placeholder for the gameboard.</p>
+            </div>
+            <div id="chat">
+                <fieldset>
+                    <legend><strong>Messages</strong></legend>
+                    <div id="chatbox">
+                        <div id="messagebox"></div>
+                    </div>
+                    <div id="sendmessage">
+                        Send: <input type="text" id="chatmessage" size="40" maxlength="140" onkeypress="return chatKeypress(event)">
+                    </div>
+                </fieldset>
+            </div>
         </div>
     </body>
 </html>

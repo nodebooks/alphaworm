@@ -17,17 +17,23 @@ var MessageBroker = function(messageHandler) {
 
         self.ws.onerror = function (event) {
             console.log("websocket failed");
-            document.getElementById('system-messages').innerHTML += "<br />Websocket failed";
+            self.messageHandler.receive({name: "CHAT_MESSAGE",
+                                         username: "System notice",
+                                         text: "<strong>connection failed:</strong>" + event});
         };
 
         self.ws.onopen = function (event) {
             console.log("websocket connected");
-            document.getElementById('system-messages').innerHTML += "<br />Websocket connected";
+            self.messageHandler.receive({name: "CHAT_MESSAGE",
+                                         username: "System notice",
+                                         text: "<strong>connection established.</strong>"});
         };
 
         self.ws.onclose = function (event) {
             console.log("websocket disconnected");
-            document.getElementById('system-messages').innerHTML += "<br />Websocket disconnected";
+            self.messageHandler.receive({name: "CHAT_MESSAGE",
+                                         username: "System notice",  
+                                         text: "<strong>disconnected</strong>"});
 
         };
     },

@@ -23,6 +23,7 @@ var MessageHandler = function() {
         switch (msg.name) {
 
             case 'CHAT_MESSAGE':
+                self.gameAPI.broadcast(from, msg);
             break;
 
             default:
@@ -32,6 +33,7 @@ var MessageHandler = function() {
     },
 
     self.send = function(to, msg) {
+        console.log("MessageHandler.send:", msg);
     	self.messageBroker.send(to, msg);
     }
 }
