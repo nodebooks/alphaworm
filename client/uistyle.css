@@ -35,11 +35,10 @@ input:focus {
 
 #gameboard {
     margin-left: 20%;
+    border-left: 1px solid gray;
     margin-right: 20%;
-    margin-top: 5px;
-    border: 1px solid gray;
+    border-right: 1px solid gray;
     text-align: center;
-    background: white;
 }
 
 #rankinglist {
@@ -65,11 +64,12 @@ input:focus {
 }
 
 table, th, td, tr {
-    border: 0px solid lightblue;
+    border: 0px solid green;
     font-family: "Courier New", Courier, monospace;
     padding: 0px;
     margin: auto;
 }
 td {
-
+    width: 12px;
+    height: 12px;
 }

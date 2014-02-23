@@ -97,9 +97,9 @@ var Game = function (messagehandler) {
         document.getElementById('gameboard').innerHTML = "";
         var gameboard = '<p id="score"></p>';
         // Create grid
-        gameboard += '<table width="400" height="400" id="gamegrid">';
+        gameboard += '<table id="gamegrid">';
         for(var i=0; i<self.gameArea.height; i++) {
-            gameboard += '<tr>'; // Luo uusi rivi
+            gameboard += '<tr>'; // New row
             for(var j=0; j<self.gameArea.width; j++) {
                 var id = (j+(i*self.gameArea.height));
                 var grid = '<td id="' + id + '"></td>';
