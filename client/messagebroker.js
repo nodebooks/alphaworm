@@ -11,7 +11,6 @@ var MessageBroker = function(messageHandler) {
         self.ws = new WebSocket('ws://' + websocketURI);
 
         self.ws.onmessage = function (event) {
-            console.log("MSG:", JSON.parse(event.data));
             self.receive(event.data);
         };
 
@@ -19,7 +18,7 @@ var MessageBroker = function(messageHandler) {
             console.log("websocket failed");
             self.messageHandler.receive({name: "CHAT_MESSAGE",
                                          username: "System notice",
-                                         text: "<strong>connection failed:</strong>" + event});
+                                         text: "<strong>could not connect websocket</strong>"});
         };
 
         self.ws.onopen = function (event) {
@@ -44,7 +43,7 @@ var MessageBroker = function(messageHandler) {
     },
 
     self.send = function(msg) {
-        // Use JSON.stringify() to serialize message to a JavaScript object
+        // Use JSON.stringify() to serialize JavaScript object
         self.ws.send(JSON.stringify(msg));
     }
 

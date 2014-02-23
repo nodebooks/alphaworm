@@ -23,7 +23,7 @@ input:focus {
 #chatbox {
     width: 100%;
     height: 100px;
-    overflow-Y:auto;
+    overflow-Y: auto;
 }
 
 #onlineplayers {
@@ -39,7 +39,7 @@ input:focus {
     margin-top: 5px;
     border: 1px solid gray;
     text-align: center;
-    background: lightblue;
+    background: white;
 }
 
 #rankinglist {
@@ -49,6 +49,27 @@ input:focus {
     overflow-Y: auto;
 }
 
+#challengebox {
+    visibility: hidden;
+}
 
+#challenge {
+    position: absolute;
+    overflow: hidden;
+    top:  150px;
+    left: 0px;
+    width: 200px;
+    height: 100px;
+    background-color: azure;
+    text-align: center;
+}
 
+table, th, td, tr {
+    border: 0px solid lightblue;
+    font-family: "Courier New", Courier, monospace;
+    padding: 0px;
+    margin: auto;
+}
+td {
 
+}

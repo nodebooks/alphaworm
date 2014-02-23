@@ -2,11 +2,15 @@ var MessageHandler = function() {
 
     var self = this;
     self.messageBroker = undefined;
+    self.game = undefined;
     self.username = undefined;
+    self.playerList = {};
 
     self.init = function() {
-        console.log("MessageHandler started");
+        console.log("MessageHandler init");
         self.messageBroker = new MessageBroker(self);
+        self.game = new Game(self);
+
     },
 
     self.attachBroker = function(messageBroker) {
@@ -19,7 +23,7 @@ var MessageHandler = function() {
     },
 
     self.receive = function(msg) {
-        console.log("MessageHandler.receive", msg);
+        //console.log("MessageHandler.receive", msg);
 
         switch(msg.name) {
 
@@ -42,10 +46,21 @@ var MessageHandler = function() {
                 break;
 
             case 'RANKING_LIST':
-                console.log("MessageHanderl: update ranking list", msg);
                 self.updateRankingList(msg);
                 break;
 
+            case 'CHALLENGE_REQ':
+                self.handleChallengeRequest(msg);
+                break;
+
+            case 'CHALLENGE_RESP':
+                self.handleChallengeResponse(msg);
+                break;
+
+            case 'MATCH_SYNC':
+                self.game.updateMatch(msg);
+                break;
+                
             default:
                 console.log("MessageHandler: default branch reached");
             break;
@@ -99,43 +114,36 @@ var MessageHandler = function() {
     },
 
     self.updatePlayerList = function(msg) {
-        switch(msg.type) {
-            case 'update':
-                console.log("preparing partial update on", document.getElementById('onlineplayerlist').innerHTML);
-                for (var item in msg.players) {
-                    console.log("partial update", item, ":", msg.players[item]);
+        console.log("MessageHandler.updatePlayerList", msg);
 
-                    if (msg.players[item].authenticated == true || msg.players[item].authenticated == "true") {
-                        var pre = '<div id="' + msg.players[item].username +'">';
-                        var player = msg.players[item].username;
-                        post = '</div>';
-
-                        document.getElementById('onlineplayerlist').innerHTML += pre + player + post;
-                        console.log("update ready", document.getElementById('onlineplayerlist').innerHTML);
-                    }
-                    else {
-                        console.log("removing", item, ":", document.getElementById(msg.players[item].username));
-                        var rem = document.getElementById(msg.players[item].username);
-                        rem.remove();
-                    }
-                }
-                break;
-
-            case 'full':
-                console.log("full update");
-                document.getElementById('onlineplayerlist').innerHTML = "";
-                for(var item in msg.players) {
-                    var pre = '<div id="' + msg.players[item].username +'">';
-                    var player = msg.players[item].username;
-                    post = '</div>';
-                    document.getElementById('onlineplayerlist').innerHTML += pre + player + post;
-                }
-                break;
-
-            default:
-                console.log("MessageHandler.updatePlayerList: default branch reached");
-                break;
+        for(var item in msg.players) {
+            console.log("item:", item);
+            var player = msg.players[item];
+            if(player.authenticated == false || player.authenticated == "false") {
+                delete self.playerList[player.username];
+            }
+            else {
+                self.playerList[player.username] = player;
+            }
         }
+
+        console.log("playerList:", self.playerList);
+
+        document.getElementById('onlineplayerlist').innerHTML = "";
+        for(var player in self.playerList) {
+            console.log("player:", player)
+            var pre = '<div id="' + player +'">';
+            var text = "";
+            if (self.playerList[player].ingame == false && self.playerList[player].username != self.getUsername()) {
+                text = ' <a href="#" title="challenge" onclick="challenge(\''+self.playerList[player].username+'\')">'+ self.playerList[player].username + '</a>';
+            }
+            else {
+                text = player;
+            }
+            post = '</div>';
+            document.getElementById('onlineplayerlist').innerHTML += pre + text + post;
+        }
+
         self.sortDivs(document.getElementById('onlineplayerlist'));
     },
 
@@ -172,6 +180,58 @@ var MessageHandler = function() {
         for(var i=0, l = toSort.length; i<l; i++) {
             parent.appendChild(toSort[i]);
         }
+    },
+
+    self.handleChallengeRequest = function(msg) {
+        // Pop a dialog
+        // TODO: support for multiple dialogs
+        //document.getElementById('haasteajastin').innerHTML = "10";
+
+        var audio = document.getElementById('challenge_request_audio');
+        audio.volume = 0.6;
+        audio.play();
+
+        console.log("handleChallengeRequest", msg);
+        document.getElementById('challenge').innerHTML = 'You\'ve been challenged by<br /><strong>' + msg.challenger + '</strong><br />';
+        document.getElementById('challenge').innerHTML += '<input type="button" value="Accept" onclick="acceptChallenge(\''+msg.challenger+'\')"><input type="button" value="Reject" onclick="rejectChallenge(\''+msg.challenger+'\')">';
+        document.getElementById('challengebox').style.visibility="visible";
+        self.challengeTmo = setTimeout("rejectChallenge(\'" + msg +"\')", 10000);
+        //setInterval("self.challengeTimer("+msg+")", 1000);
+    },
+
+    self.acceptChallenge = function(challenger) {
+        clearTimeout(self.challengeTmo);
+        console.log("handleChallengeRequest from", challenger);
+        var resp = messages.message.CHALLENGE_RESP.new();
+
+        resp.response = "OK";
+        resp.challenger = challenger;
+        resp.challengee = self.getUsername();
+        self.send(resp);
+        document.getElementById('challengebox').style.visibility="hidden";
+    },
+
+    self.rejectChallenge = function(challenger) {
+        clearTimeout(self.challengeTmo);
+        console.log("handleChallengeRequest from", challenger);
+        var resp = messages.message.CHALLENGE_RESP.new();
+        resp.response = "NOK";
+        resp.challenger = challenger;
+        resp.challengee = self.getUsername();
+        self.send(resp);
+        document.getElementById('challengebox').style.visibility="hidden";
+    },
+
+    self.challenge = function(username) {
+        var msg = messages.message.CHALLENGE_REQ.new();
+        msg.challenger = self.getUsername();
+        msg.challengee = username;
+
+        self.send(msg);
+    },
+
+    self.handleChallengeResponse = function(msg) {
+        console.log("handleChallengeResponse():", msg);
     },
 
     self.setUsername = function(username) {

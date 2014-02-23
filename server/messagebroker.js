@@ -59,12 +59,14 @@ var MessageBroker = function(server) {
     self.send = function(to, msg) {
         // TODO: Make sure that websocket is still open, sending to closed socket will crash the server
         var websocket = self.messageHandler.gameAPI.players[to];
-        if(require('ws').OPEN == websocket.readyState) {
-            console.log("MessageBroker.send:", msg);
-            websocket.send(JSON.stringify(msg));
-        }
-        else {
-            console.log("skipped msg as websocket is not open", msg);
+        if(typeof websocket != "undefined") {
+            if(require('ws').OPEN == websocket.readyState) {
+                //console.log("MessageBroker.send:", msg);
+                websocket.send(JSON.stringify(msg));
+            }
+            else {
+                console.log("skipped msg as websocket is not open", msg);
+            }
         }
     },
 
@@ -80,6 +82,7 @@ var MessageBroker = function(server) {
             break;
 
             default:
+            console.log("Default branch in MessageBroker.authenticate()")
                 // TODO: what to do?
             break;
         }

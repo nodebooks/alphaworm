@@ -18,7 +18,7 @@
         REGISTRATION_RESPONSE: {
             message: {
                 name: "REGISTRATION_RESPONSE", 
-                status: null    // OK / NOK (could be, 1/0, true/false, success/failure, etc.)
+                status: null    // OK / NOK 
             },
             new: function() {
                 return JSON.parse(JSON.stringify(this.message));
@@ -63,7 +63,8 @@
                 name: "PLAYER_LIST",
                 type: "full/update",                // Always check whether this is an update or a full list
                 players: [{username: null,
-                          authenticated: null}]     // false if user disconnected, otherwise true
+                          authenticated: false,
+                          ingame: false}]           // false if user is not in game, othwerwise true
             },
             new: function() {
                 return JSON.parse(JSON.stringify(this.message));
@@ -75,6 +76,79 @@
                 name: "RANKING_LIST",
                 players: [{username: "Wobotti", // Players are already in descending order (highest rank -> lowest, check SQL SELECT)
                            highscore: null}]
+            },
+            new: function() {
+                return JSON.parse(JSON.stringify(this.message));
+            }
+        },
+        CHALLENGE_REQ: {
+            message: {
+                name: "CHALLENGE_REQ",
+                challenger: "username",
+                challengee: "username"
+            },
+            new: function() {
+                return JSON.parse(JSON.stringify(this.message));
+            }
+        },
+        CHALLENGE_RESP: {
+            message: {
+                name: "CHALLENGE_RESP",
+                challenger: "username",
+                challengee: "username",
+                response: "OK/NOK"
+            },
+            new: function() {
+                return JSON.parse(JSON.stringify(this.message));
+            }
+        },
+        MATCH_SYNC: {
+            message: {
+                name: "MATCH_SYNC",
+                phase: "INIT/RUN/END",
+                msgid: null,
+                gamearea: [],   // gameArea object
+                worms: [],
+                foods: [],
+                word: {},    //{finnish: null, english: null}
+            },
+            new: function() {
+                return JSON.parse(JSON.stringify(this.message));
+            }
+        },
+        USER_INPUT: {
+            message: {
+                name: "USER_INPUT",
+                username: "username",
+                direction: "left/right/up/down"
+            },
+            new: function() {
+                return JSON.parse(JSON.stringify(this.message));
+            }
+        },
+        START_SINGLEPLAYER_GAME_REQ: {
+            message: {
+                name: "START_SINGLEPLAYER_GAME_REQ",
+            },
+            new: function() {
+                return JSON.parse(JSON.stringify(this.message));
+            }
+        },
+        START_SINGLEPLAYER_GAME_RESP: {
+            message: {
+                name: "START_SINGLEPLAYER_GAME_RESP",
+                response: "OK/NOK"
+            },
+            new: function() {
+                return JSON.parse(JSON.stringify(this.message));
+            }
+        },
+        START_MULTIPLAYER_GAME_REQ: {
+            message: {
+                name: "START_MULTIPLAYER_GAME_REQ",
+                username: "username",
+                type: "single/multi",   // single = single player, multi=multiplayer
+                players: [{}] // Usernames and their responses {username: "username", response: "OK/NOK"}
             },
             new: function() {
                 return JSON.parse(JSON.stringify(this.message));
