@@ -22,7 +22,7 @@ var MessageBroker = function(server) {
             // RECEIVE A MESSAGE
             websocket.on('message', function(data, flags) {
                 var msg = JSON.parse(data);
-                console.log("MessageBroker: received message:", msg);
+                //console.log("MessageBroker: received message:", msg);
 
                 // Do some filtering at the very early phase
                 if(typeof websocket.username !== 'undefined') {

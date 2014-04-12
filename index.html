@@ -2,6 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8" />
+        <link rel="stylesheet" type="text/css" href="client/uistyle.css" title="UI style">
         
         <title>Alphaworm</title>
 
@@ -9,19 +10,12 @@
         <script src="./client/messagehandler.js" type="text/javascript"></script>
         <script src="./client/game.js" type="text/javascript"></script>
         <script src="./common/messages.js" type="text/javascript"></script>
-
         <script src="./client/sha-hash.js" type="text/javascript"></script>
-
-        <audio src="../media/completetask_0.ogg" id="pick_audio" preload="auto"></audio>
-        <audio src="../media/bicycle_1.ogg" id="challenge_request_audio" preload="auto"></audio>
-        <audio src="../media/retro.ogg" id="retro_music" preload="auto"></audio>
-
-        <link rel="stylesheet" href="client/uistyle.css">
 
         <!-- Pass the websocketURI to the client -->
         <script src="/websocketURI.js"></script>
-
         <script type="text/javascript">
+
         function initAlphaworm() {
             // TODO: Improve game init in the near future
             messageHandler = new MessageHandler();
@@ -75,6 +69,7 @@
         }
 
         function challenge(username) {
+            console.log("challenge", username);
             messageHandler.challenge(username);
         }
 
@@ -92,12 +87,16 @@
             console.log("rejectChallenge", challenger);
            messageHandler.rejectChallenge(challenger);
         }
-
         </script>
     </head>
 
     <body onload="initAlphaworm()" onkeypress="return gameInput(event)">
         <div class="container">
+
+            <audio src="./media/completetask_0.ogg" id="pick_audio" preload="auto"></audio>
+            <audio src="./media/bicycle_1.ogg" id="challenge_request_audio" preload="auto"></audio>
+            <audio src="./media/retro.ogg" id="retro_music" preload="auto"></audio>
+
             <div id="login">
                 <div id="loginwindow">
                 <fieldset>

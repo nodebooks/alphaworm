@@ -9,4 +9,3 @@ CREATE TABLE userdata (
         highscore INT DEFAULT 0,
         registered TIMESTAMP DEFAULT NOW()
         );
-

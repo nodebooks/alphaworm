@@ -1,3 +1,10 @@
+html *
+{
+    font-size: 1em !important;
+    color: #000 !important;
+    font-family: "Courier New", Courier, monospace;
+}
+
 input:focus {
 
     background: lightblue;
@@ -65,11 +72,11 @@ input:focus {
 
 table, th, td, tr {
     border: 0px solid green;
-    font-family: "Courier New", Courier, monospace;
     padding: 0px;
     margin: auto;
 }
 td {
-    width: 12px;
-    height: 12px;
+    width: 19px;
+    height: 19px;
+    position: relative;
 }

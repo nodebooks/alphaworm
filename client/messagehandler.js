@@ -223,6 +223,7 @@ var MessageHandler = function() {
     },
 
     self.challenge = function(username) {
+        console.log("challenge", username);
         var msg = messages.message.CHALLENGE_REQ.new();
         msg.challenger = self.getUsername();
         msg.challengee = username;

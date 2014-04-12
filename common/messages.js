@@ -110,7 +110,7 @@
                 gamearea: [],   // gameArea object
                 worms: [],
                 foods: [],
-                word: {},    //{finnish: null, english: null}
+                word: {},    //{from: null, to: null, answer: null}
             },
             new: function() {
                 return JSON.parse(JSON.stringify(this.message));

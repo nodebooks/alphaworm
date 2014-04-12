@@ -1,10 +1,11 @@
-var messages = require('../common/messages');
+var Messages = require('../common/messages');
+var Dictionary = require('./dictionary');
 
 var EventEmitter = require('events').EventEmitter,
     util = require('util');
 
-var worm = function(name, number) {
-    var color = ["blue", "green", "orange", "brown", "red", "Black"];
+var Worm = function(name, number) {
+    var color = ["blue", "green", "orange", "brown", "red", "black"];
     var self = this;
     self.alive = true; // true / false
     self.name = name;
@@ -19,24 +20,25 @@ var worm = function(name, number) {
 
     // Initialize worm
     for(var x=0; x<self.startingLength; x++) {
-        self.location[x] = x+number*8*40;
+        self.location[x] = x+number*8*30;
     }
 
     //console.log("worm", name, "location:", self.location);
 }
 
-var food = function(location) {
+var Food = function(location, character) {
     var self = this;
     self.location = location;
-    self.color = "red";
+    self.color = "white";
     self.growth = 1; // Growth per food
+    self.character = character;
 }
 
-var gameArea = function() {
+var GameArea = function() {
     var self = this;
     self.cells = {};
-    self.height = 40;
-    self.width = 40;
+    self.height = 30;
+    self.width = 30;
     self.color = "lightblue"; // Game area color
 }
 
@@ -44,13 +46,14 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
 
     var self = this;
 
-    self.tick = 170; // 140-180 seems to be optimal
+    self.tick = 200; // 150-200 seems to be optimal
 
     self.messageHandler = messageHandler;
     self.databaseProxy = databaseProxy;
+    self.dictionary = new Dictionary();
 
     self.timer = 0;
-    self.amountOfFood = 12;
+    self.amountOfFood = 14;
     self.gameArea = {};
     self.worms = [];
     self.foods = [];
@@ -60,17 +63,21 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
     self.init = function() {
         console.log("creating new game for", self.playerList.length, "players: ", self.playerList);
 
-        self.gameArea = new gameArea();
+        self.gameArea = new GameArea();
         for (var x=0; x<self.playerList.length; x++) {
-            self.worms.push(new worm(self.playerList[x], x));
+            self.worms.push(new Worm(self.playerList[x], x));
         }
         self.initGameboard();
         self.setWorms();
         self.setFood();
 
-        var msg = messages.message.MATCH_SYNC.new();
+        // Iteration 5 with Dictionary implemented
+        self.pickNewWord();
+
+        var msg = Messages.message.MATCH_SYNC.new();
         msg.phase = "INIT";
         msg.msgid = 101;
+        msg.word = self.dictionary.getCurrentWord();
 
         msg.height = self.gameArea.height;
         msg.width = self.gameArea.width;
@@ -106,7 +113,7 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
             var x = Math.floor(Math.random()*self.gameArea.height*self.gameArea.width);
 
             if (self.gameArea.cells[x].color == self.gameArea.color) {
-                var newFood = new food(x);
+                var newFood = new Food(x, self.dictionary.getRandomCharacter());
                 self.foods.push(newFood);
                 self.gameArea.cells[x].color = newFood.color;
             }
@@ -261,15 +268,55 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
                 }
 
                 if (self.gameArea.cells[newHead].color == self.foods[0].color) {
-                    //console.log("food hit, increase worm");
-                    var score = 1;
+                    var score = undefined;
 
-                    console.log("+1 score");
-                    self.worms[x].score += score;
+                    for(var k in self.foods) {
+                        if (self.foods[k].location == newHead) {
+                            score = self.dictionary.checkCharacter(self.foods[k].character);
+                        }
+                    }
 
-                    self.gameArea.cells[newHead].color = self.worms[x].color;
-                    self.worms[x].location.push(newHead);
-                    self.removeFood(newHead);
+                    switch(score) {
+                        case 0:
+                            console.log("word ready, pick a new one");
+                            self.gameArea.cells[newHead].color = self.worms[x].color;
+                            self.worms[x].location.push(newHead);
+                            self.removeFood(newHead);
+
+                            // Word ready, pick a new one
+                            self.pickNewWord();
+                         
+                            score = 1;  // Add one point to player
+                            //break;    // Don't break here, go 'case 1'
+
+                        case 1:
+                            console.log("+1 score");
+                            // correct character, increase score and indicate hit
+                            self.gameArea.cells[newHead].color = self.worms[x].color;
+                            self.worms[x].location.push(newHead);
+                            self.removeFood(newHead);
+                            break;
+
+                        case -1:
+                            console.log("-1 score");
+                            self.worms[x].location.push(newHead);
+                            // Move tail
+                            self.gameArea.cells[self.worms[x].location[0]].color = self.gameArea.color;
+                            self.gameArea.cells[newHead].color = self.worms[x].color;
+                            self.worms[x].location.shift();
+                            // Cut tail
+                            self.gameArea.cells[self.worms[x].location[0]].color = self.gameArea.color;
+                            self.worms[x].location.shift();
+                            self.removeFood(newHead);
+                            break;
+
+                        default:
+                            console.log("default branch in score check");
+                            break;
+                    }
+                    if (score != undefined) {
+                        self.worms[x].score += score;
+                    }
 
                 }
                 else if (self.gameArea.cells[newHead].color != self.gameArea.color || self.worms[x].location.length < 3) {
@@ -289,8 +336,10 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
         }
 
         // Update all players in the match
-        var msg = messages.message.MATCH_SYNC.new();
+        var msg = Messages.message.MATCH_SYNC.new();
         var alive = false;
+
+        msg.word = self.dictionary.getCurrentWord();
 
         for (var item in self.worms) {
             if (self.worms[item].alive == true) {
@@ -298,9 +347,11 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
                 break;
             }
         }
+        // Some of the worms still alive, continue
         if (alive) {
             msg.phase = "RUN";
         }
+        // All worms have come to an end, end game
         else {
             msg.phase = "END";
         }
@@ -314,6 +365,24 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
             self.end();
         }
         //console.log(self.worms);
+    },
+
+    self.pickNewWord = function() {
+        //console.log("GameSession.pickNewWord");
+        var from = "english";
+        var to = "finnish"
+        var word = self.dictionary.getNewWord(from, to);
+        console.log("word", word);
+
+        for(var food in self.foods) {
+            if (food < word['to'].length) {
+                self.foods[food].character = word['to'][food];
+            }
+            else {
+                self.foods[food].character = self.dictionary.getRandomCharacter();
+            }
+        }
+        console.log("foods:", self.foods);
     }
 
     self.init();
