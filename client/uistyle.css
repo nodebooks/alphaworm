@@ -1,82 +1,87 @@
 html *
 {
-    font-size: 1em !important;
-    color: #000 !important;
-    font-family: "Courier New", Courier, monospace;
+  font-size: 1em !important;
+  color: #000 !important;
+  font-family: "Courier New", Courier, monospace;
 }
 
 input:focus {
 
-    background: lightblue;
-    color: black;
+  background: lightblue;
+  color: black;
 }
 
 .container {
-    width: 94%;
-    margin: 3%;
+  width: 94%;
+  margin: 3%;
 }
 
 #login {
-    width: 100%;
-    height: 100px;
-    height: auto;
+  width: 100%;
+  height: 100px;
+  height: auto;
 }
 
 #chat {
-    width: 100%;
-    overflow-Y: auto;
+  width: 100%;
+  overflow-Y: auto;
 }
 
 #chatbox {
-    width: 100%;
-    height: 100px;
-    overflow-Y: auto;
+  width: 100%;
+  height: 100px;
+  overflow-Y: auto;
 }
 
 #onlineplayers {
-    float:left;
-    width: 20%;
-    margin: 0;
-    overflow-Y: auto;
+  float:left;
+  width: 20%;
+  margin: 0;
+  overflow-Y: auto;
 }
 
 #gameboard {
-    margin-left: 20%;
-    border-left: 1px solid gray;
-    margin-right: 20%;
-    border-right: 1px solid gray;
-    text-align: center;
+  margin-left: 20%;
+  border-left: 1px solid gray;
+  margin-right: 20%;
+  border-right: 1px solid gray;
+  text-align: center;
 }
 
 #rankinglist {
-    float: right;
-    width: 20%;
-    margin: 0;
-    overflow-Y: auto;
+  float: right;
+  width: 20%;
+  margin: 0;
+  overflow-Y: auto;
+}
+
+#rankings {
+  width: 100%;
+  margin: auto;
+  text-align: left;
 }
 
 #challengebox {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 #challenge {
-    position: absolute;
-    overflow: hidden;
-    top:  150px;
-    left: 0px;
-    width: 200px;
-    height: 100px;
-    background-color: azure;
-    text-align: center;
+  position: absolute;
+  overflow: hidden;
+  top:  150px;
+  left: 0px;
+  width: 200px;
+  height: 100px;
+  background-color: azure;
+  text-align: center;
 }
 
 table, th, td, tr {
-    border: 0px solid green;
-    padding: 0px;
-    margin: auto;
+  border: 0px solid green;
+  padding: 0px;
+  margin: auto;
 }
 td {
-    width: 19px;
-    height: 19px;
-    position: relative;
+  width: 19px;
+  height: 19px;
 }
