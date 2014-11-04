@@ -1,151 +1,149 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        
-        <title>Alphaworm</title>
+<head>
+  <meta charset="utf-8" />
 
-        <script src="./client/messagebroker.js" type="text/javascript"></script>
-        <script src="./client/messagehandler.js" type="text/javascript"></script>
-        <script src="./client/game.js" type="text/javascript"></script>
-        <script src="./common/messages.js" type="text/javascript"></script>
+  <title>Alphaworm</title>
 
-        <script src="./client/sha-hash.js" type="text/javascript"></script>
+  <script src="./client/messagebroker.js" type="text/javascript"></script>
+  <script src="./client/messagehandler.js" type="text/javascript"></script>
+  <script src="./client/game.js" type="text/javascript"></script>
+  <script src="./common/messages.js" type="text/javascript"></script>
 
-        <audio src="../media/completetask_0.ogg" id="pick_audio" preload="auto"></audio>
-        <audio src="../media/bicycle_1.ogg" id="challenge_request_audio" preload="auto"></audio>
-        <audio src="../media/retro.ogg" id="retro_music" preload="auto"></audio>
+  <script src="./client/sha-hash.js" type="text/javascript"></script>
 
-        <link rel="stylesheet" href="client/uistyle.css">
+  <audio src="../media/completetask_0.ogg" id="pick_audio" preload="auto"></audio>
+  <audio src="../media/bicycle_1.ogg" id="challenge_request_audio" preload="auto"></audio>
+  <audio src="../media/retro.ogg" id="retro_music" preload="auto"></audio>
 
-        <!-- Pass the websocketURI to the client -->
-        <script src="/websocketURI.js"></script>
+  <link rel="stylesheet" href="client/uistyle.css">
 
-        <script type="text/javascript">
-        function initAlphaworm() {
-            // TODO: Improve game init in the near future
-            messageHandler = new MessageHandler();
+  <!-- Pass the websocketURI to the client -->
+  <script src="/websocketURI.js"></script>
+
+  <script type="text/javascript">
+    function initAlphaworm() {
+      // TODO: Improve game init in the near future
+      messageHandler = new MessageHandler();
+    }
+
+    function logout() {
+      // Not the most elegant way to logout, but now we'll just reload the webpage
+      location.reload();
+    }
+
+    function login() {
+      // Check user input fields
+      if (document.getElementById("username").value && document.getElementById("password").value) {
+          // Send login request
+          var msg = messages.message.LOGIN_REQUEST.new();
+          msg.username = document.getElementById("username").value;
+          msg.passwordhash = Sha1.hash(document.getElementById("password").value);
+          messageHandler.send(msg);
+          messageHandler.username = msg.username;
         }
+      }
 
-        function logout() {
-            // Not the most elegant way to logout, but now we'll just reload the webpage
-            location.reload();
+      function register() {
+
+      // Check user input fields
+      if (document.getElementById("username").value && document.getElementById("password").value) {
+          // Send registration request
+          var msg = messages.message.REGISTRATION_REQUEST.new();
+          msg.username = document.getElementById("username").value;
+          msg.passwordhash = Sha1.hash(document.getElementById("password").value);
+          messageHandler.send(msg);
         }
+      }
 
-        function login() {
-
-            // Check user input fields
-            if (document.getElementById("username").value && document.getElementById("password").value) {
-                // Send login request
-                var msg = messages.message.LOGIN_REQUEST.new();
-                msg.username = document.getElementById("username").value;
-                msg.passwordhash = Sha1.hash(document.getElementById("password").value);
-                messageHandler.send(msg);
-                messageHandler.username = msg.username;
-            }
+      function chatKeypress(event) {
+        event.preventDefault;
+      //console.log("event.which:", event.which, "event.keyCode:", event.keyCode, "event.charCode:", event.charCode);
+      if (event.which == 13 || event.keyCode == 13) {
+          // Lähetä tekstirimpsu jos sen length > 0
+          var chatmsg = document.getElementById('chatmessage').value;
+          if (chatmsg) {
+            var msg = messages.message.CHAT_MESSAGE.new();
+            msg.username = messageHandler.getUsername();
+            msg.text = chatmsg;
+            messageHandler.send(msg);
+            document.getElementById('chatmessage').value = "";
+          }
         }
+      return true; // NOTE! return false; does not update textbox
+    }
 
-        function register() {
-            
-            // Check user input fields
-            if (document.getElementById("username").value && document.getElementById("password").value) {
-                // Send registration request
-                var msg = messages.message.REGISTRATION_REQUEST.new();
-                msg.username = document.getElementById("username").value;
-                msg.passwordhash = Sha1.hash(document.getElementById("password").value);
-                messageHandler.send(msg);
-            }
-        }
+    function challenge(username) {
+      messageHandler.challenge(username);
+    }
 
-        function chatKeypress(event) {
-            event.preventDefault;
-            //console.log("event.which:", event.which, "event.keyCode:", event.keyCode, "event.charCode:", event.charCode);
-            if (event.which == 13 || event.keyCode == 13) {
-                // Lähetä tekstirimpsu jos sen length > 0
-                var chatmsg = document.getElementById('chatmessage').value;
-                if (chatmsg) {
-                    var msg = messages.message.CHAT_MESSAGE.new();
-                    msg.username = messageHandler.getUsername();
-                    msg.text = chatmsg;
-                    messageHandler.send(msg);
-                    document.getElementById('chatmessage').value = "";
-                }
-            }
-            return true; // NOTE! return false; does not update textbox
-        }
+    function gameInput(event) {
+      messageHandler.game.handleInput(event);
+      return true; 
+    }
 
-        function challenge(username) {
-            messageHandler.challenge(username);
-        }
+    function acceptChallenge(challenger) {
+      console.log("acceptChallenge", challenger);
+      messageHandler.acceptChallenge(challenger);
+    }
 
-        function gameInput(event) {
-            messageHandler.game.handleInput(event);
-            return true; 
-        }
+    function rejectChallenge(challenger) {
+      console.log("rejectChallenge", challenger);
+      messageHandler.rejectChallenge(challenger);
+    }
+  </script>
+</head>
 
-        function acceptChallenge(challenger) {
-            console.log("acceptChallenge", challenger);
-            messageHandler.acceptChallenge(challenger);
-        }
-
-        function rejectChallenge(challenger) {
-            console.log("rejectChallenge", challenger);
-           messageHandler.rejectChallenge(challenger);
-        }
-
-        </script>
-    </head>
-
-    <body onload="initAlphaworm()" onkeypress="return gameInput(event)">
-        <div class="container">
-            <div id="login">
-                <div id="loginwindow">
-                <fieldset>
-                    <legend><strong>Login</strong></legend>
-                    <div id="infotext">
-                        <p>
-                            Player: <input type="text" id="username" size="10" maxlength="10">
-                            Password: <input type="password" id="password" size="10" maxlength="20">
-                            <input id="login_button" type="submit" value="Login" onclick="login()">
-                            <input id="register_button" type="submit" value="Register" onclick="register()">
-                        </p>
-                    </div>
-                </fieldset>
-                </div>
-            </div>
-            <div id="onlineplayers">
-                <fieldset>
-                    <legend><strong>Online players</strong></legend>
-                    <div id="onlineplayerlist">
-                        <div id="onlineplayer">Wobot</div>
-                    </div>
-                </fieldset>
-            </div>
-            <div id="rankinglist">
-                <fieldset>
-                    <legend><strong>Player ranking</strong></legend>
-                    <div id="rankedplayers">
-                        <div id="rankedplayer">Wobot</div>
-                    </div>
-                </fieldset>
-            </div>
-            <div id="gameboard">
-                <p>This is a placeholder for the gameboard.</p>
-            </div>
-            <div id="chat">
-                <fieldset>
-                    <legend><strong>Messages</strong></legend>
-                    <div id="chatbox">
-                        <div id="messagebox"></div>
-                    </div>
-                    <div id="sendmessage">
-                        Send: <input type="text" id="chatmessage" size="40" maxlength="140" onkeypress="return chatKeypress(event)">
-                    </div>
-                </fieldset>
-            </div>
-            <div id="challengebox">
-                <div id="challenge"></div>
-            </div>
+<body onload="initAlphaworm()" onkeypress="return gameInput(event)">
+  <div class="container">
+    <div id="login">
+      <div id="loginwindow">
+        <fieldset>
+          <legend><strong>Login</strong></legend>
+          <div id="infotext">
+            <p>
+              Player: <input type="text" id="username" size="10" maxlength="10">
+              Password: <input type="password" id="password" size="10" maxlength="20">
+              <input id="login_button" type="submit" value="Login" onclick="login()">
+              <input id="register_button" type="submit" value="Register" onclick="register()">
+            </p>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+    <div id="onlineplayers">
+      <fieldset>
+        <legend><strong>Online players</strong></legend>
+        <div id="onlineplayerlist">
+          <div id="onlineplayer">Wobot</div>
         </div>
-    </body>
+      </fieldset>
+    </div>
+    <div id="rankinglist">
+      <fieldset>
+        <legend><strong>Player ranking</strong></legend>
+        <div id="rankedplayers">
+          <div id="rankedplayer">Wobot</div>
+        </div>
+      </fieldset>
+    </div>
+    <div id="gameboard">
+      <p>This is a placeholder for the gameboard.</p>
+    </div>
+    <div id="chat">
+      <fieldset>
+        <legend><strong>Messages</strong></legend>
+        <div id="chatbox">
+          <div id="messagebox"></div>
+        </div>
+        <div id="sendmessage">
+          Send: <input type="text" id="chatmessage" size="40" maxlength="140" onkeypress="return chatKeypress(event)">
+        </div>
+      </fieldset>
+    </div>
+    <div id="challengebox">
+      <div id="challenge"></div>
+    </div>
+  </div>
+</body>
 </html>
