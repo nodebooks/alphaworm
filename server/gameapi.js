@@ -238,11 +238,11 @@ var DatabaseProxy = function(gameAPI) {
     console.log("OPENSHIFT_MYSQL_DB_HOST:",process.env.OPENSHIFT_MYSQL_DB_HOST);
     console.log("OPENSHIFT_MYSQL_DB_PORT:",process.env.OPENSHIFT_MYSQL_DB_PORT);
 
-        // Define database connection
-    self.hostname   = process.env.OPENSHIFT_MYSQL_DB_HOST;
-    self.port     = process.env.OPENSHIFT_MYSQL_DB_PORT;
-    self.user     = process.env.OPENSHIFT_MYSQL_DB_USERNAME;
-    self.password   = process.env.OPENSHIFT_MYSQL_DB_PASSWORD;
+    // Define database connection
+    self.hostname   = process.env.OPENSHIFT_MYSQL_DB_HOST || 'localhost';
+    self.port       = 3306;
+    self.user       = process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'root';
+    self.password   = process.env.OPENSHIFT_MYSQL_DB_PASSWORD || 'test1234';
     self.database   = "alphaworm";  // Make sure that the db name is correct (check MySQL code)
 
     // Initialize database connection
