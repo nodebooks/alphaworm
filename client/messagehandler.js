@@ -1,16 +1,13 @@
-var MessageHandler = function(game) {
+function MessageHandler(game) {
+  this.messageBroker = undefined;
+  this.init();
+}
 
-  var self = this;
-  self.messageBroker = undefined;
+MessageHandler.prototype.init = function() {
+  console.log("MessageHandler started");
+},
 
-  self.init = function() {
-    console.log("MessageHandler started");
-  },
-
-  self.attachBroker = function(messageBroker) {
-    console.log("MessageHandler: messageBroker attached.")
-    self.messageBroker = messageBroker;
-  }
-
-  self.init();
+MessageHandler.prototype.attachBroker = function(messageBroker) {
+  console.log("MessageHandler: messageBroker attached.")
+  this.messageBroker = messageBroker;
 }

@@ -1,38 +1,34 @@
-var MessageBroker = function(server) {
+function MessageBroker(server) {
 
-  // Define JavaScript scope
-  var self = this;
-
-  self.clients  = {}; // Index with username
-  self.serverapp = server.serverapp;
-
-  self.init = function() {
-    console.log("MessageBroker: initializing websocket");
-    var WebSocketServer = require('ws').Server;
-    self.wss = new WebSocketServer({server: self.serverapp});
-
-    self.wss.on('connection', function(websocket) {
-      console.log("MessageBroker: client connected to port", websocket._socket.remotePort);
-
-      // CONNECTION CLOSE
-      websocket.on('close', function() {
-        console.log("MessageBroker: client disconnected");
-      });
-
-      // RECEIVE A MESSAGE
-      websocket.on('message', function(data, flags) {
-        console.log("MessageBroker: received message:", JSON.parse(data));
-      });
-    });
-  },
-
-  self.attachMessageHandler = function(messageHandler) {
-    self.messageHandler = messageHandler;
-    console.log("MessageBroker: MessageHandler attached");
-  }
-  
+  this.clients  = {}; // Index with username
+  this.serverapp = server.serverapp;  
   // Initialize MessageBroker when the object is created
-  self.init();
+  this.init();
+}
+
+MessageBroker.prototype.init = function() {
+  console.log("MessageBroker: initializing websocket");
+  var WebSocketServer = require('ws').Server;
+  this.wss = new WebSocketServer({server: this.serverapp});
+
+  this.wss.on('connection', function(websocket) {
+    console.log("MessageBroker: client connected to port", websocket._socket.remotePort);
+
+    // CONNECTION CLOSE
+    websocket.on('close', function() {
+      console.log("MessageBroker: client disconnected");
+    });
+
+    // RECEIVE A MESSAGE
+    websocket.on('message', function(data, flags) {
+      console.log("MessageBroker: received message:", JSON.parse(data));
+    });
+  });
+},
+
+MessageBroker.prototype.attachMessageHandler = function(messageHandler) {
+  this.messageHandler = messageHandler;
+  console.log("MessageBroker: MessageHandler attached");
 }
 
 // Make MessageBroker available outside this file

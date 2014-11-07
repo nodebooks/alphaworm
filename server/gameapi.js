@@ -1,13 +1,11 @@
 var MessageHandler = require('./messagehandler');
 
-var GameAPI = function() {
+function GameAPI() {
+  this.messageHandler = undefined;
+}
 
-  var self = this;
-  self.messageHandler = undefined;
-
-  self.attachMessageHandler = function(messageHandler) {
-    self.messageHandler = messageHandler;
-  }
+GameAPI.prototype.attachMessageHandler = function(messageHandler) {
+    this.messageHandler = messageHandler;
 }
 
 module.exports = GameAPI;
