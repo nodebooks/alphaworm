@@ -1,87 +1,87 @@
 var GameAPI = require('./gameapi');
 
-var MessageHandler = function() {
+function MessageHandler() {
 
-  var self = this;
-  self.gameAPI = undefined;
-  self.messageBroker = undefined;
+  this.gameAPI = undefined;
+  this.messageBroker = undefined;
 
-  self.attachGameAPI = function(gameAPI) {
-    console.log("MessageHandler: GameAPI attached");
-    self.gameAPI = gameAPI;
-  },
+}
 
-  self.attachGameServer = function(gameServer) {
-    console.log("MessageHandler: GameServer attached");
-    self.gameServer = gameServer;
-  },
+MessageHandler.prototype.attachGameAPI = function(gameAPI) {
+  console.log("MessageHandler: GameAPI attached");
+  this.gameAPI = gameAPI;
+},
 
-  self.attachMessageBroker = function(messageBroker) {
-    console.log("MessageHandler: MessageBroker attached");
-    self.messageBroker = messageBroker;
-  },
+MessageHandler.prototype.attachGameServer = function(gameServer) {
+  console.log("MessageHandler: GameServer attached");
+  this.gameServer = gameServer;
+},
 
-  self.receive = function(from, msg) {
+MessageHandler.prototype.attachMessageBroker = function(messageBroker) {
+  console.log("MessageHandler: MessageBroker attached");
+  this.messageBroker = messageBroker;
+},
 
-    switch (msg.name) {
+MessageHandler.prototype.receive = function(from, msg) {
 
-      case 'CHAT_MESSAGE':
-      self.gameAPI.broadcast(from, msg);
-      break;
+  switch (msg.name) {
 
-      case 'START_SINGLEPLAYER_GAME_REQ':
-      console.log("START_SINGLEPLAYER_GAME_REQ from user:", from);
-      self.gameAPI.createSinglePlayerGame(from, msg);
-      break;
+    case 'CHAT_MESSAGE':
+    this.gameAPI.broadcast(from, msg);
+    break;
 
-      case 'USER_INPUT':
-      self.gameAPI.userInput(from, msg.direction);
-      break;
+    case 'START_SINGLEPLAYER_GAME_REQ':
+    console.log("START_SINGLEPLAYER_GAME_REQ from user:", from);
+    this.gameAPI.createSinglePlayerGame(from, msg);
+    break;
 
-      case 'DISCONNECT_REQ':
-      console.log("MessageHandler: DISCONNECT_REQ from", msg.username);
-      self.gameAPI.userData(from, msg);
-      // Send update to clients
-      self.removeFromPlayerList(msg.username);
-      self.sendSystemMessage(msg.username + " disconnected.");
-      break;
+    case 'USER_INPUT':
+    this.gameAPI.userInput(from, msg.direction);
+    break;
 
-      case 'CHALLENGE_REQ':
-      self.handleChallengeRequest(from, msg);
-      break;
+    case 'DISCONNECT_REQ':
+    console.log("MessageHandler: DISCONNECT_REQ from", msg.username);
+    this.gameAPI.userData(from, msg);
+    // Send update to clients
+    this.removeFromPlayerList(msg.username);
+    this.sendSystemMessage(msg.username + " disconnected.");
+    break;
 
-      case 'CHALLENGE_RESP':
-      self.handleChallengeResponse(from, msg);
-      break;
+    case 'CHALLENGE_REQ':
+    this.handleChallengeRequest(from, msg);
+    break;
 
-      default:
-      console.log("MessageHandler.receive: default branch reached for msg", msg.name);
-      break;
-    }
-  },
+    case 'CHALLENGE_RESP':
+    this.handleChallengeResponse(from, msg);
+    break;
 
-  self.send = function(to, msg) {
-    //console.log("MessageHandler.send:", msg);
-    self.messageBroker.send(to, msg);
-  },
+    default:
+    console.log("MessageHandler.receive: default branch reached for msg", msg.name);
+    break;
+  }
+},
 
-  self.handleChallengeRequest = function(from, msg) {
+MessageHandler.prototype.send = function(to, msg) {
+  //console.log("MessageHandler.send:", msg);
+  this.messageBroker.send(to, msg);
+},
 
-    // Route challenge request to challenged player
-    if(msg.challenger == from) {
-      self.send(msg.challengee, msg);
-    }
-    else {
-      console.log("MessageHandler.handleChallengeRequest malformed CHALLENGE_REQ", msg);
-    }
-  },
+MessageHandler.prototype.handleChallengeRequest = function(from, msg) {
 
-  self.handleChallengeResponse = function(from, msg) {
-    // If challenge is accepted, create multiplayer game
-    if(msg.response == "OK") {
-      var playerList = [msg.challengee, msg.challenger];
-      self.gameAPI.createMultiplayerGame(playerList);
-    }
+  // Route challenge request to challenged player
+  if(msg.challenger == from) {
+    this.send(msg.challengee, msg);
+  }
+  else {
+    console.log("MessageHandler.handleChallengeRequest malformed CHALLENGE_REQ", msg);
+  }
+},
+
+MessageHandler.prototype.handleChallengeResponse = function(from, msg) {
+  // If challenge is accepted, create multiplayer game
+  if(msg.response == "OK") {
+    var playerList = [msg.challengee, msg.challenger];
+    this.gameAPI.createMultiplayerGame(playerList);
   }
 }
 

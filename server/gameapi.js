@@ -1,373 +1,237 @@
-  var MessageHandler = require('./messagehandler');
-  var GameSession = require('./gamesession');
+var MessageHandler = require('./messagehandler');
+var DatabaseProxy = require('./databaseproxy');
+var GameSession = require('./gamesession');
+var Messages = require('../common/messages');
 
-  var Messages = require('../common/messages');
+function GameAPI() {
 
-  // Create event emitter
-  var EventEmitter = require('events').EventEmitter,
-  util = require('util');
+  this.messageHandler = undefined;
+  this.databaseProxy = undefined;
+  this.gameSessions = {}; // Ongoing game sessions
 
-  var GameAPI = function() {
+  this.players = {};  // Logged in players
 
-    var self = this;
-    self.messageHandler = undefined;
-    self.databaseProxy = undefined;
-    self.gameSessions = {}; // Ongoing game sessions
+  this.init();
 
-    self.players = {};  // Logged in players
+  this.loginPlayer = function(websocket) {
+    var username = websocket.username;
 
-    self.attachMessageHandler = function(messageHandler) {
-      console.log("GameAPI: MessageHandler attached");
-      self.messageHandler = messageHandler;
-    },
+    this.players[username] = websocket;
+    console.log("added player", username);
 
-    self.createUser = function(websocket, msg) {
-      self.databaseProxy.createUser(websocket, msg);
-    },
+    // Broadcast update to all players
+    var msg = Messages.message.PLAYER_LIST.new();
+    msg.type = "update";
 
-    self.login = function(websocket, msg) {
-      self.databaseProxy.login(websocket, msg);
-    },
+    msg.players[0].username = username;
+    msg.players[0].ingame = (this.gameSessions[item]) ? true:false;
+    msg.players[0].authenticated = true;
 
-    self.logout = function(websocket) {
-      console.log("GameAPI.logout")
-      if(typeof websocket.username !== 'undefined') {
-        logoutPlayer(websocket.username);
+    this.broadcast(username, msg);
+
+    // Send full playerlist to logged in player
+    var broadcastmsg = Messages.message.PLAYER_LIST.new();
+    broadcastmsg.type = "full";
+
+    for(var item in this.players) {
+      var player = {
+        username: item,
+        ingame: (this.gameSessions[item]) ? true:false,
+        authenticated: true
       }
-    },
+      broadcastmsg.players.push(player);
+    }
 
-    self.send = function(to, msg) {
-      self.messageHandler.send(to, msg);
-    },
+    broadcastmsg.players.splice(0, 1);
 
-    self.broadcast = function(from, msg) {
-      //console.log("GameAPI.broadcast:", from, msg);
-      // Iterate through connected players and send the message to each one of them
-      for(var player in self.players) {
-        self.messageHandler.send(self.players[player].username, msg);
-      }
-    },
+    this.messageHandler.send(username, broadcastmsg);
 
-    self.createSinglePlayerGame = function(username) {
-      // Create a single player game
-      // Check if user is already in game
-      if(typeof self.gameSessions[username] === "undefined") {
-          // Nope, create a new game
-          self.gameSessions[username] = new GameSession([username], self.messageHandler, self.databaseProxy);
-
-          // Wait for game events
-          self.gameSessions[username].on('end', function(username) {
-            console.log("Event GameSession.end");
-            endGame(username);
-          });
-
-          startGame([username]);
-        }
-        else {
-          // Yep, return NOK
-          //console.log("User", username, "already in game.");
-          return "NOK";
-        }
-      },
-
-      self.createMultiplayerGame = function (playerList) {
-      // Create a multiplayer game
-      var newGame = null;
-
-      // Check if users are already in game (just to make sure)
-      for(var item in playerList) {
-        var username = playerList[item];
-        if(typeof self.gameSessions[username] !== "undefined") {
-          console.log("User", username, "already in game. Dropping player from playerList");
-          playerList.splice(item, 1);
-          return "NOK";
-        }
-      }
-
-      if(playerList) {
-        newGame = new GameSession(playerList, self.messageHandler, self.databaseProxy);
-          // Wait for end game event
-          newGame.on('end', function(username) {
-            console.log("Event GameSession.end multiplayer");
-            endGame(username);
-          });
-        }
-
-        for(var item in playerList) {
-          var username = playerList[item];
-          self.gameSessions[username] = newGame;
-        }
-
-      // Indicate state changes to other clients
-      startGame(playerList);
-    },
-
-    self.userInput = function(username, input) {
-      if(typeof self.gameSessions[username] !== "undefined") {
-          //console.log("userInput:", username, input);
-          self.gameSessions[username].userInput(username, input);
-        }
-      }
-
-      /***** Internal functions - not visible outside GameAPI *****/
-
-      var loginPlayer = function(websocket) {
-        var username = websocket.username;
-
-        self.players[username] = websocket;
-        console.log("added player", username);
-
-        // Broadcast update to all players
-        var msg = Messages.message.PLAYER_LIST.new();
-        msg.type = "update";
-
-        msg.players[0].username = username;
-        msg.players[0].ingame = (self.gameSessions[item]) ? true:false;
-        msg.players[0].authenticated = true;
-
-        self.broadcast(username, msg);
-
-        // Send full playerlist to logged in player
-        var broadcastmsg = Messages.message.PLAYER_LIST.new();
-        broadcastmsg.type = "full";
-
-        for(var item in self.players) {
-          var player = {username: item,
-            ingame: (self.gameSessions[item]) ? true:false,
-            authenticated: true}
-            broadcastmsg.players.push(player);
-          }
-
-          broadcastmsg.players.splice(0, 1);
-
-          self.messageHandler.send(username, broadcastmsg);
-
-        // Send ranking list to logged in player
-        self.databaseProxy.updateRanking(username);
+    // Send ranking list to logged in player
+    this.databaseProxy.updateRanking(username);
 
 
-        console.log("Player", username, "logged in.");
-      }
-
-      var logoutPlayer = function(username) {
-        console.log("GameAPI.logoutPlayer", username)
-
-        // Disconnect from game session (if any)
-        if(typeof self.gameSessions[username] !== "undefined") {
-          self.gameSessions[username].disconnect(username);
-        }
-
-        // Broadcast disconnect to all players
-
-        var msg = Messages.message.PLAYER_LIST.new();
-        msg.type = "update";
-        msg.players[0].username = username;
-        msg.players[0].ingame = false;
-        msg.players[0].authenticated = false;   // This will indicate UI that player disconnected
-
-        self.broadcast(username, msg);
-
-        delete self.players[username];
-        console.log("Player", username, "logged out.");
-        //console.log("players:", self.players);
-      }
-
-      var startGame = function(playerList) {
-        // Indicate state change to other players
-        var msg = Messages.message.PLAYER_LIST.new();
-        msg.type = "update";
-
-        for(var item in playerList) {   // Note: we are iterating an array
-          var username = playerList[item];
-          var player = {username: username,
-            ingame: (self.gameSessions[username]) ? true:false,
-            authenticated: (self.players[username]) ? true:false}
-            msg.players.push(player);
-          }
-          msg.players.splice(0, 1);
-          self.broadcast(username, msg);
-        }
-
-        var endGame = function(playerList) {
-          console.log("GameAPI.endGame", playerList);
-
-        // Indicate state change to other players
-        var msg = Messages.message.PLAYER_LIST.new();
-        msg.type = "update";
-
-        for(var item in playerList) {   // Note: we are iterating an array
-          var username = playerList[item];
-          var authenticated = (self.players[username]) ? true:false;
-          var player = {username: username,
-            ingame: false,
-            authenticated: authenticated}
-            msg.players.push(player);
-
-            //console.log("deleting game session", username);
-            delete self.gameSessions[username];
-          }
-          msg.players.splice(0, 1);
-
-          self.broadcast(username, msg);
-        }
-
-        var init = function() {
-        // Create and initialize database connection
-        self.databaseProxy = new DatabaseProxy(self);
-
-        // Add event emitter for DatabaseProxy events
-        self.databaseProxy.on('login', function(websocket) {
-          console.log("Event DatabaseProxy.login");
-          loginPlayer(websocket);
-        });
-      }
-
-    init();
+    console.log("Player", username, "logged in.");
   }
 
-var DatabaseProxy = function(gameAPI) {
-  // See https://github.com/felixge/node-mysql for more details.
+  this.logoutPlayer = function(username) {
+    console.log("GameAPI.logoutPlayer", username)
 
-  var self = this;
-
-  self.gameAPI = gameAPI;
-  self.connection = null;
-
-  self.init = function() {
-
-    console.log("OPENSHIFT_MYSQL_DB_HOST:",process.env.OPENSHIFT_MYSQL_DB_HOST);
-    console.log("OPENSHIFT_MYSQL_DB_PORT:",process.env.OPENSHIFT_MYSQL_DB_PORT);
-
-    // Define database connection
-    self.hostname   = process.env.OPENSHIFT_MYSQL_DB_HOST || 'localhost';
-    self.port       = 3306;
-    self.user       = process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'root';
-    self.password   = process.env.OPENSHIFT_MYSQL_DB_PASSWORD || 'test1234';
-    self.database   = "alphaworm";  // Make sure that the db name is correct (check MySQL code)
-
-    // Initialize database connection
-    var mysql = require('mysql');
-
-    self.connection = mysql.createConnection(
-      { host : self.hostname,
-        port : self.port,
-        database: self.database,
-        user : self.user,
-        password : self.password
-      });
-
-    self.connection.connect(function(err) {
-      if(!err) {
-        console.log("DatabaseProxy: database connection ready");
-      }
-      else {
-        console.log("DatabaseProxy: database connection failed:", err);
-      }
-    });
-  },
-
-  self.createUser = function(websocket, msg) {
-    console.log("DatabaseProxy.createUser", msg);
-
-    // Generate response message
-    var response = Messages.message.REGISTRATION_RESPONSE.new();
-    response.username = msg.username;
-
-
-    // TODO: Prevent SQL inject (check username and password parameters)
-    self.connection.query('INSERT INTO userdata (username, password_hash) VALUES (?, ?)', [ msg.username, msg.passwordhash ], function(err, rows) {
-      if(!err) {
-        console.log("DatabaseProxy: createUser succeeded");
-        response.status = "OK";
-      }
-      else {
-        console.log("DatabaseProxy: createUser failed:", err);
-        response.status = "NOK";
-      }
-        // Send response message back to client directly through websocket
-        websocket.send(JSON.stringify(response));
-      });
-  },
-
-  self.login = function(websocket, msg, callback) {
-    console.log("DatabaseProxy.login", msg);
-
-    // Generate response message
-    var response = Messages.message.LOGIN_RESPONSE.new();
-    response.username = msg.username;
-    response.status = "NOK";
-
-    // TODO: Prevent SQL injection (validate username param before using it)
-    if(typeof self.gameAPI.players[msg.username] === 'undefined') {
-      self.connection.query('SELECT password_hash, username FROM userdata WHERE username = ?', [ msg.username ], function(err, rows) {
-        if(!err) {
-          console.log("DatabaseProxy: query ok, checking result");
-          if(typeof rows[0] !== 'undefined') {
-            if(rows[0].password_hash == msg.passwordhash) {
-              var username = rows[0].username;
-              // Valid password
-              response.status = "OK";
-              response.username = websocket.username = username;  // TODO: toLowerCase() ?
-              self.emit('login', websocket);                    }
-              }
-            }
-            else {
-              console.log("DatabaseProxy: login failed:", err);
-            }
-
-        // Send response message back to client directly through websocket
-        websocket.send(JSON.stringify(response));
-      });
+    // Disconnect from game session (if any)
+    if(typeof this.gameSessions[username] !== "undefined") {
+      this.gameSessions[username].disconnect(username);
     }
-    else {
-     // Possible hacker, don't send any response? :)
-    }
-  },
 
-  self.setHighscore = function(username, score) {
-    console.log("DatabaseProxy.setHighscore", score, "for", username);
+    // Broadcast disconnect to all players
 
-    self.connection.query("UPDATE userdata SET highscore=? WHERE username = ? AND ? > highscore", [ score, username, score ], function(err, rows){
-      if(err != null) {
-        console.log("DatabaseProxy.setHighscore failed", err);
-      }
-      else {
-        // TODO: better ranking list handling
-        console.log("DatabaseProxy.setHighscore new highscore", score, "set for", username);
-        self.updateRanking('broadcast');
-      }
-    });
-  },
+    var msg = Messages.message.PLAYER_LIST.new();
+    msg.type = "update";
+    msg.players[0].username = username;
+    msg.players[0].ingame = false;
+    msg.players[0].authenticated = false;   // This will indicate UI that player disconnected
 
-  // player = username of a certain player, or 'broadcast' or '' if sent to all logged in players
-  self.updateRanking = function(player) {
-    console.log("DatabaseProxy.updateRanking");
+    this.broadcast(username, msg);
 
-
-    // TODO: Try to understand the magic behind the SQL spell below :)
-    self.connection.query("SELECT username, highscore FROM userdata ORDER BY highscore DESC LIMIT 100", [], function(err, rows){
-      if(err != null) {
-        console.log("DatabaseProxy.updateRanking failed", err);
-      }
-      else {
-        var msg = Messages.message.RANKING_LIST.new();
-        msg.players = [];
-        for(var item in rows) {
-          msg.players.push({ username: rows[item].username, highscore: rows[item].highscore });
-        }
-        if(player == 'broadcast' || typeof player == 'undefined') {
-          self.gameAPI.broadcast(player, msg);
-        }
-        else {
-          self.gameAPI.send(player, msg);
-        }
-      }
-    });
+    delete this.players[username];
+    console.log("Player", username, "logged out.");
+    //console.log("players:", this.players);
   }
 
-self.init();
+  this.startGame = function(playerList) {
+    // Indicate state change to other players
+    var msg = Messages.message.PLAYER_LIST.new();
+    msg.type = "update";
+
+    for(var item in playerList) {   // Note: we are iterating an array
+      var username = playerList[item];
+      var player = {
+        username: username,
+        ingame: (this.gameSessions[username]) ? true:false,
+        authenticated: (this.players[username]) ? true:false
+      }
+      msg.players.push(player);
+    }
+    msg.players.splice(0, 1);
+    this.broadcast(username, msg);
+  }
+
+  this.endGame = function(playerList) {
+    console.log("GameAPI.endGame", playerList);
+
+    // Indicate state change to other players
+    var msg = Messages.message.PLAYER_LIST.new();
+    msg.type = "update";
+
+    for(var item in playerList) {   // Note: we are iterating an array
+      var username = playerList[item];
+      var authenticated = (this.players[username]) ? true:false;
+      var player = {
+        username: username,
+        ingame: false,
+        authenticated: authenticated
+      }
+      msg.players.push(player);
+
+      //console.log("deleting game session", username);
+      delete this.gameSessions[username];
+    }
+    msg.players.splice(0, 1);
+
+    this.broadcast(username, msg);
+  }
 }
 
-util.inherits(DatabaseProxy, EventEmitter);
+GameAPI.prototype.init = function() {
+  // Create and initialize database connection
+  this.databaseProxy = new DatabaseProxy(this);
+
+  // Hook for callback
+  var self = this;
+
+  // Add event emitter for DatabaseProxy events
+  this.databaseProxy.on('login', function(websocket) {
+    console.log("Event DatabaseProxy.login");
+    self.loginPlayer(websocket);
+  });
+},
+
+GameAPI.prototype.attachMessageHandler = function(messageHandler) {
+  console.log("GameAPI: MessageHandler attached");
+  this.messageHandler = messageHandler;
+},
+
+GameAPI.prototype.createUser = function(websocket, msg) {
+  this.databaseProxy.createUser(websocket, msg);
+},
+
+GameAPI.prototype.login = function(websocket, msg) {
+  this.databaseProxy.login(websocket, msg);
+},
+
+GameAPI.prototype.logout = function(websocket) {
+  console.log("GameAPI.logout")
+  if(typeof websocket.username !== 'undefined') {
+    this.logoutPlayer(websocket.username);
+  }
+},
+
+GameAPI.prototype.send = function(to, msg) {
+  this.messageHandler.send(to, msg);
+},
+
+GameAPI.prototype.broadcast = function(from, msg) {
+  //console.log("GameAPI.broadcast:", from, msg);
+  // Iterate through connected players and send the message to each one of them
+  for(var player in this.players) {
+    this.messageHandler.send(this.players[player].username, msg);
+  }
+},
+
+GameAPI.prototype.createSinglePlayerGame = function(username) {
+
+  // Hook for callback
+  var self = this;
+
+  // Create a single player game
+  // Check if user is already in game
+  if(typeof this.gameSessions[username] === "undefined") {
+    // Nope, create a new game
+    this.gameSessions[username] = new GameSession([username], this.messageHandler, this.databaseProxy);
+
+    // Wait for game events
+    this.gameSessions[username].on('end', function(username) {
+      console.log("Event GameSession.end");
+      self.endGame(username);
+    });
+
+    this.startGame([username]);
+  }
+  else {
+    // Yep, return NOK
+    //console.log("User", username, "already in game.");
+    return "NOK";
+  }
+},
+
+GameAPI.prototype.createMultiplayerGame = function (playerList) {
+  // Create a multiplayer game
+  var newGame = null;
+
+  // Hook for callback
+  var self = this;
+
+  // Check if users are already in game (just to make sure)
+  for(var item in playerList) {
+    var username = playerList[item];
+    if(typeof this.gameSessions[username] !== "undefined") {
+      console.log("User", username, "already in game. Dropping player from playerList");
+      playerList.splice(item, 1);
+      return "NOK";
+    }
+  }
+
+  if(playerList) {
+    newGame = new GameSession(playerList, this.messageHandler, this.databaseProxy);
+      // Wait for end game event
+      newGame.on('end', function(username) {
+        console.log("Event GameSession.end multiplayer");
+        self.endGame(username);
+      });
+    }
+
+    for(var item in playerList) {
+      var username = playerList[item];
+      this.gameSessions[username] = newGame;
+    }
+
+  // Indicate state changes to other clients
+  this.startGame(playerList);
+},
+
+GameAPI.prototype.userInput = function(username, input) {
+  if(typeof this.gameSessions[username] !== "undefined") {
+    //console.log("userInput:", username, input);
+    this.gameSessions[username].userInput(username, input);
+  }
+}
 
 module.exports = GameAPI;
