@@ -1,7 +1,6 @@
 var messages = require('../common/messages');
-
-var EventEmitter = require('events').EventEmitter,
-util = require('util');
+var EventEmitter = require('events').EventEmitter;
+var util = require('util');
 
 var worm = function(name, number) {
   var color = ["blue", "green", "orange", "brown", "red", "Black"];
@@ -16,12 +15,10 @@ var worm = function(name, number) {
   self.newDirection = "right";
   self.velocity = 1;
   self.score = 0;
-
   // Initialize worm
   for(var x=0; x<self.startingLength; x++) {
     self.location[x] = x+number*8*40;
   }
-
   //console.log("worm", name, "location:", self.location);
 }
 
@@ -41,14 +38,10 @@ var gameArea = function() {
 }
 
 var GameSession = function(playerList, messageHandler, databaseProxy) {
-
   var self = this;
-
   self.tick = 170; // 140-180 seems to be optimal
-
   self.messageHandler = messageHandler;
   self.databaseProxy = databaseProxy;
-
   self.timer = 0;
   self.amountOfFood = 12;
   self.gameArea = {};
@@ -59,7 +52,6 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
 
   self.init = function() {
     console.log("creating new game for", self.playerList.length, "players: ", self.playerList);
-
     self.gameArea = new gameArea();
     for (var x=0; x<self.playerList.length; x++) {
       self.worms.push(new worm(self.playerList[x], x));
@@ -67,18 +59,14 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
     self.initGameboard();
     self.setWorms();
     self.setFood();
-
     var msg = messages.message.MATCH_SYNC.new();
     msg.phase = "INIT";
     msg.msgid = 101;
-
     msg.height = self.gameArea.height;
     msg.width = self.gameArea.width;
     msg.worms = self.worms;
     msg.food = self.foods;
-
     self.syncPlayers(msg);
-
     self.timer = setInterval(self.update, self.tick);
   },
 
@@ -101,10 +89,8 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
   self.setFood = function() {
     //console.log("setFood");
     var i = 0;
-
     while(self.foods.length < self.amountOfFood) {
       var x = Math.floor(Math.random()*self.gameArea.height*self.gameArea.width);
-
       if (self.gameArea.cells[x].color == self.gameArea.color) {
         var newFood = new food(x);
         self.foods.push(newFood);
@@ -159,23 +145,20 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
         break;
       }
     }
-  // Update clients
+    // Update clients
   },
 
   self.end = function() {
     console.log("GameSession.end");
     clearInterval(self.timer);
-
     // Update possible highscores
     for(var item in self.worms) {
       var username = self.worms[item].name;
       var score = self.worms[item].score;
       self.databaseProxy.setHighscore(username, score);
     }
-
     // Indicate end game
     self.emit('end', self.playerList);
-
   },
 
   self.update = function() {
@@ -185,8 +168,7 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
       var input = 0;
       var change = 0;
 
-      if(self.worms[x].alive == true)
-      {
+        if(self.worms[x].alive == true) {
         // Check for movement
         switch (self.worms[x].newDirection) {
           case "up":
@@ -194,19 +176,16 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
             self.worms[x].direction = "up";
           }
           break;
-
           case "left":
           if (self.worms[x].direction != "right") {
             self.worms[x].direction = "left";
           }
           break;
-
           case "down":
           if (self.worms[x].direction != "up") {
             self.worms[x].direction = "down";
           }
           break;
-
           case "right":
           if (self.worms[x].direction != "left") {
             self.worms[x].direction = "right";
@@ -216,7 +195,6 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
           console.log("invalid worm direction input:", self.worms[x].direction, "wanted:", self.worms[x].newDirection);
           break;
         }
-
         //console.log("handling worm", x);
         switch(self.worms[x].direction) {
           case "right":
@@ -235,20 +213,17 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
           console.log("invalid worm direction:", self.worms[x].direction);
           break;
         }
-
         // move worm
-
         // Store head location and calculate new location
         var length = self.worms[x].location.length;
         var oldHead = self.worms[x].location[length-1];
         var newHead = self.worms[x].location[length-1] + change;
-
         // Käsittele pelilaudan reunojen ylitykset
         // TODO: switch case
         if (self.worms[x].direction == "right" &&
-            0 == (newHead % self.gameArea.width) &&
-            0 != newHead ) {
-            newHead = oldHead - (self.gameArea.width-1);
+          0 == (newHead % self.gameArea.width) &&
+          0 != newHead ) {
+          newHead = oldHead - (self.gameArea.width-1);
         }
         if (self.worms[x].direction == "left" && 0 == (oldHead % (self.gameArea.width))) {
           newHead = oldHead + (self.gameArea.width-1);
@@ -259,18 +234,14 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
         if (self.worms[x].direction == "down" && oldHead >= (self.gameArea.width*(self.gameArea.height - 1))) {
           newHead = oldHead % (self.gameArea.width);
         }
-
         if (self.gameArea.cells[newHead].color == self.foods[0].color) {
           //console.log("food hit, increase worm");
           var score = 1;
-
           console.log("+1 score");
           self.worms[x].score += score;
-
           self.gameArea.cells[newHead].color = self.worms[x].color;
           self.worms[x].location.push(newHead);
           self.removeFood(newHead);
-
         }
         else if (self.gameArea.cells[newHead].color != self.gameArea.color || self.worms[x].location.length < 3) {
           // TODO: end game
@@ -288,10 +259,9 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
       }
     }
 
-    // Update all players in the match
+    // Sync all players in the match  
     var msg = messages.message.MATCH_SYNC.new();
     var alive = false;
-
     for (var item in self.worms) {
       if (self.worms[item].alive == true) {
         alive=true;
@@ -305,22 +275,16 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
       msg.phase = "END";
     }
     msg.msgid = 101;
-
     msg.worms = self.worms;
     msg.food = self.foods;
-
     self.syncPlayers(msg);
     if (msg.phase == "END") {
       self.end();
     }
     //console.log(self.worms);
   }
-
   self.init();
-
 }
 
 util.inherits(GameSession, EventEmitter);
-
-
 module.exports = GameSession;
