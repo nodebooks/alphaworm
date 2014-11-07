@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
 
-  <title>Alphaworm</title>
+  <title>Alphaworm Iteration Two</title>
 
   <script src="./client/messagebroker.js" type="text/javascript"></script>
   <script src="./client/messagehandler.js" type="text/javascript"></script>
@@ -41,8 +41,7 @@
     }
 
     function register() {
-
-    // Check user input fields
+      // Check user input fields
       if (document.getElementById("username").value && document.getElementById("password").value) {
         // Send registration request
         var msg = messages.message.REGISTRATION_REQUEST.new();
