@@ -1,40 +1,35 @@
 var GameAPI = require('./gameapi');
 
-var MessageHandler = function() {
+function MessageHandler() {
+  this.gameAPI = undefined;
+  this.messageBroker = undefined;
+}
 
-  var self = this;
-  self.gameAPI = undefined;
-  self.messageBroker = undefined;
+MessageHandler.prototype.attachGameAPI = function(gameAPI) {
+  console.log("MessageHandler: GameAPI attached");
+  this.gameAPI = gameAPI;
+},
 
-  self.attachGameAPI = function(gameAPI) {
+MessageHandler.prototype.attachMessageBroker = function(messageBroker) {
+  console.log("MessageHandler: MessageBroker attached");
+  this.messageBroker = messageBroker;
+},
 
-    console.log("MessageHandler: GameAPI attached");
-    self.gameAPI = gameAPI;
-  },
+MessageHandler.prototype.receive = function(from, msg) {
+  switch (msg.name) {
+    case 'CHAT_MESSAGE':
+    this.gameAPI.broadcast(from, msg);
+    break;
 
-  self.attachMessageBroker = function(messageBroker) {
-
-    console.log("MessageHandler: MessageBroker attached");
-    self.messageBroker = messageBroker;
-  },
-
-  self.receive = function(from, msg) {
-
-    switch (msg.name) {
-      case 'CHAT_MESSAGE':
-      self.gameAPI.broadcast(from, msg);
-      break;
-
-      default:
-      console.log("MessageHandler.receive: default branch reached for msg", msg.name);
-      break;
-    }
-  },
-
-  self.send = function(to, msg) {
-    console.log("MessageHandler.send:", msg);
-    self.messageBroker.send(to, msg);
+    default:
+    console.log("MessageHandler.receive: default branch reached for msg", msg.name);
+    break;
   }
+},
+
+MessageHandler.prototype.send = function(to, msg) {
+  console.log("MessageHandler.send:", msg);
+  this.messageBroker.send(to, msg);
 }
 
 module.exports = MessageHandler;
