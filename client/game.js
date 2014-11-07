@@ -89,7 +89,7 @@ Game.prototype.playMusic = function(volume) {
 Game.prototype.stopMusic = function() {
   console.log("Game: stopMusic");
   this.music.pause();
-  delete this.music;
+  this.music.duration = 0;
 },
 
 Game.prototype.initGameboard = function() {

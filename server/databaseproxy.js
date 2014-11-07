@@ -63,9 +63,9 @@ DatabaseProxy.prototype.createUser = function(websocket, msg) {
       console.log("DatabaseProxy: createUser failed:", err);
       response.status = "NOK";
     }
-      // Send response message back to client directly through websocket
-      websocket.send(JSON.stringify(response));
-    });
+    // Send response message back to client directly through websocket
+    websocket.send(JSON.stringify(response));
+  });
 },
 
 DatabaseProxy.prototype.login = function(websocket, msg) {
@@ -87,10 +87,10 @@ DatabaseProxy.prototype.login = function(websocket, msg) {
         if(typeof rows[0] !== 'undefined') {
           if(rows[0].password_hash == msg.passwordhash) {
             var username = rows[0].username;
-                  // Valid password
-                  response.status = "OK";
-                  response.username = websocket.username = username;  // TODO: toLowerCase() ?
-                  self.emit('login', websocket);                    }
+            // Valid password
+            response.status = "OK";
+            response.username = websocket.username = username;  // TODO: toLowerCase() ?
+            self.emit('login', websocket);                    }
           }
         }
         else {

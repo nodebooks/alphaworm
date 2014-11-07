@@ -1,14 +1,15 @@
 function MessageBroker(server) {
-
   this.serverapp = server.serverapp;
-
   this.init();
 }
 
 MessageBroker.prototype.init = function() {
-  console.log("MessageBroker: init");
+  console.log("MessageBroker init");
 
+  // Hook for callbacks
   var self = this;
+
+  console.log("MessageBroker: initializing websocket");
   var WebSocketServer = require('ws').Server;
   this.wss = new WebSocketServer({server: this.serverapp});
 
