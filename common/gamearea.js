@@ -3,8 +3,8 @@
   var GameArea = (function() {
     var GameArea = function() {
       this.cells = {};
-      this.height = 40;
-      this.width = 40;
+      this.height = 30;
+      this.width = 30;
       this.color = "lightblue"; // Game area color
     };
 
