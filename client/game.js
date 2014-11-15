@@ -1,31 +1,3 @@
-var worm = function() { 
-  this.name = "wormee";
-  this.color = "blue";
-  this.startingLength = 5;
-  this.location = [];
-  this.direction = "right";
-  this.velocity = 1;
-  this.score = 0;
-
-  // init worm
-  for(var x=0; x<this.startingLength; x++) {
-    this.location[x] = x;
-  }
-}
-
-var food = function() {
-  this.color = "red";
-  this.growth = Math.floor(Math.random()*1+1); 
-}
-
-var gameArea = function() {
-
-  this.height = 40;
-  this.width = 40;
-
-  this.color = "lightblue";
-}
-
 function Game(messagehandler) {
 
   this.name = null;
@@ -40,60 +12,32 @@ function Game(messagehandler) {
 }
 
 Game.prototype.init = function() {
-  console.log("Called game.init()");
+  console.log("Game.init");
   this.initGame(null);
 },
 
 Game.prototype.initGame = function(msg) {
+  // TODO: Configure game per server msg 
   console.log("initGame:", msg);
 
   if (null == msg) {
     console.log("create empty gameboard");
-    this.gameArea = new gameArea();
+    this.gameArea = new GameArea();
   }
   else {
-    this.worm = new worm();
-    this.gameArea = new gameArea();
+    this.worm = new Worm();
+    this.gameArea = new GameArea();
     this.amountOfFood = 8;
     this.foods = [];
-    this.food = new food();
+    this.food = new Food();
   }
 
   this.initGameboard();
   this.score = 0;
-
-},
-
-Game.prototype.playMusic = function(volume) {
-  console.log("Game: playMusic");
-  if (this.music == null) {
-    console.log("Game: creating new audio instance");
-    this.music = new Audio('../media/retro.ogg');
-    if (typeof this.music.loop == 'boolean')
-    {
-      this.music.loop = true;
-    }
-    else
-    {
-      this.music.addEventListener('ended', function() {
-        this.music.volume = this.preferredVolume;
-        this.music.currentTime = 0;
-        this.music.play();
-      }, false);
-    }
-    this.music.volume = volume;
-  }
-  this.music.play();
-},
-
-Game.prototype.stopMusic = function() {
-  console.log("Game: stopMusic");
-  this.music.pause();
-  this.music.duration = 0;
 },
 
 Game.prototype.initGameboard = function() {
-  console.log("initGameboard");
+  console.log("Game.initGameboard");
 
   document.getElementById('gameboard').innerHTML = "";
   var gameboard = '<p id="score"></p>';
@@ -171,13 +115,12 @@ Game.prototype.updateMatch = function(msg) {
 
   document.getElementById("score").innerHTML = "";
   for (var x=0; x<msg.worms.length; x++) {
-    // A little trick to play audio when score is increased
-    if (msg.worms[x].name == this.name && this.score < msg.worms[x].score) {
-      var audio = document.getElementById('pick_audio');
-      audio.volume = this.maxVolume;
-      audio.play();
-      audio.volume = this.preferredVolume;
-      this.score=msg.worms[x].score;
+    // Play pick_audio when score is increased
+    if (msg.worms[x].name == this.messageHandler.username && this.score < msg.worms[x].score) {
+
+      document.getElementById('pick_audio').play();
+
+      this.score = msg.worms[x].score;
     }
     var separator = (x+1 != msg.worms.length) ? "&nbsp;&nbsp|&nbsp;&nbsp;" : "";
     document.getElementById("score").innerHTML += '<strong><font color="' + msg.worms[x].color + '">' + msg.worms[x].name +'</font></strong>';
@@ -261,6 +204,35 @@ Game.prototype.endGame = function() {
   this.inGame = false;
   this.stopMusic();
 },
+
+Game.prototype.playMusic = function(volume) {
+  console.log("Game: playMusic");
+  if (this.music == null) {
+    console.log("Game: creating new audio instance");
+    this.music = new Audio('../media/retro.ogg');
+    if (typeof this.music.loop == 'boolean')
+    {
+      this.music.loop = true;
+    }
+    else
+    {
+      this.music.addEventListener('ended', function() {
+        this.music.volume = this.preferredVolume;
+        this.music.currentTime = 0;
+        this.music.play();
+      }, false);
+    }
+    this.music.volume = volume;
+  }
+  this.music.play();
+},
+
+Game.prototype.stopMusic = function() {
+  console.log("Game: stopMusic");
+  this.music.pause();
+  this.music.duration = 0;
+},
+
 
 Game.prototype.isRunning = function() {
   return this.inGame;

@@ -18,12 +18,12 @@
     REGISTRATION_RESPONSE: {
       message: {
         name: "REGISTRATION_RESPONSE", 
-                status: null    // OK / NOK 
-              },
-              new: function() {
-                return JSON.parse(JSON.stringify(this.message));
-              }
-            },
+        status: null    // OK / NOK 
+      },
+      new: function() {
+        return JSON.parse(JSON.stringify(this.message));
+      }
+    },
 
     LOGIN_REQUEST: {
       message: {

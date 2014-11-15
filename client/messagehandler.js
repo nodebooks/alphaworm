@@ -194,9 +194,7 @@ MessageHandler.prototype.handleChallengeRequest = function(msg) {
   // TODO: support for multiple dialogs
   //document.getElementById('haasteajastin').innerHTML = "10";
 
-  var audio = document.getElementById('challenge_request_audio');
-  audio.volume = 0.6;
-  audio.play();
+  var audio = document.getElementById('challenge_request_audio').play();
 
   console.log("handleChallengeRequest", msg);
   document.getElementById('challenge').innerHTML = 'You\'ve been challenged by<br /><strong>' + msg.challenger + '</strong><br />';

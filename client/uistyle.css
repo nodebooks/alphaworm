@@ -47,6 +47,12 @@ input:focus {
   overflow-Y: auto;
 }
 
+#rankings {
+  width: 100%;
+  margin: auto;
+  text-align: left;
+}
+
 #challengebox {
   visibility: hidden;
 }
@@ -60,6 +66,11 @@ input:focus {
   height: 100px;
   background-color: azure;
   text-align: center;
+}
+
+#score {
+  font-weight: bold;
+  letter-spacing: 2px;
 }
 
 table, th, td, tr {

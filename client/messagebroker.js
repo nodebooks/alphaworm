@@ -21,24 +21,29 @@ MessageBroker.prototype.init = function() {
 
   this.ws.onerror = function (event) {
     console.log("websocket failed");
-    self.messageHandler.receive({name: "CHAT_MESSAGE",
+    self.messageHandler.receive({
+      name: "CHAT_MESSAGE",
       username: "System notice",
-      text: "<strong>could not connect websocket</strong>"});
+      text: "<strong>could not connect websocket</strong>"
+    });
   };
 
   this.ws.onopen = function (event) {
     console.log("websocket connected");
-    self.messageHandler.receive({name: "CHAT_MESSAGE",
+    self.messageHandler.receive({ 
+      name: "CHAT_MESSAGE",
       username: "System notice",
-      text: "<strong>connection established.</strong>"});
+      text: "<strong>connection established.</strong>"
+    });
   };
 
   this.ws.onclose = function (event) {
     console.log("websocket disconnected");
-    self.messageHandler.receive({name: "CHAT_MESSAGE",
+    self.messageHandler.receive({
+      name: "CHAT_MESSAGE",
       username: "System notice",  
-      text: "<strong>disconnected</strong>"});
-
+      text: "<strong>disconnected</strong>"
+    });
   };
 },
 
