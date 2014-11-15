@@ -1,47 +1,11 @@
 var Messages = require('../common/messages');
+var Worm = require('../common/worm');
+var Food = require('../common/food');
+var GameArea = require('../common/gamearea');
 var Dictionary = require('./dictionary');
 
 var EventEmitter = require('events').EventEmitter,
 util = require('util');
-
-var Worm = function(name, number) {
-  var color = ["blue", "green", "orange", "brown", "red", "black"];
-  var self = this;
-
-  self.alive = true; // true / false
-  self.name = name;
-  self.color = color[number]; // Pick a color for the worm
-  self.startingLength = 5;
-  self.length = self.startingLength;
-  self.location = [];
-  self.direction = "right"; // Direction: right, left, up, down
-  self.newDirection = "right";
-  self.velocity = 1;
-  self.score = 0;
-
-  // Initialize worm
-  for(var x=0; x<self.startingLength; x++) {
-    self.location[x] = x+number*8*30;
-  }
-
-  //console.log("worm", name, "location:", self.location);
-}
-
-var Food = function(location, character) {
-  var self = this;
-  self.location = location;
-  self.color = "white";
-  self.growth = 1; // Growth per food
-  self.character = character;
-}
-
-var GameArea = function() {
-  var self = this;
-  self.cells = {};
-  self.height = 30;
-  self.width = 30;
-  self.color = "lightblue"; // Game area color
-}
 
 var GameSession = function(playerList, messageHandler, databaseProxy) {
 

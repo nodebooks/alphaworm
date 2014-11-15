@@ -1,0 +1,452 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install' ]
+2 info using npm@1.1.62
+3 info using node@v0.8.10
+4 verbose read json /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/package.json
+5 verbose readDependencies using package.json deps
+6 verbose install where, deps [ '/Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive',
+6 verbose install   [ 'ws', 'express', 'utils', 'mysql' ] ]
+7 verbose from cache /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/package.json
+8 info preinstall Alphaworm-in-OpenShift@1.0.0
+9 verbose read json /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules/express/package.json
+10 verbose read json /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules/mysql/package.json
+11 verbose read json /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules/ws/package.json
+12 verbose from cache /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/package.json
+13 verbose readDependencies using package.json deps
+14 verbose read json /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules/.bin/package.json
+15 verbose from cache /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules/express/package.json
+16 verbose from cache /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules/mysql/package.json
+17 verbose from cache /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules/ws/package.json
+18 verbose cache add [ 'utils@*', null ]
+19 silly cache add name=undefined spec="utils@*" args=["utils@*",null]
+20 verbose parsed url { pathname: 'utils@*', path: 'utils@*', href: 'utils@*' }
+21 silly cache add name="utils" spec="*" args=["utils","*"]
+22 verbose parsed url { pathname: '*', path: '*', href: '*' }
+23 verbose addNamed [ 'utils', '*' ]
+24 verbose addNamed [ null, '' ]
+25 silly lockFile 851055a5-utils utils@*
+26 verbose lock utils@* /Users/jaakko.vanhala/.npm/851055a5-utils.lock
+27 verbose already installed skipping mysql@* /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive
+28 silly addNameRange { name: 'utils', range: '', hasData: false }
+29 verbose already installed skipping ws@~0.4.31 /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive
+30 verbose already installed skipping express@~3.3.8 /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive
+31 verbose url raw utils
+32 verbose url resolving [ 'https://registry.npmjs.org/', './utils' ]
+33 verbose url resolved https://registry.npmjs.org/utils
+34 info trying registry request attempt 1 at 12:28:55
+35 verbose etag "9Z7ZKVCQEXU6KWNQBMJE6E775"
+36 http GET https://registry.npmjs.org/utils
+37 http 304 https://registry.npmjs.org/utils
+38 silly registry.get cb [ 304,
+38 silly registry.get   { date: 'Sat, 15 Nov 2014 10:28:55 GMT',
+38 silly registry.get     server: 'Apache',
+38 silly registry.get     via: '1.1 varnish',
+38 silly registry.get     'last-modified': 'Sat, 15 Nov 2014 10:28:56 GMT',
+38 silly registry.get     'cache-control': 'max-age=60',
+38 silly registry.get     etag: '"9Z7ZKVCQEXU6KWNQBMJE6E775"',
+38 silly registry.get     age: '0',
+38 silly registry.get     'x-served-by': 'cache-fra1224-FRA',
+38 silly registry.get     'x-cache': 'HIT',
+38 silly registry.get     'x-cache-hits': '1',
+38 silly registry.get     'x-timer': 'S1416047335.549389,VS0,VE729',
+38 silly registry.get     vary: 'Accept',
+38 silly registry.get     'content-length': '0',
+38 silly registry.get     'keep-alive': 'timeout=10, max=50',
+38 silly registry.get     connection: 'Keep-Alive' } ]
+39 verbose etag utils from cache
+40 silly addNameRange number 2 { name: 'utils', range: '', hasData: true }
+41 silly addNameRange versions [ 'utils', [ '0.0.1', '0.0.2' ] ]
+42 verbose addNamed [ 'utils', '0.0.2' ]
+43 verbose addNamed [ '0.0.2', '0.0.2' ]
+44 silly lockFile c13d0bb7-utils-0-0-2 utils@0.0.2
+45 verbose lock utils@0.0.2 /Users/jaakko.vanhala/.npm/c13d0bb7-utils-0-0-2.lock
+46 verbose read json /Users/jaakko.vanhala/.npm/utils/0.0.2/package/package.json
+47 warn package.json utils@0.0.2 No README.md file found!
+48 silly lockFile c13d0bb7-utils-0-0-2 utils@0.0.2
+49 silly lockFile 851055a5-utils utils@*
+50 silly resolved [ { name: 'utils',
+50 silly resolved     description: 'Generic utility functions for JavaScript/node.js',
+50 silly resolved     version: '0.0.2',
+50 silly resolved     homepage: 'https://github.com/jonschlinkert/utils',
+50 silly resolved     author:
+50 silly resolved      { name: 'Jon Schlinkert',
+50 silly resolved        url: 'https://github.com/jonschlinkert' },
+50 silly resolved     repository: { type: 'git', url: 'git://github.com/jonschlinkert/utils.git' },
+50 silly resolved     bugs: { url: 'https://github.com/jonschlinkert/utils/issues' },
+50 silly resolved     licenses: [ [Object] ],
+50 silly resolved     main: 'index.js',
+50 silly resolved     engines: { node: '>=0.10.0' },
+50 silly resolved     scripts: { test: 'mocha -R spec' },
+50 silly resolved     devDependencies: { mocha: '*' },
+50 silly resolved     dependencies:
+50 silly resolved      { 'arr-flatten': '^0.2.1',
+50 silly resolved        'array-slice': '^0.2.2',
+50 silly resolved        dirs: '^0.1.2',
+50 silly resolved        'for-in': '^0.1.3',
+50 silly resolved        'for-own': '^0.1.2',
+50 silly resolved        'has-value': '^0.1.0',
+50 silly resolved        'is-directory': '^0.2.2',
+50 silly resolved        'kind-of': '^0.1.2',
+50 silly resolved        'make-iterator': '^0.1.1',
+50 silly resolved        'object.filter': '^0.2.0',
+50 silly resolved        'object.omit': '^0.2.1',
+50 silly resolved        'object.pick': '^0.1.1',
+50 silly resolved        'object.reduce': '^0.1.3' },
+50 silly resolved     _id: 'utils@0.0.2',
+50 silly resolved     readme: 'ERROR: No README.md file found!',
+50 silly resolved     _from: 'utils@*' } ]
+51 info install utils@0.0.2 into /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive
+52 info installOne utils@0.0.2
+53 warn engine utils@0.0.2: wanted: {"node":">=0.10.0"} (current: {"node":"v0.8.10","npm":"1.1.62"})
+54 verbose from cache /Users/jaakko.vanhala/.npm/utils/0.0.2/package/package.json
+55 info /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules/utils unbuild
+56 verbose read json /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules/utils/package.json
+57 verbose tar unpack /Users/jaakko.vanhala/.npm/utils/0.0.2/package.tgz
+58 silly lockFile ac9f0b13-IterationFive-node-modules-utils /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules/utils
+59 verbose lock /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules/utils /Users/jaakko.vanhala/.npm/ac9f0b13-IterationFive-node-modules-utils.lock
+60 silly gunzTarPerm modes [ '755', '644' ]
+61 silly gunzTarPerm extractEntry package.json
+62 silly gunzTarPerm extractEntry .npmignore
+63 silly gunzTarPerm extractEntry index.js
+64 silly gunzTarPerm extractEntry .gitattributes
+65 silly gunzTarPerm extractEntry .jshintrc
+66 silly gunzTarPerm extractEntry .travis.yml
+67 silly gunzTarPerm extractEntry .verb.md
+68 silly gunzTarPerm extractEntry lib/index.js
+69 silly gunzTarPerm extractEntry lib/array/arrayify.js
+70 silly gunzTarPerm extractEntry lib/array/compact.js
+71 silly gunzTarPerm extractEntry lib/array/contains.js
+72 silly gunzTarPerm extractEntry lib/array/flatten.js
+73 silly gunzTarPerm extractEntry lib/array/forEach.js
+74 silly gunzTarPerm extractEntry lib/array/indexOf.js
+75 silly gunzTarPerm extractEntry lib/array/last.js
+76 silly gunzTarPerm extractEntry lib/array/slice.js
+77 silly gunzTarPerm extractEntry lib/fs/isDir.js
+78 silly gunzTarPerm extractEntry lib/fs/isFile.js
+79 silly gunzTarPerm extractEntry lib/fs/lookup.js
+80 silly gunzTarPerm extractEntry lib/lang/hasValue.js
+81 silly gunzTarPerm extractEntry lib/lang/isArguments.js
+82 silly gunzTarPerm extractEntry lib/lang/isEmpty.js
+83 silly gunzTarPerm extractEntry lib/object/contains.js
+84 silly gunzTarPerm extractEntry lib/object/filter.js
+85 silly gunzTarPerm extractEntry lib/object/forIn.js
+86 silly gunzTarPerm extractEntry lib/object/forOwn.js
+87 silly gunzTarPerm extractEntry lib/object/functions.js
+88 silly gunzTarPerm extractEntry lib/object/extend.js
+89 silly gunzTarPerm extractEntry lib/object/keys.js
+90 silly gunzTarPerm extractEntry lib/object/omit.js
+91 silly gunzTarPerm extractEntry lib/object/pick.js
+92 silly gunzTarPerm extractEntry lib/object/reduce.js
+93 silly gunzTarPerm extractEntry lib/object/some.js
+94 silly gunzTarPerm extractEntry lib/object/hasOwn.js
+95 silly gunzTarPerm extractEntry lib/path/basename.js
+96 silly gunzTarPerm extractEntry lib/path/dirname.js
+97 silly gunzTarPerm extractEntry lib/path/ext.js
+98 silly gunzTarPerm extractEntry lib/path/name.js
+99 silly gunzTarPerm extractEntry lib/string/camelize.js
+100 silly gunzTarPerm extractEntry lib/string/toString.js
+101 silly gunzTarPerm extractEntry LICENSE-MIT
+102 verbose read json /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules/utils/package.json
+103 silly lockFile ac9f0b13-IterationFive-node-modules-utils /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules/utils
+104 info preinstall utils@0.0.2
+105 verbose from cache /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules/utils/package.json
+106 verbose readDependencies using package.json deps
+107 verbose from cache /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules/utils/package.json
+108 verbose readDependencies using package.json deps
+109 verbose cache add [ 'arr-flatten@^0.2.1', null ]
+110 silly cache add name=undefined spec="arr-flatten@^0.2.1" args=["arr-flatten@^0.2.1",null]
+111 verbose parsed url { pathname: 'arr-flatten@^0.2.1',
+111 verbose parsed url   path: 'arr-flatten@^0.2.1',
+111 verbose parsed url   href: 'arr-flatten@^0.2.1' }
+112 silly cache add name="arr-flatten" spec="^0.2.1" args=["arr-flatten","^0.2.1"]
+113 verbose parsed url { pathname: '^0.2.1', path: '^0.2.1', href: '^0.2.1' }
+114 verbose addNamed [ 'arr-flatten', '^0.2.1' ]
+115 verbose addNamed [ null, null ]
+116 silly lockFile 036ecfd0-arr-flatten-0-2-1 arr-flatten@^0.2.1
+117 verbose lock arr-flatten@^0.2.1 /Users/jaakko.vanhala/.npm/036ecfd0-arr-flatten-0-2-1.lock
+118 verbose cache add [ 'array-slice@^0.2.2', null ]
+119 silly cache add name=undefined spec="array-slice@^0.2.2" args=["array-slice@^0.2.2",null]
+120 verbose parsed url { pathname: 'array-slice@^0.2.2',
+120 verbose parsed url   path: 'array-slice@^0.2.2',
+120 verbose parsed url   href: 'array-slice@^0.2.2' }
+121 silly cache add name="array-slice" spec="^0.2.2" args=["array-slice","^0.2.2"]
+122 verbose parsed url { pathname: '^0.2.2', path: '^0.2.2', href: '^0.2.2' }
+123 verbose addNamed [ 'array-slice', '^0.2.2' ]
+124 verbose addNamed [ null, null ]
+125 silly lockFile 3f6c817a-array-slice-0-2-2 array-slice@^0.2.2
+126 verbose lock array-slice@^0.2.2 /Users/jaakko.vanhala/.npm/3f6c817a-array-slice-0-2-2.lock
+127 info addNameTag [ 'arr-flatten', '^0.2.1' ]
+128 info addNameTag [ 'array-slice', '^0.2.2' ]
+129 verbose cache add [ 'dirs@^0.1.2', null ]
+130 silly cache add name=undefined spec="dirs@^0.1.2" args=["dirs@^0.1.2",null]
+131 verbose parsed url { pathname: 'dirs@^0.1.2',
+131 verbose parsed url   path: 'dirs@^0.1.2',
+131 verbose parsed url   href: 'dirs@^0.1.2' }
+132 silly cache add name="dirs" spec="^0.1.2" args=["dirs","^0.1.2"]
+133 verbose parsed url { pathname: '^0.1.2', path: '^0.1.2', href: '^0.1.2' }
+134 verbose addNamed [ 'dirs', '^0.1.2' ]
+135 verbose addNamed [ null, null ]
+136 silly lockFile 4c8256c2-dirs-0-1-2 dirs@^0.1.2
+137 verbose lock dirs@^0.1.2 /Users/jaakko.vanhala/.npm/4c8256c2-dirs-0-1-2.lock
+138 verbose cache add [ 'for-in@^0.1.3', null ]
+139 silly cache add name=undefined spec="for-in@^0.1.3" args=["for-in@^0.1.3",null]
+140 verbose parsed url { pathname: 'for-in@^0.1.3',
+140 verbose parsed url   path: 'for-in@^0.1.3',
+140 verbose parsed url   href: 'for-in@^0.1.3' }
+141 silly cache add name="for-in" spec="^0.1.3" args=["for-in","^0.1.3"]
+142 verbose parsed url { pathname: '^0.1.3', path: '^0.1.3', href: '^0.1.3' }
+143 verbose addNamed [ 'for-in', '^0.1.3' ]
+144 verbose addNamed [ null, null ]
+145 silly lockFile c69e590a-for-in-0-1-3 for-in@^0.1.3
+146 verbose lock for-in@^0.1.3 /Users/jaakko.vanhala/.npm/c69e590a-for-in-0-1-3.lock
+147 verbose cache add [ 'for-own@^0.1.2', null ]
+148 silly cache add name=undefined spec="for-own@^0.1.2" args=["for-own@^0.1.2",null]
+149 verbose parsed url { pathname: 'for-own@^0.1.2',
+149 verbose parsed url   path: 'for-own@^0.1.2',
+149 verbose parsed url   href: 'for-own@^0.1.2' }
+150 silly cache add name="for-own" spec="^0.1.2" args=["for-own","^0.1.2"]
+151 verbose parsed url { pathname: '^0.1.2', path: '^0.1.2', href: '^0.1.2' }
+152 verbose addNamed [ 'for-own', '^0.1.2' ]
+153 verbose addNamed [ null, null ]
+154 silly lockFile 2a6b65e8-for-own-0-1-2 for-own@^0.1.2
+155 verbose lock for-own@^0.1.2 /Users/jaakko.vanhala/.npm/2a6b65e8-for-own-0-1-2.lock
+156 verbose cache add [ 'has-value@^0.1.0', null ]
+157 silly cache add name=undefined spec="has-value@^0.1.0" args=["has-value@^0.1.0",null]
+158 verbose parsed url { pathname: 'has-value@^0.1.0',
+158 verbose parsed url   path: 'has-value@^0.1.0',
+158 verbose parsed url   href: 'has-value@^0.1.0' }
+159 silly cache add name="has-value" spec="^0.1.0" args=["has-value","^0.1.0"]
+160 verbose parsed url { pathname: '^0.1.0', path: '^0.1.0', href: '^0.1.0' }
+161 verbose addNamed [ 'has-value', '^0.1.0' ]
+162 verbose addNamed [ null, null ]
+163 silly lockFile 96b9ebde-has-value-0-1-0 has-value@^0.1.0
+164 verbose lock has-value@^0.1.0 /Users/jaakko.vanhala/.npm/96b9ebde-has-value-0-1-0.lock
+165 verbose cache add [ 'is-directory@^0.2.2', null ]
+166 silly cache add name=undefined spec="is-directory@^0.2.2" args=["is-directory@^0.2.2",null]
+167 verbose parsed url { pathname: 'is-directory@^0.2.2',
+167 verbose parsed url   path: 'is-directory@^0.2.2',
+167 verbose parsed url   href: 'is-directory@^0.2.2' }
+168 silly cache add name="is-directory" spec="^0.2.2" args=["is-directory","^0.2.2"]
+169 verbose parsed url { pathname: '^0.2.2', path: '^0.2.2', href: '^0.2.2' }
+170 verbose addNamed [ 'is-directory', '^0.2.2' ]
+171 verbose addNamed [ null, null ]
+172 silly lockFile 04c1aa93-is-directory-0-2-2 is-directory@^0.2.2
+173 verbose lock is-directory@^0.2.2 /Users/jaakko.vanhala/.npm/04c1aa93-is-directory-0-2-2.lock
+174 verbose cache add [ 'kind-of@^0.1.2', null ]
+175 silly cache add name=undefined spec="kind-of@^0.1.2" args=["kind-of@^0.1.2",null]
+176 verbose parsed url { pathname: 'kind-of@^0.1.2',
+176 verbose parsed url   path: 'kind-of@^0.1.2',
+176 verbose parsed url   href: 'kind-of@^0.1.2' }
+177 silly cache add name="kind-of" spec="^0.1.2" args=["kind-of","^0.1.2"]
+178 verbose parsed url { pathname: '^0.1.2', path: '^0.1.2', href: '^0.1.2' }
+179 verbose addNamed [ 'kind-of', '^0.1.2' ]
+180 verbose addNamed [ null, null ]
+181 silly lockFile 7d647291-kind-of-0-1-2 kind-of@^0.1.2
+182 verbose lock kind-of@^0.1.2 /Users/jaakko.vanhala/.npm/7d647291-kind-of-0-1-2.lock
+183 verbose cache add [ 'make-iterator@^0.1.1', null ]
+184 silly cache add name=undefined spec="make-iterator@^0.1.1" args=["make-iterator@^0.1.1",null]
+185 verbose parsed url { pathname: 'make-iterator@^0.1.1',
+185 verbose parsed url   path: 'make-iterator@^0.1.1',
+185 verbose parsed url   href: 'make-iterator@^0.1.1' }
+186 silly cache add name="make-iterator" spec="^0.1.1" args=["make-iterator","^0.1.1"]
+187 verbose parsed url { pathname: '^0.1.1', path: '^0.1.1', href: '^0.1.1' }
+188 verbose addNamed [ 'make-iterator', '^0.1.1' ]
+189 verbose addNamed [ null, null ]
+190 silly lockFile b79cfcf9-make-iterator-0-1-1 make-iterator@^0.1.1
+191 verbose lock make-iterator@^0.1.1 /Users/jaakko.vanhala/.npm/b79cfcf9-make-iterator-0-1-1.lock
+192 verbose cache add [ 'object.filter@^0.2.0', null ]
+193 silly cache add name=undefined spec="object.filter@^0.2.0" args=["object.filter@^0.2.0",null]
+194 verbose parsed url { pathname: 'object.filter@^0.2.0',
+194 verbose parsed url   path: 'object.filter@^0.2.0',
+194 verbose parsed url   href: 'object.filter@^0.2.0' }
+195 silly cache add name="object.filter" spec="^0.2.0" args=["object.filter","^0.2.0"]
+196 verbose parsed url { pathname: '^0.2.0', path: '^0.2.0', href: '^0.2.0' }
+197 verbose addNamed [ 'object.filter', '^0.2.0' ]
+198 verbose addNamed [ null, null ]
+199 silly lockFile 9e729bf5-object-filter-0-2-0 object.filter@^0.2.0
+200 verbose lock object.filter@^0.2.0 /Users/jaakko.vanhala/.npm/9e729bf5-object-filter-0-2-0.lock
+201 verbose cache add [ 'object.omit@^0.2.1', null ]
+202 silly cache add name=undefined spec="object.omit@^0.2.1" args=["object.omit@^0.2.1",null]
+203 verbose parsed url { pathname: 'object.omit@^0.2.1',
+203 verbose parsed url   path: 'object.omit@^0.2.1',
+203 verbose parsed url   href: 'object.omit@^0.2.1' }
+204 silly cache add name="object.omit" spec="^0.2.1" args=["object.omit","^0.2.1"]
+205 verbose parsed url { pathname: '^0.2.1', path: '^0.2.1', href: '^0.2.1' }
+206 verbose addNamed [ 'object.omit', '^0.2.1' ]
+207 verbose addNamed [ null, null ]
+208 silly lockFile 1b0767fa-object-omit-0-2-1 object.omit@^0.2.1
+209 verbose lock object.omit@^0.2.1 /Users/jaakko.vanhala/.npm/1b0767fa-object-omit-0-2-1.lock
+210 info addNameTag [ 'dirs', '^0.1.2' ]
+211 info addNameTag [ 'for-in', '^0.1.3' ]
+212 info addNameTag [ 'for-own', '^0.1.2' ]
+213 info addNameTag [ 'has-value', '^0.1.0' ]
+214 info addNameTag [ 'is-directory', '^0.2.2' ]
+215 info addNameTag [ 'kind-of', '^0.1.2' ]
+216 info addNameTag [ 'make-iterator', '^0.1.1' ]
+217 info addNameTag [ 'object.filter', '^0.2.0' ]
+218 info addNameTag [ 'object.omit', '^0.2.1' ]
+219 verbose cache add [ 'object.pick@^0.1.1', null ]
+220 silly cache add name=undefined spec="object.pick@^0.1.1" args=["object.pick@^0.1.1",null]
+221 verbose parsed url { pathname: 'object.pick@^0.1.1',
+221 verbose parsed url   path: 'object.pick@^0.1.1',
+221 verbose parsed url   href: 'object.pick@^0.1.1' }
+222 silly cache add name="object.pick" spec="^0.1.1" args=["object.pick","^0.1.1"]
+223 verbose parsed url { pathname: '^0.1.1', path: '^0.1.1', href: '^0.1.1' }
+224 verbose addNamed [ 'object.pick', '^0.1.1' ]
+225 verbose addNamed [ null, null ]
+226 silly lockFile b1a3cf95-object-pick-0-1-1 object.pick@^0.1.1
+227 verbose lock object.pick@^0.1.1 /Users/jaakko.vanhala/.npm/b1a3cf95-object-pick-0-1-1.lock
+228 verbose cache add [ 'object.reduce@^0.1.3', null ]
+229 silly cache add name=undefined spec="object.reduce@^0.1.3" args=["object.reduce@^0.1.3",null]
+230 verbose parsed url { pathname: 'object.reduce@^0.1.3',
+230 verbose parsed url   path: 'object.reduce@^0.1.3',
+230 verbose parsed url   href: 'object.reduce@^0.1.3' }
+231 silly cache add name="object.reduce" spec="^0.1.3" args=["object.reduce","^0.1.3"]
+232 verbose parsed url { pathname: '^0.1.3', path: '^0.1.3', href: '^0.1.3' }
+233 verbose addNamed [ 'object.reduce', '^0.1.3' ]
+234 verbose addNamed [ null, null ]
+235 silly lockFile 50ea31b2-object-reduce-0-1-3 object.reduce@^0.1.3
+236 verbose lock object.reduce@^0.1.3 /Users/jaakko.vanhala/.npm/50ea31b2-object-reduce-0-1-3.lock
+237 info addNameTag [ 'object.pick', '^0.1.1' ]
+238 info addNameTag [ 'object.reduce', '^0.1.3' ]
+239 verbose url raw arr-flatten
+240 verbose url resolving [ 'https://registry.npmjs.org/', './arr-flatten' ]
+241 verbose url resolved https://registry.npmjs.org/arr-flatten
+242 info trying registry request attempt 1 at 12:28:56
+243 verbose etag "3K8T02QC02ENRDEFUN8PJO18S"
+244 http GET https://registry.npmjs.org/arr-flatten
+245 verbose url raw for-in
+246 verbose url resolving [ 'https://registry.npmjs.org/', './for-in' ]
+247 verbose url resolved https://registry.npmjs.org/for-in
+248 info trying registry request attempt 1 at 12:28:56
+249 verbose etag "DNDBQO3X1W9ADDS4BRRI1IOS0"
+250 http GET https://registry.npmjs.org/for-in
+251 verbose url raw array-slice
+252 verbose url resolving [ 'https://registry.npmjs.org/', './array-slice' ]
+253 verbose url resolved https://registry.npmjs.org/array-slice
+254 info trying registry request attempt 1 at 12:28:56
+255 verbose etag "6AL6NF1DC4OB0Q0WBHE7UW9IL"
+256 http GET https://registry.npmjs.org/array-slice
+257 verbose url raw dirs
+258 verbose url resolving [ 'https://registry.npmjs.org/', './dirs' ]
+259 verbose url resolved https://registry.npmjs.org/dirs
+260 info trying registry request attempt 1 at 12:28:56
+261 verbose etag "90YE2EUZ39KYC9IHJGLZEI3PX"
+262 http GET https://registry.npmjs.org/dirs
+263 verbose url raw for-own
+264 verbose url resolving [ 'https://registry.npmjs.org/', './for-own' ]
+265 verbose url resolved https://registry.npmjs.org/for-own
+266 info trying registry request attempt 1 at 12:28:56
+267 verbose etag "9J7CXYKLQ790M8WPLIODL56SI"
+268 http GET https://registry.npmjs.org/for-own
+269 verbose url raw has-value
+270 verbose url resolving [ 'https://registry.npmjs.org/', './has-value' ]
+271 verbose url resolved https://registry.npmjs.org/has-value
+272 info trying registry request attempt 1 at 12:28:56
+273 verbose etag "2O57PCH6E797W9VN69X9D6F8J"
+274 http GET https://registry.npmjs.org/has-value
+275 verbose url raw is-directory
+276 verbose url resolving [ 'https://registry.npmjs.org/', './is-directory' ]
+277 verbose url resolved https://registry.npmjs.org/is-directory
+278 info trying registry request attempt 1 at 12:28:56
+279 verbose etag "7TV4M7ZM5ZN3Z62Z7F5FWCGL"
+280 http GET https://registry.npmjs.org/is-directory
+281 verbose url raw kind-of
+282 verbose url resolving [ 'https://registry.npmjs.org/', './kind-of' ]
+283 verbose url resolved https://registry.npmjs.org/kind-of
+284 info trying registry request attempt 1 at 12:28:56
+285 verbose etag "6F9D6HZPOKZPXUDU3A6A6L596"
+286 http GET https://registry.npmjs.org/kind-of
+287 verbose url raw make-iterator
+288 verbose url resolving [ 'https://registry.npmjs.org/', './make-iterator' ]
+289 verbose url resolved https://registry.npmjs.org/make-iterator
+290 info trying registry request attempt 1 at 12:28:56
+291 verbose etag "84JQL1NU1V2ZNABF7B035RD8T"
+292 http GET https://registry.npmjs.org/make-iterator
+293 verbose url raw object.filter
+294 verbose url resolving [ 'https://registry.npmjs.org/', './object.filter' ]
+295 verbose url resolved https://registry.npmjs.org/object.filter
+296 info trying registry request attempt 1 at 12:28:56
+297 verbose etag "1WFSIL51GR43VJUWXL5HBRTBQ"
+298 http GET https://registry.npmjs.org/object.filter
+299 verbose url raw object.omit
+300 verbose url resolving [ 'https://registry.npmjs.org/', './object.omit' ]
+301 verbose url resolved https://registry.npmjs.org/object.omit
+302 info trying registry request attempt 1 at 12:28:56
+303 verbose etag "52WFB2HHA109075DGM034AV0T"
+304 http GET https://registry.npmjs.org/object.omit
+305 verbose url raw object.pick
+306 verbose url resolving [ 'https://registry.npmjs.org/', './object.pick' ]
+307 verbose url resolved https://registry.npmjs.org/object.pick
+308 info trying registry request attempt 1 at 12:28:56
+309 verbose etag "1NNYQSLQVWCLTSKDBTOFVJDID"
+310 http GET https://registry.npmjs.org/object.pick
+311 verbose url raw object.reduce
+312 verbose url resolving [ 'https://registry.npmjs.org/', './object.reduce' ]
+313 verbose url resolved https://registry.npmjs.org/object.reduce
+314 info trying registry request attempt 1 at 12:28:56
+315 verbose etag "BDXA74RF7SHNUBFJYZEIJD800"
+316 http GET https://registry.npmjs.org/object.reduce
+317 http 304 https://registry.npmjs.org/for-in
+318 silly registry.get cb [ 304,
+318 silly registry.get   { date: 'Sat, 15 Nov 2014 10:28:56 GMT',
+318 silly registry.get     server: 'Apache',
+318 silly registry.get     via: '1.1 varnish',
+318 silly registry.get     'last-modified': 'Sat, 15 Nov 2014 10:28:56 GMT',
+318 silly registry.get     'cache-control': 'max-age=60',
+318 silly registry.get     etag: '"DNDBQO3X1W9ADDS4BRRI1IOS0"',
+318 silly registry.get     age: '0',
+318 silly registry.get     'x-served-by': 'cache-fra1238-FRA',
+318 silly registry.get     'x-cache': 'HIT',
+318 silly registry.get     'x-cache-hits': '1',
+318 silly registry.get     'x-timer': 'S1416047336.827307,VS0,VE101',
+318 silly registry.get     vary: 'Accept',
+318 silly registry.get     'content-length': '0',
+318 silly registry.get     'keep-alive': 'timeout=10, max=50',
+318 silly registry.get     connection: 'Keep-Alive' } ]
+319 verbose etag for-in from cache
+320 http 304 https://registry.npmjs.org/for-own
+321 silly registry.get cb [ 304,
+321 silly registry.get   { date: 'Sat, 15 Nov 2014 10:28:56 GMT',
+321 silly registry.get     server: 'Apache',
+321 silly registry.get     via: '1.1 varnish',
+321 silly registry.get     'last-modified': 'Sat, 15 Nov 2014 10:28:56 GMT',
+321 silly registry.get     'cache-control': 'max-age=60',
+321 silly registry.get     etag: '"9J7CXYKLQ790M8WPLIODL56SI"',
+321 silly registry.get     age: '0',
+321 silly registry.get     'x-served-by': 'cache-fra1240-FRA',
+321 silly registry.get     'x-cache': 'HIT',
+321 silly registry.get     'x-cache-hits': '1',
+321 silly registry.get     'x-timer': 'S1416047336.823465,VS0,VE106',
+321 silly registry.get     vary: 'Accept',
+321 silly registry.get     'content-length': '0',
+321 silly registry.get     'keep-alive': 'timeout=10, max=50',
+321 silly registry.get     connection: 'Keep-Alive' } ]
+322 verbose etag for-own from cache
+323 silly lockFile c69e590a-for-in-0-1-3 for-in@^0.1.3
+324 silly lockFile 2a6b65e8-for-own-0-1-2 for-own@^0.1.2
+325 verbose about to build /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules/utils
+326 info /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules/utils unbuild
+327 verbose from cache /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules/utils/package.json
+328 info preuninstall utils@0.0.2
+329 info uninstall utils@0.0.2
+330 verbose true,/Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules,/Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive/node_modules unbuild utils@0.0.2
+331 info postuninstall utils@0.0.2
+332 error Error: No compatible version found: for-in@'^0.1.3'
+332 error Valid install targets:
+332 error ["0.1.0","0.1.1","0.1.2","0.1.3"]
+332 error     at installTargetsError (/usr/local/lib/node_modules/npm/lib/cache.js:553:10)
+332 error     at /usr/local/lib/node_modules/npm/lib/cache.js:477:15
+332 error     at saved (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/get.js:138:7)
+332 error     at /usr/local/lib/node_modules/npm/node_modules/graceful-fs/graceful-fs.js:218:7
+332 error     at Object.oncomplete (fs.js:297:15)
+333 error If you need help, you may report this log at:
+333 error     <http://github.com/isaacs/npm/issues>
+333 error or email it to:
+333 error     <npm-@googlegroups.com>
+334 error System Darwin 14.0.0
+335 error command "node" "/usr/local/bin/npm" "install"
+336 error cwd /Users/jaakko.vanhala/Dropbox/gamedevjs/manuscript/code/IterationFive
+337 error node -v v0.8.10
+338 error npm -v 1.1.62
+339 verbose exit [ 1, true ]

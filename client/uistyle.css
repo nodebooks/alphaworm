@@ -46,6 +46,7 @@ input:focus {
   margin-right: 20%;
   border-right: 1px solid gray;
   text-align: center;
+  font-weight: bold;
 }
 
 #rankinglist {
@@ -74,6 +75,11 @@ input:focus {
   height: 100px;
   background-color: azure;
   text-align: center;
+}
+
+#score {
+  font-weight: bold;
+  letter-spacing: 2px;
 }
 
 table, th, td, tr {

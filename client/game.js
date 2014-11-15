@@ -1,39 +1,10 @@
-var Worm = function() { 
-  this.name = "wormee";
-  this.color = "blue";
-  this.startingLength = 5;
-  this.location = [];
-  this.direction = "right";
-  this.velocity = 1;
-  this.score = 0;
-
-  // init worm
-  for(var x=0; x<this.startingLength; x++) {
-    this.location[x] = x;
-  }
-}
-
-var Food = function() {
-  this.color = "white";
-  this.growth = Math.floor(Math.random()*1+1); 
-}
-
-var GameArea = function() {
-
-  this.height = 30;
-  this.width = 30;
-
-  this.color = "lightblue";
-}
-
 function Game(messagehandler) {
 
-  this.name = null;
   this.messageHandler = messagehandler;
   this.inGame = false;
   this.score = 0;
   this.music = null;
-  this.preferredVolume = 0.1;
+  this.preferredVolume = 0.3;
   this.maxVolume = 1.0;
 
   this.init();
@@ -181,11 +152,9 @@ Game.prototype.updateMatch = function(msg) {
   document.getElementById("score").innerHTML = "<strong>" + from.toUpperCase() + " = " + answer.toUpperCase() + "</strong><br />";
   for (var x=0; x<msg.worms.length; x++) {
     // A little trick to play audio when score is increased
-    if (msg.worms[x].name == this.name && this.score < msg.worms[x].score) {
-      var audio = document.getElementById('pick_audio');
-      audio.volume = this.maxVolume;
-      audio.play();
-      audio.volume = this.preferredVolume;
+    if (msg.worms[x].name == this.messageHandler.username && this.score < msg.worms[x].score) {
+      //console.log("play ding")
+      document.getElementById('pick_audio').play();
       this.score = msg.worms[x].score;
     }
     var separator = (x+1 != msg.worms.length) ? "&nbsp;&nbsp|&nbsp;&nbsp;" : "";
