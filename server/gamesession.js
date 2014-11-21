@@ -5,8 +5,13 @@ var GameArea = require('../common/gamearea');
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
 
+// This is a bit different kind of implementation compared to
+// Prototype we have been used earlier
+
 var GameSession = function(playerList, messageHandler, databaseProxy) {
+
   var self = this;
+  
   self.tick = 170; // 140-180 seems to be optimal
   self.messageHandler = messageHandler;
   self.databaseProxy = databaseProxy;
@@ -19,6 +24,7 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
   self.playerList = playerList;
 
   self.init = function() {
+    console.log("GameSession.init");
     console.log("creating new game for", self.playerList.length, "players: ", self.playerList);
     self.gameArea = new GameArea();
     for (var x=0; x<self.playerList.length; x++) {
@@ -39,13 +45,14 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
   },
 
   self.initGameboard = function() {
-    //console.log("initGameboard");
+    //console.log("GameSession.initGameboard");
     for(var i=0; i<self.gameArea.height*self.gameArea.width; i++) {
       self.gameArea.cells[i] = {color: self.gameArea.color};
     }
   },
 
   self.setWorms = function() {
+    //console.log("GameSession.setWorms");
     // Set worms to initial locations
     for (var i=0; i<self.worms.length; i++) {
       for(var x=0; x<self.worms[i].startingLength; x++) {
@@ -55,7 +62,7 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
   },
 
   self.setFood = function() {
-    //console.log("setFood");
+    //console.log("GameSession.setFood");
     var i = 0;
     while(self.foods.length < self.amountOfFood) {
       var x = Math.floor(Math.random()*self.gameArea.height*self.gameArea.width);
@@ -68,6 +75,7 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
   },
 
   self.removeFood = function(location) {
+    //console.log("GameSession.removeFood");
     for (var x=0;x<self.foods.length; x++) {
       if (self.foods[x].location == location) {
         self.foods.splice(x, 1);
@@ -77,7 +85,7 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
   },
 
   self.syncPlayers = function(msg) {
-    //console.log("Game.syncPlayers", msg);
+    //console.log("GameSession.syncPlayers", msg);
     for (var x=0; x<self.playerList.length; x++) {
       self.messageHandler.send(self.playerList[x], msg);
     }
@@ -186,8 +194,8 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
         var length = self.worms[x].location.length;
         var oldHead = self.worms[x].location[length-1];
         var newHead = self.worms[x].location[length-1] + change;
-        // Käsittele pelilaudan reunojen ylitykset
-        // TODO: switch case
+
+        // Handle movement over gameboard edges
         if (self.worms[x].direction == "right" &&
           0 == (newHead % self.gameArea.width) &&
           0 != newHead ) {
@@ -218,7 +226,7 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
         }
         else {
           // No hit, set new head and cut piece of tail
-          //console.log("no food, move worm");
+          // console.log("no food, move worm");
           self.worms[x].location.push(newHead);
           self.gameArea.cells[self.worms[x].location[0]].color = self.gameArea.color;
           self.gameArea.cells[newHead].color = self.worms[x].color;

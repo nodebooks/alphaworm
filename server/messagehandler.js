@@ -77,6 +77,8 @@ MessageHandler.prototype.handleChallengeRequest = function(from, msg) {
 
 MessageHandler.prototype.handleChallengeResponse = function(from, msg) {
   // If challenge is accepted, create multiplayer game
+  // Now only two players are possible, the first to accept challenge will be 
+  // the one in game
   if(msg.response == "OK") {
     var playerList = [msg.challengee, msg.challenger];
     this.gameAPI.createMultiplayerGame(playerList);
