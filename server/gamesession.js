@@ -26,6 +26,7 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
   self.playerList = playerList;
 
   self.init = function() {
+    //console.log("GameSession.init");
     console.log("creating new game for", self.playerList.length, "players: ", self.playerList);
 
     self.gameArea = new GameArea();
@@ -55,13 +56,14 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
   },
 
   self.initGameboard = function() {
-    //console.log("initGameboard");
+    //console.log("GameSession.initGameboard");
     for(var i=0; i<self.gameArea.height*self.gameArea.width; i++) {
       self.gameArea.cells[i] = {color: self.gameArea.color};
     }
   },
 
   self.setWorms = function() {
+    //console.log("GameSession.setWorms");
     // Set worms to initial locations
     for (var i=0; i<self.worms.length; i++) {
       for(var x=0; x<self.worms[i].startingLength; x++) {
@@ -71,7 +73,7 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
   },
 
   self.setFood = function() {
-    //console.log("setFood");
+    //console.log("GameSession.setFood");
     var i = 0;
 
     while(self.foods.length < self.amountOfFood) {
@@ -86,6 +88,7 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
   },
 
   self.removeFood = function(location) {
+    //console.log("GameSession.removeFood");
     for (var x=0;x<self.foods.length; x++) {
       if (self.foods[x].location == location) {
         self.foods.splice(x, 1);
@@ -95,7 +98,7 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
   },
 
   self.syncPlayers = function(msg) {
-    //console.log("Game.syncPlayers", msg);
+    //console.log("GameSession.syncPlayers", msg);
     for (var x=0; x<self.playerList.length; x++) {
       self.messageHandler.send(self.playerList[x], msg);
     }
@@ -150,7 +153,7 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
   },
 
   self.update = function() {
-    //console.log("update");
+    //console.log("GameSession.update");
 
     // Check and update worm position
     for (var x=0; x<self.worms.length; x++) {
@@ -214,8 +217,7 @@ var GameSession = function(playerList, messageHandler, databaseProxy) {
         var oldHead = self.worms[x].location[length-1];
         var newHead = self.worms[x].location[length-1] + change;
 
-        // Käsittele pelilaudan reunojen ylitykset
-        // TODO: switch case
+        // Handle movement over gameboard edges
         if (self.worms[x].direction == "right" && 0 == (newHead % self.gameArea.width) && 0 != newHead ) {
           newHead = oldHead - (self.gameArea.width-1);
         }
