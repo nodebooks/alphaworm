@@ -11,7 +11,6 @@ function GameServer() {
 
   // Call tnitialize and start server, when the server object is created
   this.init();
-
 }
 
 GameServer.prototype.setupVariables = function() {
