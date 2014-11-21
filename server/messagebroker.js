@@ -1,5 +1,4 @@
 function MessageBroker(server) {
-
   this.clients  = {}; // Index with username
   this.serverapp = server.serverapp;  
   // Initialize MessageBroker when the object is created
