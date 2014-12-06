@@ -10,6 +10,123 @@ function Game(messagehandler) {
   this.init();
 }
 
+Game.prototype.onRegistrationSuccess = function(username) {
+  document.getElementById('infotext').style.color = "black";
+  document.getElementById('infotext').innerHTML = "New player <strong>" +
+    username + "</strong> registered.";
+  document.getElementById('infotext').innerHTML += '&nbsp;&nbsp;<input id="logout_button" type="submit" value="Logout" onclick="logout();">';
+},
+
+Game.prototype.onRegistrationFail = function() {
+  var tmp = document.getElementById('infotext').innerHTML;
+  document.getElementById('infotext').style.color = "red";
+  document.getElementById('infotext').innerHTML = "Registration failed.";
+  var t = setTimeout(function() { 
+    document.getElementById('infotext').innerHTML = tmp; 
+    document.getElementById('infotext').style.color = "black"; 
+  }, 2000)
+}
+
+Game.prototype.onLoginSuccess = function( username ){
+
+  document.getElementById('infotext').style.color = "black";
+  document.getElementById('infotext').innerHTML = "Player <strong>" +
+    username + "</strong> logged in.";
+  document.getElementById('infotext').innerHTML += '<br /><input id="logout_button" type="submit" value="Exit" onclick="logout();">';
+},
+
+Game.prototype.onLoginFail = function() {
+  var tmp = document.getElementById('infotext').innerHTML;
+  //console.log(tmp);
+  document.getElementById('infotext').style.color = "red";
+  document.getElementById('infotext').innerHTML = "Login failed.";
+  var t = setTimeout(function() { 
+    document.getElementById('infotext').innerHTML = tmp; 
+    document.getElementById('infotext').style.color = "black"; 
+  }, 2000)
+},
+
+Game.prototype.onFoodCollect = function( food, collectType  ) {
+  var cell = document.getElementById(food.location);
+  cell.innerHTML = "";
+},
+
+Game.prototype.onWordComplete = function(message){
+
+},
+
+Game.prototype.onGameStart = function(msg) {
+  this.initGame(msg);
+  this.playMusic(this.preferredVolume);
+  this.inGame = true;
+},
+
+Game.prototype.onGameEnd = function(msg) {
+  this.inGame = false;
+  this.stopMusic();
+},
+
+Game.prototype.onPlayerListChange = function() {
+  document.getElementById('onlineplayerlist').innerHTML = "";
+  var list = this.messageHandler.playerList;
+  for(var player in list) {
+    console.log("player:", player)
+    var pre = '<div id="' + player +'">';
+    var text = "";
+    if ( list[player].ingame == false && list[player].username != this.messageHandler.getUsername()) {
+      text = ' <a href="#" title="challenge" onclick="challenge(\''+list[player].username+'\')">'+ list[player].username + '</a>';
+    }
+    else {
+      text = player;
+    }
+    post = '</div>';
+    document.getElementById('onlineplayerlist').innerHTML += pre + text + post;
+  }
+
+  this.messageHandler.sortDivs(document.getElementById('onlineplayerlist'));
+},
+
+Game.prototype.onRankingListChange = function (playerList){
+  var tmpusers = '<table id="rankings">';
+  for(var item in playerList) {
+    tmpusers += '<tr>';
+    tmpusers += '<td><strong>' + playerList[item].username + '</strong></td><td>' + playerList[item].highscore + '</td>';
+    tmpusers += '</tr>';
+  }
+  tmpusers += '</table>'
+  document.getElementById('rankedplayers').innerHTML = tmpusers;
+  console.log("MessageHandler: Ranking list updated");
+},
+
+Game.prototype.onChallenge = function(msg){
+  var audio = document.getElementById('challenge_request_audio').play();
+  
+  console.log("handleChallengeRequest", msg);
+  document.getElementById('challenge').innerHTML = 'You\'ve been challenged by<br /><strong>' + msg.challenger + '</strong><br />';
+  document.getElementById('challenge').innerHTML += '<input type="button" value="Accept" onclick="acceptChallenge(\''+msg.challenger+'\')"><input type="button" value="Reject" onclick="rejectChallenge(\''+msg.challenger+'\')">';
+  document.getElementById('challengebox').style.visibility="visible";
+  
+},
+
+Game.prototype.onChatMessage = function(msg){
+  if (msg.username == "System notice") {
+    document.getElementById('messagebox').innerHTML += '<div id="message">' + msg.username + ':&nbsp;&nbsp;' + msg.text + '</div>';
+  }
+  else {
+    document.getElementById('messagebox').innerHTML += '<div id="message"><a href="#" title="message">'+ msg.username + ':</a>&nbsp;&nbsp;' + msg.text + '</div>';
+  }
+  // Messagebox auto-scroll (quick 'n dirty hack, but should work :)
+  document.getElementById('chatbox').scrollTop += 20;
+},
+
+Game.prototype.onAcceptChallenge = function(challenger){
+  document.getElementById('challengebox').style.visibility="hidden";
+},
+
+Game.prototype.onRejectChallenge = function(challenger){
+  document.getElementById('challengebox').style.visibility="hidden";
+},
+
 Game.prototype.init = function() {
   console.log("Called game.init()");
   this.initGame(null);
@@ -126,7 +243,7 @@ Game.prototype.removeFood = function(cell) {
 
 },
 
-Game.prototype.updateMatch = function(msg) {
+Game.prototype.onGameUpdate = function(msg) {
   //console.log("update match");
 
   this.updateGameboard();
@@ -137,12 +254,53 @@ Game.prototype.updateMatch = function(msg) {
       document.getElementById(msg.worms[id].location[x]).bgColor = msg.worms[id].color;
     }
   }
+  
+  // once there will be our copy of food, we can compare.
+  if ( this.foods.length > 0 ){
+    
+    for (var x=0; x<msg.food.length; x++) {
+      if ( this.foods[x].location != msg.food[x].location )
+      {
+        var w = 0;
+        var collectType = 0;
+        // determine did we collect it.
+        for (; w<msg.worms.length; w++) {
+
+          if (msg.worms[w].name == this.messageHandler.username ) {
+
+            // set score 
+            this.score = msg.worms[w].score;
+            if ( this.prevScore < this.score ) collectType = 1;
+            else if ( this.prevScore > this.score ) collectType = -1;
+          
+            // In case collect was ours
+            if ( collectType != 0 ) {
+              this.prevScore = this.score;
+            } 
+            break;
+          } 
+        }
+        this.onFoodCollect( this.foods[x], collectType ); 
+      }
+    }
+  }
+  // duplicate food. 
+  this.foods = JSON.parse(JSON.stringify(msg.food));
 
   // Render foods
   for (var x=0; x<msg.food.length; x++) {
     document.getElementById(msg.food[x].location).bgColor = msg.food[x].color;
     // Iteration 5 onwards - the alphabets
     document.getElementById(msg.food[x].location).innerHTML = msg.food[x].character.toUpperCase();
+  }
+
+  // Logic for detecting word completion
+  if ( this.word == undefined ) { this.word = msg.word; }
+  else if ( msg.word.from != this.word.from ) {
+
+    this.onWordComplete(this.word.to.toUpperCase());
+    this.word = msg.word;
+    
   }
 
   // Print the word that needs a translation (the translation is there too, don't cheat! :)
@@ -162,17 +320,7 @@ Game.prototype.updateMatch = function(msg) {
     document.getElementById("score").innerHTML += ":&nbsp;" + msg.worms[x].score + separator;
 
   }
-  if (msg.phase == "INIT") {
-    console.log("Match INIT");
-    this.initGame(msg);
-    this.playMusic(this.preferredVolume);
-    this.inGame = true;
-  }
-  if (msg.phase == "END") {
-    console.log("Match END");
-    this.stopMusic();
-    this.endGame();
-  }
+
 },
 
 Game.prototype.startGame = function() {
@@ -235,10 +383,7 @@ Game.prototype.handleInput = function(event) {
 
 },
 
-Game.prototype.endGame = function() {
-  this.inGame = false;
-  this.stopMusic();
-},
+
 
 Game.prototype.isRunning = function() {
   return this.inGame;

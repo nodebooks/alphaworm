@@ -30,6 +30,7 @@ MessageHandler.prototype.receive = function(msg) {
   switch(msg.name) {
     case 'REGISTRATION_RESPONSE':
     console.log("MessageHandler: REGISTRATION_RESPONSE", msg.status);
+    this.handleRegistrationResponse(msg);
     break;
 
     case 'LOGIN_RESPONSE':
@@ -59,7 +60,7 @@ MessageHandler.prototype.receive = function(msg) {
     break;
 
     case 'MATCH_SYNC':
-    this.game.updateMatch(msg);
+    this.handleMatchSync(msg);
     break;
 
     default:
@@ -71,53 +72,26 @@ MessageHandler.prototype.receive = function(msg) {
 MessageHandler.prototype.handleLoginResponse = function(msg) {
   if(msg.status == "OK" && msg.username) {
     this.setUsername(msg.username);
-    document.getElementById('infotext').style.color = "black";
-    document.getElementById('infotext').innerHTML = "Player <strong>" +
-    msg.username + "</strong> logged in.";
-    document.getElementById('infotext').innerHTML += '<br /><input id="logout_button" type="submit" value="Exit" onclick="logout();">';
+    this.game.onLoginSuccess(msg.username);
   }
   else {
-    var tmp = document.getElementById('infotext').innerHTML;
-    //console.log(tmp);
-    document.getElementById('infotext').style.color = "red";
-    document.getElementById('infotext').innerHTML = "Login failed.";
-    var t = setTimeout(function() { 
-      document.getElementById('infotext').innerHTML = tmp; 
-      document.getElementById('infotext').style.color = "black"; 
-    }, 2000)
+    this.game.onLoginFail();
   }
 },
 
 MessageHandler.prototype.handleRegistrationResponse = function(msg) {
   if(msg.status == "OK" && msg.username) {
     this.setUsername(msg.username);
-    document.getElementById('infotext').style.color = "black";
-    document.getElementById('infotext').innerHTML = "New player <strong>" +
-    msg.username + "</strong> registered.";
-    document.getElementById('infotext').innerHTML += '&nbsp;&nbsp;<input id="logout_button" type="submit" value="Logout" onclick="logout();">';
+    this.game.onRegistrationSuccess(msg.username)
   }
   else {
-    var tmp = document.getElementById('infotext').innerHTML;
-    document.getElementById('infotext').style.color = "red";
-    document.getElementById('infotext').innerHTML = "Login failed.";
-    var t = setTimeout(function() { 
-      document.getElementById('infotext').innerHTML = tmp; 
-      document.getElementById('infotext').style.color = "black"; 
-    }, 2000)
+    this.game.onRegistrationFail();
   }
 },
 
 MessageHandler.prototype.handleChatMessage = function(msg) {
   console.log("handleChatMessage");
-
-  if (msg.username == "System notice") {
-    document.getElementById('messagebox').innerHTML += '<div id="message">' + msg.username + ':&nbsp;&nbsp;' + msg.text + '</div>';
-  }
-  else {
-    document.getElementById('messagebox').innerHTML += '<div id="message"><a href="#" title="message">'+ msg.username + ':</a>&nbsp;&nbsp;' + msg.text + '</div>';
-  }
-  // Messagebox auto-scroll (quick 'n dirty hack, but should work :)
-  document.getElementById('chatbox').scrollTop += 20;
+  this.game.onChatMessage(msg);
 },
 
 MessageHandler.prototype.updatePlayerList = function(msg) {
@@ -133,38 +107,15 @@ MessageHandler.prototype.updatePlayerList = function(msg) {
       this.playerList[player.username] = player;
     }
   }
-
   console.log("playerList:", this.playerList);
 
-  document.getElementById('onlineplayerlist').innerHTML = "";
-  for(var player in this.playerList) {
-    console.log("player:", player)
-    var pre = '<div id="' + player +'">';
-    var text = "";
-    if (this.playerList[player].ingame == false && this.playerList[player].username != this.getUsername()) {
-      text = ' <a href="#" title="challenge" onclick="challenge(\''+this.playerList[player].username+'\')">'+ this.playerList[player].username + '</a>';
-    }
-    else {
-      text = player;
-    }
-    post = '</div>';
-    document.getElementById('onlineplayerlist').innerHTML += pre + text + post;
-  }
-
-  this.sortDivs(document.getElementById('onlineplayerlist'));
+  this.game.onPlayerListChange();
+  
 },
 
 MessageHandler.prototype.updateRankingList = function(msg) {
 
-  var tmpusers = '<table id="rankings">';
-  for(var item in msg.players) {
-    tmpusers += '<tr>';
-    tmpusers += '<td><strong>' + msg.players[item].username + '</strong></td><td>' + msg.players[item].highscore + '</td>';
-    tmpusers += '</tr>';
-  }
-  tmpusers += '</table>'
-  document.getElementById('rankedplayers').innerHTML = tmpusers;
-  console.log("MessageHandler: Ranking list updated");
+  this.game.onRankingListChange(msg.players);
 },
 
 MessageHandler.prototype.sortDivs = function(container) {
@@ -193,38 +144,39 @@ MessageHandler.prototype.handleChallengeRequest = function(msg) {
   // Pop a dialog
   // TODO: support for multiple dialogs
   //document.getElementById('haasteajastin').innerHTML = "10";
-
-  var audio = document.getElementById('challenge_request_audio').play();
-
-  console.log("handleChallengeRequest", msg);
-  document.getElementById('challenge').innerHTML = 'You\'ve been challenged by<br /><strong>' + msg.challenger + '</strong><br />';
-  document.getElementById('challenge').innerHTML += '<input type="button" value="Accept" onclick="acceptChallenge(\''+msg.challenger+'\')"><input type="button" value="Reject" onclick="rejectChallenge(\''+msg.challenger+'\')">';
-  document.getElementById('challengebox').style.visibility="visible";
+  
+  this.game.onChallenge(msg);
   this.challengeTmo = setTimeout("rejectChallenge(\'" + msg +"\')", 10000);
   //setInterval("this.challengeTimer("+msg+")", 1000);
+  
 },
 
 MessageHandler.prototype.acceptChallenge = function(challenger) {
   clearTimeout(this.challengeTmo);
   console.log("handleChallengeRequest from", challenger);
   var resp = messages.message.CHALLENGE_RESP.new();
-
+  
+  this.game.onAcceptChallenge(challenger);
+  
   resp.response = "OK";
   resp.challenger = challenger;
   resp.challengee = this.getUsername();
   this.send(resp);
-  document.getElementById('challengebox').style.visibility="hidden";
+
 },
 
 MessageHandler.prototype.rejectChallenge = function(challenger) {
   clearTimeout(this.challengeTmo);
   console.log("handleChallengeRequest from", challenger);
+
+  this.game.onRejectChallenge(challenger)
+  
   var resp = messages.message.CHALLENGE_RESP.new();
   resp.response = "NOK";
   resp.challenger = challenger;
   resp.challengee = this.getUsername();
   this.send(resp);
-  document.getElementById('challengebox').style.visibility="hidden";
+
 },
 
 MessageHandler.prototype.challenge = function(username) {
@@ -245,4 +197,16 @@ MessageHandler.prototype.setUsername = function(username) {
 
 MessageHandler.prototype.getUsername = function() {
   return this.username;
+}
+
+MessageHandler.prototype.handleMatchSync = function(msg) {
+  if (msg.phase == "INIT") {
+    this.game.onGameStart(msg);
+  }
+  else if (msg.phase == "END") {
+    self.game.onGameEnd(msg);
+  }
+  else {
+    this.game.onGameUpdate(msg);
+  }
 }
