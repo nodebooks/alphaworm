@@ -3,7 +3,19 @@
     width: 500px;
     display: inline-block;
 }
+#gameover {
+  visibility: hidden;
+  font-size: 18pt;
+  width:100%;
+  position:absolute;
+  top:50%;
+  text-align: center;    
+}
 
+.stats {
+  position: relative;
+  display: inline-block;
+}
 .sidearea {
     width: 200px;
     height: 300px;

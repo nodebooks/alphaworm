@@ -33,7 +33,7 @@ Game.prototype.onLoginSuccess = function( username ){
   document.getElementById('login').style['visibility'] = 'hidden';
   document.getElementById('rankinglist').style['visibility'] = 'visible';
   document.getElementById('onlineplayers').style['visibility'] = 'visible';
-  document.getElementById('gameboard').style['visibility'] = 'visible';
+
 },
 
 Game.prototype.onLoginFail = function() {
@@ -71,6 +71,18 @@ Game.prototype.onWordComplete = function(message){
 
 },
 
+Game.prototype.displayEndStats = function( collected ) {
+
+  var r = document.getElementById('logotext').getBoundingClientRect(); 
+  var tmp = document.getElementById('gameover');
+  tmp.style['top'] = r.bottom + "px";
+  tmp.style['visibility'] = 'visible';
+
+  window.setTimeout( function(){
+    document.getElementById('gameover').style['visibility'] = 'hidden';
+  },2500);
+},
+
 Game.prototype.onGameStart = function(msg) {
   this.initGame(msg);
   this.playMusic(this.preferredVolume);
@@ -79,6 +91,7 @@ Game.prototype.onGameStart = function(msg) {
   document.getElementById('onlineplayers').style['visibility'] = 'hidden';
   document.getElementById('rankinglist').style['visibility'] = 'hidden';
   document.getElementById('score').style['visibility'] = 'visible';
+  document.getElementById('gameboard').style['visibility'] = 'visible';
 },
 
 Game.prototype.onGameEnd = function(msg) {
@@ -88,6 +101,9 @@ Game.prototype.onGameEnd = function(msg) {
   document.getElementById('onlineplayers').style['visibility'] = 'visible';
   document.getElementById('rankinglist').style['visibility'] = 'visible';
   document.getElementById('score').style['visibility'] = 'hidden';
+  document.getElementById('gameboard').style['visibility'] = 'hidden';
+
+  this.displayEndStats(this.score);
 },
 
 Game.prototype.onPlayerListChange = function() {
