@@ -70,6 +70,274 @@ Game.prototype.onFoodCollect = function( food, collectType  ) {
 Game.prototype.onWordComplete = function(message){
 
 },
+// Tells us which part of of worm sprite gets drawn to which tile.
+// This is one lengthy bugger.
+Game.prototype.getWormTileByPosition = function ( positions, i ) {
+  var worm = {
+    tail : {
+      up : { rect: 'rect(41px,80px,60px,61px)', top:'-40px', left: '-60px' },
+      down: { rect: 'rect(41px,60px,60px,41px)', top:'-40px', left: '-40px' },
+      right: { rect: 'rect(61px,60px,80px,41px)', top:'-60px', left: '-40px' },
+      left:  { rect: 'rect(61px,80px,80px,61px)', top:'-60px', left: '-60px' }
+    },
+    head : {
+      down : {rect: 'rect(61px,40px,80px,21px)', top:'-60px', left:'-20px' },
+      up: { rect: 'rect(61px,20px,80px,1px)', top: '-60px', left: '0px' },
+      right: { rect: 'rect(41px, 20px,60px,1px )', top: '-40px', left: '0px' },
+      left: { rect: 'rect(41px, 40px , 60px, 21px )', top:'-40px', left: '-20px' }
+    },
+    body : {
+      horizontal: { rect: 'rect(1px,20px,20px,1px)', top:'0px', left:'0px' },
+      vertical: { rect: 'rect(1px,40px,20px,21px)', top:'0px', left:'-20px' },
+      up_right: { rect: 'rect(21px,80px,40px,61px)', top:'-20px', left:'-60px'},
+      up_left: { rect: 'rect(21px,60px,40px,41px)', top:'-20px', left:'-40px' },
+      down_right: { rect: 'rect(21px,20px,40px,1px)', top:'-20px', left:'0px' },
+      down_left: { rect: 'rect(21px,40px,40px,21px)', top:'-20px', left:'-20px' }
+    }
+  }
+  if ( this.gameArea === undefined) return worm.body.horizontal;
+  
+  // Locations are expected to be ordered from tail to head.
+  var current = { x:0,y:0 }
+  var next = { x:0,y:0 }
+  var prev = { x:0, y:0 }
+  
+  current.y = Math.floor(positions[i] / this.gameArea.width); 
+  current.x = positions[i] % this.gameArea.width;
+
+  if ( i == 0 ){ // tail
+    // next body part
+    next.y = Math.floor(positions[i+1] / this.gameArea.width); 
+    next.x = positions[i+1] % this.gameArea.width;
+    
+    if ( next.x == current.x ) 
+    {
+      if ( current.y < next.y )
+      {
+	if ( next.y - current.y > 1 ) return worm.tail.up;
+	else                     return worm.tail.down;
+      }
+      else 
+      {
+	if ( current.y - next.y > 1 ) return worm.tail.down;
+	else                     return worm.tail.up;
+      }
+    }
+    else if ( next.y == current.y ) 
+    { 
+      if ( current.x < next.x ) 
+      {
+	if (next.x - current.x > 1) return worm.tail.left;
+	else                   return worm.tail.right;
+      }
+      else
+      {
+	if ( current.x - next.x > 1 ) return worm.tail.right;
+	else                     return worm.tail.left;
+      }
+    }
+  } 
+  else if ( i == positions.length-1) // head
+  {
+    // compute previous
+    prev.y = Math.floor(positions[i-1] / this.gameArea.width); 
+    prev.x = positions[i-1] % this.gameArea.width;
+    if ( prev.x == current.x ) 
+    {
+      if ( prev.y < current.y ) 
+      {
+	if (  current.y - prev.y > 1 ) return worm.head.up;
+	else                       return worm.head.down;
+      }
+      else
+      {
+	if (  prev.y - current.y > 1 ) return worm.head.down;
+	else                       return worm.head.up;
+      }
+    }
+    else if ( prev.y == current.y ) 
+    {
+      if ( prev.x < current.x ) 
+      {
+	if ( current.x - prev.x > 1 ) return worm.head.left;
+	else                      return worm.head.right;
+      }
+      else
+      {
+	if ( prev.x - current.x > 1 ) return worm.head.right;
+	else                     return worm.head.left;
+      }
+    }
+  }
+  else  // regular body
+  {
+    // compute previous and next part 
+    prev.y = Math.floor(positions[i-1] / this.gameArea.width); 
+    prev.x = positions[i-1] % this.gameArea.width;
+    next.y = Math.floor(positions[i+1] / this.gameArea.width); 
+    next.x = positions[i+1] % this.gameArea.width;
+    
+    // go straight       A
+    //                   |
+    //                   v
+    if ( prev.y == next.y ) return worm.body.vertical;
+    
+    // go straight
+    //
+    // <--->
+    if ( prev.x == next.x ) return worm.body.horizontal;
+
+    // --->  Going right or left with border crossing
+    if ( prev.x < current.x  ) {
+      
+      // Going left...
+      if ( current.x - prev.x > 1 ) 
+      {
+	// next tile is below current one
+	if ( current.y < next.y)  
+	{
+	  // Went across border while turning (so we went up)
+	  if ( next.y - current.y > 1 ) return worm.body.up_right;
+	  // Went down
+	  else                          return worm.body.down_right;
+	}
+	// next tile is above current one
+	if ( current.y > next.y) 
+	{
+	  // Went across border while turning ( so we went down)
+	  if ( current.y - next.y > 1 ) return worm.body.down_right;
+	  // went up
+	  else                          return worm.body.up_right;
+	}
+      }
+      else  // going right...
+      {
+	
+	// next tile is below current one
+	if ( current.y < next.y) 
+	{
+	  // Went across a border while turning (so we went up)
+	  if ( next.y - current.y > 1 ) return worm.body.up_left;
+	  // went down
+	  else                    return worm.body.down_left;
+	}
+	// next file is above current one
+	if ( current.y > next.y) 
+	{
+	  // Went across a border while turning (so we went down)
+	  if ( current.y - next.y > 1 ) return worm.body.down_left;
+	  // went up
+	  else                    return worm.body.up_left;
+	}
+      }
+    }
+    // <--- Going left (or right with border crossing)
+    else if ( prev.x > current.x  ) 
+    {
+      
+      if ( prev.x - current.x > 1 )
+      {
+	if ( current.y < next.y) 
+	{
+	  if ( next.y - current.y > 1 ) return worm.body.up_left;
+	  else                        return worm.body.down_left;
+	}
+	if ( current.y > next.y) 
+	{
+	  if ( current.y - next.y > 1 ) return worm.body.down_left;
+	  else                        return worm.body.up_left;
+	}
+      }
+      else 
+      {
+	if ( current.y < next.y) 
+	{
+	  if ( next.y - current.y > 1 ) return worm.body.up_right;
+	  else                        return worm.body.down_right;
+	}
+	
+	if ( current.y > next.y) 
+	{
+	  if ( current.y - next.y > 1 ) return worm.body.down_right;
+	  else                    return worm.body.up_right;
+	}
+      }
+    }
+    //   V going down (or up with border crossing)
+    else if ( prev.y < current.y ) {
+      if ( current.y - prev.y > 1 )
+      {
+	if ( current.x < next.x) 
+	{
+	  if ( next.x - current.x > 1 ) return worm.body.down_left;
+	  else                    return worm.body.down_right;
+	}
+
+	if ( current.x > next.x) 
+	{
+	  if ( current.x - next.x > 1 ) return worm.body.down_right;
+	  else                    return worm.body.down_left;
+	}
+      }
+      else
+      {
+          
+	if ( current.x < next.x) 
+	{
+	  if ( next.x - current.x > 1 ) return worm.body.up_left;
+	  else                    return worm.body.up_right;
+	}
+
+	if ( current.x > next.x) 
+	{
+	  if ( current.x - next.x > 1 ) return worm.body.up_right;
+	  else                    return worm.body.up_left;
+	}
+      }
+    } 
+    //   A
+    //   | going up (or down with border crossing.)
+    else if ( prev.y > current.y ) {
+      if ( prev.y - current.y > 1 )
+      {
+	if ( current.x < next.x) 
+	{
+	  if ( next.x - current.x > 1 ) return worm.body.up_left;
+	  else                        return worm.body.up_right;
+	}
+	// turning left
+	// <-+
+	//   |
+	if ( current.x > next.x) 
+	{
+	  if ( current.x - next.x > 1  ) return worm.body.up_right;
+	  else                         return worm.body.up_left;
+	}
+      }
+      else {
+	// turning right
+	//   +-->
+	//   | 
+	if ( current.x < next.x) 
+	{
+	  if ( next.x - current.x > 1 ) return worm.body.down_left;
+	  else                        return worm.body.down_right;
+	}
+	// turning left
+	// <-+
+	//   |
+	if ( current.x > next.x) 
+	{
+	  if ( current.x - next.x > 1  ) return worm.body.down_right;
+	  else                         return worm.body.down_left;
+	}
+      }
+    }
+  }
+  // default, should not be here. Give error message and return something arbitrary.
+  console.log("ERROR: should not reach here! getWormTileByPosition");
+  return worm.body.horizontal;
+}
 
 Game.prototype.displayEndStats = function( collected ) {
 
@@ -97,6 +365,7 @@ Game.prototype.onGameStart = function(msg) {
 Game.prototype.onGameEnd = function(msg) {
   this.inGame = false;
   this.stopMusic();
+  this.updateGameboard();
 
   document.getElementById('onlineplayers').style['visibility'] = 'visible';
   document.getElementById('rankinglist').style['visibility'] = 'visible';
@@ -221,37 +490,63 @@ Game.prototype.stopMusic = function() {
 },
 
 Game.prototype.initGameboard = function() {
-  console.log("initGameboard");
 
+  console.log("initGameboard");
   document.getElementById('gameboard').innerHTML = "";
-  var gameboard = '<p id="score"></p>';
+
+  var gameboard = '';
+  var food = '';
+  var worms = '';
+  var grid = '';
+
   // Create grid
-  gameboard += '<table id="gamegrid">';
+  gameboard+='<div id="gamegrid">';
+  food += '<div id="food">';
+  worms += '<div id="worms">';
+  grid += '<div id="background-grid">';
+
   for(var i=0; i<this.gameArea.height; i++) {
-    gameboard += '<tr>'; // New row
+    food += '<div class="row">'; // New row
+    worms += '<div class="row">'; // New row
+    grid += '<div class="row">'; // New row
+
     for(var j=0; j<this.gameArea.width; j++) {
       var id = (j+(i*this.gameArea.height));
-      var grid = '<td id="' + id + '"></td>';
-      gameboard += grid;
-    }
-    gameboard += '</tr>';
-  }
-  gameboard += '</table>';
-  gameboard += "W = up, A = left, S = down, D = right";
-  gameboard += "&nbsp;&nbsp;&nbsp;";
 
+      food += '<div class="food" id="' + id + '"></div>';
+      worms += '<div class="worm"><img class="wormimage" id="' + id + '_worm" src="./media/worm.png"></div>';
+      grid += '<div class="grid" id="' + id + '_bg"></div>';
+
+    }
+    food += '</div>';
+    worms += '</div>';
+    grid += '</div>';
+
+  }
+  /*background */
+  gameboard += grid;
+  gameboard += '</div>';// close background grid div
+
+  // characters
+  gameboard += food;
+  gameboard += '</div>'; // close food div
+
+  // worm 
+  gameboard += worms;
+  gameboard += '</div>';// close worms div
+
+  gameboard += '</div>';// close gamegrid div
 
   document.getElementById('gameboard').innerHTML = gameboard;
-
   this.updateGameboard();
 },
 
-  Game.prototype.updateGameboard = function() {
+Game.prototype.updateGameboard = function() {
   //console.log("updateGameboard");
   for(var i=0; i<this.gameArea.height; i++) {
     for(var j=0; j<this.gameArea.width; j++) {
       var id = (j+(i*this.gameArea.height));
-      document.getElementById(id).bgColor = this.gameArea.color;
+      document.getElementById(id+'_worm').style["visibility"] = "hidden";
       document.getElementById(id).innerHTML = "";
     }
   }
@@ -284,14 +579,21 @@ Game.prototype.removeFood = function(cell) {
 },
 
 Game.prototype.onGameUpdate = function(msg) {
-  //console.log("update match");
 
   this.updateGameboard();
 
   // Render worms
   for (var id=0; id<msg.worms.length; id++) {
     for (var x=0; x<msg.worms[id].location.length; x++) {
-      document.getElementById(msg.worms[id].location[x]).bgColor = msg.worms[id].color;
+
+      var cell = document.getElementById(msg.worms[id].location[x]+'_worm'); 
+      var clipping = this.getWormTileByPosition(msg.worms[id].location, x);
+      
+      cell.style["visibility"] = "visible";
+      cell.style["clip"] = clipping.rect;
+      cell.style["top"] = clipping.top;
+      cell.style["left"] = clipping.left;
+
     }
   }
   

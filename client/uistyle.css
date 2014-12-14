@@ -44,7 +44,6 @@ input:focus {
 #login {
   position: absolute;
   width: 100%;
-
 }
 
 #loginwindow {
@@ -94,6 +93,14 @@ input:focus {
   text-align: center;
   font-weight: bold;
   visibility: hidden;
+}
+
+#gamegrid {
+  position: relative;
+  width: 700px;
+  margin-right: auto;
+  margin-left: auto;
+  visibility: inherit;
 }
 
 #rankinglist {
@@ -150,8 +157,65 @@ td {
   width: 19px;
   height: 19px;
 }
+.worm {
+  visibility: inherit;
+  position: relative;
+  width:19px;
+  height:19px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.food
+{
+  visibility: inherit;
+  font-weight: bold;
+  font-size: 10pt !important;
+  position: relative;
+  width: 19px;
+  height: 19px;
+  display: inline-block;
+  vertical-align:middle;
+}
+
+.grid {
+  visibility: inherit;
+  position: relative;
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  vertical-align:middle;
+  border-top: 1px dotted black;
+  border-left: 1px dotted black;
+}
+.wormimage {
+  position: absolute;
+}
+
+#background-grid {
+  min-width: 700px;
+  position: absolute;
+  visiblity: inherit;
+  display: block;
+  top: 0;
+}
+#food {
+  min-width: 700px;
+  position: absolute;
+  visibility: inherit;
+  display: block;
+  top: 0;
+}
+#worms {
+  position: absolute;
+  min-width: 700px;
+  visibility: inherit;
+  top: 0;
+  display: block;
+  
+}
+
 .wide {
-    width: 100%;
-    position: absolute;
-    text-align: center;
+  width: 100%;
+  position: absolute;
+  text-align: center;
 }
