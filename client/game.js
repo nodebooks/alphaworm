@@ -30,9 +30,10 @@ Game.prototype.onRegistrationFail = function() {
 Game.prototype.onLoginSuccess = function( username ){
 
   document.getElementById('infotext').style.color = "black";
-  document.getElementById('infotext').innerHTML = "Player <strong>" +
-    username + "</strong> logged in.";
-  document.getElementById('infotext').innerHTML += '<br /><input id="logout_button" type="submit" value="Exit" onclick="logout();">';
+  document.getElementById('login').style['visibility'] = 'hidden';
+  document.getElementById('rankinglist').style['visibility'] = 'visible';
+  document.getElementById('onlineplayers').style['visibility'] = 'visible';
+  document.getElementById('gameboard').style['visibility'] = 'visible';
 },
 
 Game.prototype.onLoginFail = function() {
@@ -45,6 +46,21 @@ Game.prototype.onLoginFail = function() {
     document.getElementById('infotext').style.color = "black"; 
   }, 2000)
 },
+
+Game.prototype.showChat = function() {
+
+  var chat = document.getElementById('chat');
+  chat.style.top = "0px";
+ 
+}
+
+Game.prototype.hideChat = function() {
+  
+  var chat = document.getElementById('chat');
+  var height = chat.getBoundingClientRect().height;
+  chat.style.top = -(height*0.85) +"px";
+
+}
 
 Game.prototype.onFoodCollect = function( food, collectType  ) {
   var cell = document.getElementById(food.location);
@@ -59,11 +75,19 @@ Game.prototype.onGameStart = function(msg) {
   this.initGame(msg);
   this.playMusic(this.preferredVolume);
   this.inGame = true;
+
+  document.getElementById('onlineplayers').style['visibility'] = 'hidden';
+  document.getElementById('rankinglist').style['visibility'] = 'hidden';
+  document.getElementById('score').style['visibility'] = 'visible';
 },
 
 Game.prototype.onGameEnd = function(msg) {
   this.inGame = false;
   this.stopMusic();
+
+  document.getElementById('onlineplayers').style['visibility'] = 'visible';
+  document.getElementById('rankinglist').style['visibility'] = 'visible';
+  document.getElementById('score').style['visibility'] = 'hidden';
 },
 
 Game.prototype.onPlayerListChange = function() {
@@ -77,7 +101,7 @@ Game.prototype.onPlayerListChange = function() {
       text = ' <a href="#" title="challenge" onclick="challenge(\''+list[player].username+'\')">'+ list[player].username + '</a>';
     }
     else {
-      text = player;
+      document.getElementById('you').innerHTML = list[player].username;
     }
     post = '</div>';
     document.getElementById('onlineplayerlist').innerHTML += pre + text + post;
@@ -199,7 +223,7 @@ Game.prototype.initGameboard = function() {
   gameboard += '</table>';
   gameboard += "W = up, A = left, S = down, D = right";
   gameboard += "&nbsp;&nbsp;&nbsp;";
-  gameboard += '<input id="start_game" type="submit" value="StartGame" onclick="messageHandler.game.startGame()">';
+
 
   document.getElementById('gameboard').innerHTML = gameboard;
 

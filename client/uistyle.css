@@ -1,3 +1,16 @@
+#logo {
+    text-align: center;
+    width: 500px;
+    display: inline-block;
+}
+
+.sidearea {
+    width: 200px;
+    height: 300px;
+    position: relative;
+    display: inline-block;
+}
+
 html *
 {
   font-size: 1em !important;
@@ -17,14 +30,35 @@ input:focus {
 }
 
 #login {
+  position: absolute;
   width: 100%;
-  height: 100px;
-  height: auto;
+
+}
+
+#loginwindow {
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #chat {
-  width: 100%;
+  width: 99%;
   overflow-Y: auto;
+  position: absolute;
+  top: -140px;
+  z-index: 5;
+}
+#chathandle {
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  background: black;
+  display: block;
+  text-align: center;
+}
+
+#chathandle:hover {
+  background: white;
 }
 
 #chatbox {
@@ -35,9 +69,9 @@ input:focus {
 
 #onlineplayers {
   float:left;
-  width: 20%;
   margin: 0;
   overflow-Y: auto;
+  visibility: hidden;
 }
 
 #gameboard {
@@ -47,13 +81,14 @@ input:focus {
   border-right: 1px solid gray;
   text-align: center;
   font-weight: bold;
+  visibility: hidden;
 }
 
 #rankinglist {
   float: right;
-  width: 20%;
   margin: 0;
   overflow-Y: auto;
+  visibility: hidden;
 }
 
 #rankings {
@@ -63,7 +98,15 @@ input:focus {
 }
 
 #challengebox {
+
+  position: relative;
   visibility: hidden;
+  z-index: 10;
+  display: inline-block;
+  padding-top: 1cm;
+   
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #challenge {
@@ -80,6 +123,10 @@ input:focus {
 #score {
   font-weight: bold;
   letter-spacing: 2px;
+  position: absolute;
+  z-index: 3;
+  display: inline-block;
+  visibility: hidden;
 }
 
 table, th, td, tr {
@@ -90,4 +137,9 @@ table, th, td, tr {
 td {
   width: 19px;
   height: 19px;
+}
+.wide {
+    width: 100%;
+    position: absolute;
+    text-align: center;
 }
