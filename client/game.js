@@ -374,16 +374,19 @@ Game.prototype.onGameEnd = function(msg) {
 
   this.displayEndStats(this.score);
 },
-
 Game.prototype.onPlayerListChange = function() {
+
   document.getElementById('onlineplayerlist').innerHTML = "";
   var list = this.messageHandler.playerList;
-  for(var player in list) {
+  for(var player in list ) {
     console.log("player:", player)
     var pre = '<div id="' + player +'">';
     var text = "";
-    if ( list[player].ingame == false && list[player].username != this.messageHandler.getUsername()) {
-      text = ' <a href="#" title="challenge" onclick="challenge(\''+list[player].username+'\')">'+ list[player].username + '</a>';
+    if (list[player].ingame == false && list[player].username != this.messageHandler.getUsername()) {
+      text  = '<div class="onlineplayer" id="'+player+'_challenge_buttons">';
+      text += list[player].username
+      text += '<button class="button ui-space-blue" onclick="challenge(\''+list[player].username+'\');">Challenge</button>';
+      text += '</div>';
     }
     else {
       document.getElementById('you').innerHTML = list[player].username;
@@ -394,6 +397,8 @@ Game.prototype.onPlayerListChange = function() {
 
   this.messageHandler.sortDivs(document.getElementById('onlineplayerlist'));
 },
+
+
 
 Game.prototype.onRankingListChange = function (playerList){
   var tmpusers = '<table id="rankings">';
@@ -411,8 +416,8 @@ Game.prototype.onChallenge = function(msg){
   var audio = document.getElementById('challenge_request_audio').play();
   
   console.log("handleChallengeRequest", msg);
-  document.getElementById('challenge').innerHTML = 'You\'ve been challenged by<br /><strong>' + msg.challenger + '</strong><br />';
-  document.getElementById('challenge').innerHTML += '<input type="button" value="Accept" onclick="acceptChallenge(\''+msg.challenger+'\')"><input type="button" value="Reject" onclick="rejectChallenge(\''+msg.challenger+'\')">';
+  document.getElementById('challenge').innerHTML = 'You\'ve been challenged by<br /><h1>' + msg.challenger + '</h1><br />';
+  document.getElementById('challenge').innerHTML += '<input type="button" class="button ui-space-blue" value="Accept" onclick="acceptChallenge(\''+msg.challenger+'\')"><input type="button" class="button ui-space-blue" value="Reject" onclick="rejectChallenge(\''+msg.challenger+'\')">';
   document.getElementById('challengebox').style.visibility="visible";
   
 },
@@ -454,6 +459,11 @@ Game.prototype.initGame = function(msg) {
     this.amountOfFood = 8;
     this.foods = [];
     this.food = new Food();
+  }
+  // load worm images
+  var color = ["blue", "green", "orange", "brown", "red", "black"];
+  for( var c=0;c<color.length;c++){
+    new Image().src = './media/spaceworm_'+color[c]+'.png';
   }
 
   this.initGameboard();
@@ -594,6 +604,7 @@ Game.prototype.onGameUpdate = function(msg) {
       cell.style["top"] = clipping.top;
       cell.style["left"] = clipping.left;
 
+      cell.src = './media/spaceworm_'+msg.worms[id].color+'.png';
     }
   }
   
@@ -651,16 +662,16 @@ Game.prototype.onGameUpdate = function(msg) {
 
   document.getElementById("score").innerHTML = "<strong>" + from.toUpperCase() + " = " + answer.toUpperCase() + "</strong><br />";
   for (var x=0; x<msg.worms.length; x++) {
-    // A little trick to play audio when score is increased
-    if (msg.worms[x].name == this.messageHandler.username && this.score < msg.worms[x].score) {
-      //console.log("play ding")
-      document.getElementById('pick_audio').play();
-      this.score = msg.worms[x].score;
-    }
-    var separator = (x+1 != msg.worms.length) ? "&nbsp;&nbsp|&nbsp;&nbsp;" : "";
-    document.getElementById("score").innerHTML += '<strong><font color="' + msg.worms[x].color + '">' + msg.worms[x].name +'</font></strong>';
-    document.getElementById("score").innerHTML += ":&nbsp;" + msg.worms[x].score + separator;
 
+    var line = '<div>';
+
+    line += '<div class="worm"><img class="wormtail" src="./media/spaceworm_'+msg.worms[x].color+'.png"></div>';
+    line += '<div class="worm"><img class="wormbody" src="./media/spaceworm_'+msg.worms[x].color+'.png"></div>';
+    line += '<div class="worm"><img class="wormhead" src="./media/spaceworm_'+msg.worms[x].color+'.png"></div>';
+
+    line += '&nbsp;<span class="scoretext">'+msg.worms[x].name + ' ' + msg.worms[x].score + '</span></div>';
+
+    document.getElementById('score').innerHTML += line;
   }
 
 },

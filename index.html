@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Alphaworm Iteration Nine</title>
+  <title>Alphaworm Iteration Ten</title>
 
   <meta charset="utf-8" />
   <link rel="stylesheet" type="text/css" href="client/uistyle.css">
@@ -108,17 +108,17 @@
     <div class="wide">
       <div class="sidearea">
 	<div id="onlineplayers">
-	  <fieldset>
-            <legend><strong>Single player</strong></legend>
+	  <fieldset class="ui-border ui-container">
+            <legend><h3>Single player</h3></legend>
             <div >
               <div id="you"></div>
             </div>
-	    <input id="start_game" type="submit" value="StartGame" onclick="messageHandler.game.startGame()">
-	    <input id="logout_button" type="submit" value="Exit" onclick="logout();">
+	    <input id="start_game" type="submit" class="button ui-space-blue" value="StartGame" onclick="messageHandler.game.startGame()">
+	    <input id="logout_button" class="button ui-space-blue" type="submit" value="Exit" onclick="logout();">
 	  </fieldset>
 	  <br/>
-	  <fieldset>
-            <legend><strong>Online players</strong></legend>
+	  <fieldset class="ui-border ui-container">
+            <legend><h3>Online players</h3></legend>
             <div id="onlineplayerlist">
               <div id="onlineplayer">Wobot</div>
             </div>
@@ -126,15 +126,15 @@
 	</div>
       </div>
       <div id="logo">
-	Alphaworm Logo here
 	<div id="logotext">
+	  <img src="media/alphaworm-logo.png">
 	  <h1>A Planetscale Hunger For Words.</h1>
 	</div>
       </div>
       <div class="sidearea">
 	<div id="rankinglist">
-	  <fieldset>
-            <legend><strong>Player ranking</strong></legend>
+	  <fieldset class="ui-border ui-container">
+            <legend><h3>Player ranking</h3></legend>
             <div id="rankedplayers">
               <div id="rankedplayer">Wobot</div>
             </div>
@@ -149,28 +149,29 @@
     </div>
     <div id="login">
       <div id="loginwindow">
-        <fieldset>
-          <legend><strong>Login</strong></legend>
+        <fieldset class="ui-border ui-container">
+          <legend><h3>Login</h3></legend>
           <div id="infotext">
            Please login, or hit register<br/>
            if you do not have account yet.
           </div>
           Player: <input type="text" id="username" size="10" maxlength="10">
           Password: <input type="password" id="password" size="10" maxlength="20">
-          <input id="login_button" type="submit" value="Login" onclick="login()">
-          <input id="register_button" type="submit" value="Register" onclick="register()">
+          <input class="button ui-space-blue" id="login_button" type="submit" value="Login" onclick="login()">
+          <input class="button ui-space-blue" id="register_button" type="submit" value="Register" onclick="register()">
         </fieldset>
       </div>
     </div>
     <div style="width:100%;position:absolute;top:50%;text-align:center;">
       <div id="challengebox" >
-       <fieldset>
-         <legend><strong>Incoming Online Challenge</strong></legend>
+       <fieldset class="ui-border ui-container">
+         <legend><h3>Incoming Online Challenge</h3></legend>
          <div id="challenge">
          </div>
        </fieldset>
       </div>
     </div>
+
     <div id="gameover">
       <div class="stats" >
 	<h1>Game over!</h1>
@@ -179,7 +180,7 @@
     </div>
 
     <div id="chat">
-      <fieldset>
+      <fieldset class="ui-border ui-container">
         <legend><strong>Messages</strong></legend>
         <div id="chatbox">
           <div id="messagebox"></div>
@@ -192,6 +193,7 @@
           onmouseover="messageHandler.game.showChat();"
           onclick="messageHandler.game.hideChat();">^</div>
     </div>
+
   </div>
 </body>
 </html>
