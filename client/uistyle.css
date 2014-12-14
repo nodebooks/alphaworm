@@ -1,8 +1,36 @@
-#logo {
-    text-align: center;
-    width: 500px;
-    display: inline-block;
+@font-face { 
+    font-family: Xolonium; 
+    src: url('../media/Xolonium-Regular.otf');
 }
+@font-face { 
+    font-family: Xolonium; 
+    font-weight: bold; 
+    src: url('../media/Xolonium-Bold.otf');
+}
+@font-face { 
+    font-family: TheRaveIsInYourPants; 
+    src: url('../media/The_Rave_Is_In_Your_Pants.otf');
+}
+@font-face { 
+    font-family: Righteous; 
+    src: url('../media/Righteous-Regular.otf');
+}
+#logo {
+  margin-top: 100px;
+  font-family: Xolonium;
+  font-weight: bold;
+  font-size: 22pt;
+  text-align: center;
+  width: 500px;
+  height: 100px;
+  display: inline-block;
+}
+#logotext {
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 #gameover {
   visibility: hidden;
   font-size: 18pt;
@@ -22,17 +50,40 @@
     position: relative;
     display: inline-block;
 }
+BODY {
+  overflow: hidden;
+  background-image: url('../media/alphaworm-bg.png');
+  background-size: cover;
+  background-repeat: repeat-x;
+  background-color: black;
+}
 
 html *
 {
-  font-size: 1em !important;
-  color: #000 !important;
-  font-family: "Courier New", Courier, monospace;
+  font-size: 15px ;
+  color: #ffffff ;
+  font-family: Xolonium;
 }
 
-input:focus {
+H1 {
+    font-family: TheRaveIsInYourPants;
+    font-size: 16pt;
+    text-shadow: 0 0 0.5em #8f7;
+    letter-spacing: 1px;
+}
+H3 {
+    font-family: Righteous;
+    font-size: 16pt;
+    text-shadow: 0 0 0.5em #8f7;
+    letter-spacing: 1px;
+}
+.scoretext {
+    font-size: 12pt;
+    text-shadow: 0 0 0.5em #8f7;
+    letter-spacing: 1px;
+}
 
-  background: lightblue;
+input {
   color: black;
 }
 
@@ -50,6 +101,10 @@ input:focus {
   width: 400px;
   margin-left: auto;
   margin-right: auto;
+}
+.ui-container {
+   background: #050907;
+   opacity: 0.85;
 }
 
 #chat {
@@ -78,13 +133,6 @@ input:focus {
   overflow-Y: auto;
 }
 
-#onlineplayers {
-  float:left;
-  margin: 0;
-  overflow-Y: auto;
-  visibility: hidden;
-}
-
 #gameboard {
   margin-left: 20%;
   border-left: 1px solid gray;
@@ -102,6 +150,17 @@ input:focus {
   margin-left: auto;
   visibility: inherit;
 }
+
+#onlineplayers {
+  height: 300px;
+  width: 250px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  overflow-Y: auto;
+  visibility: hidden;
+}
+
 
 #rankinglist {
   float: right;
@@ -126,17 +185,6 @@ input:focus {
    
   margin-left: auto;
   margin-right: auto;
-}
-
-#challenge {
-  position: absolute;
-  overflow: hidden;
-  top:  150px;
-  left: 0px;
-  width: 200px;
-  height: 100px;
-  background-color: azure;
-  text-align: center;
 }
 
 #score {
@@ -186,6 +234,8 @@ td {
   vertical-align:middle;
   border-top: 1px dotted black;
   border-left: 1px dotted black;
+  background: #043640;  
+  opacity: 0.851
 }
 .wormimage {
   position: absolute;
@@ -214,8 +264,96 @@ td {
   
 }
 
+.ui-border {
+
+  -webkit-border-image:url(../media/border.png) 4 4 4 4 repeat; 
+  -moz-border-image: url(../media/border.png) 4 4 4 4 repeat;
+  border-image:url(../media/border.png) 4 4 4 4 repeat;
+  border-style: solid;
+  border-width: 6px 6px 6px 6px;
+  
+
+}
+
+.button {
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    font: 14px Xolonium;
+
+    outline: none;
+    -webkit-border-radius: .5em; 
+    -moz-border-radius: .5em;
+    border-radius: .5em;
+
+    padding: .5em  1em .55em 1em;
+    margin-top: 0.5em;
+}
+
+.button:active {
+    position: relative;
+    top: 1px;
+}
+
+.ui-space-blue {
+      
+    color: white ;
+    border: solid 1px #054358;
+    background: #176a85;
+    background: -moz-linear-gradient(top,  #73a6b7,  #176a85);
+    background: -webkit-gradient(linear, left top, left bottom, from(#73a6b7), to(#176a85));
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#73a6b7', endColorstr='#176a85');
+
+}
+
+.ui-space-blue:hover {
+        background: #35aab5;
+        background: -moz-linear-gradient(top,  #356a7c,  #032631);
+        background: -webkit-gradient(linear, left top, left bottom, from(#356a7c), to(#032631));
+        filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#356a7c', endColorstr='#032631');
+}
+
+.ui-space-blue:active {
+        background: #075a75; 
+        background: -moz-linear-gradient(top,  #176a85,  #73a6b7);
+        background: -webkit-gradient(linear, left top, left bottom, from(#176a85), to(#73a6b7));
+        filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#176a85', endColorstr='#73a6b7');
+}
+
 .wide {
   width: 100%;
   position: absolute;
   text-align: center;
+}
+.wormhead {
+
+  visibility: inherit;
+  position: absolute;
+  display: inline-block;
+  vertical-align: middle;
+  clip:  rect(41px, 20px,60px,1px );
+  top: -40px;
+  left: 0px;
+}
+.wormbody {
+  visibility: inherit;
+  padding: 0px;
+  display: inline-block;
+  vertical-align: middle;
+  position: absolute;
+  clip:  rect(1px,40px,20px,21px);
+  top:  0px;
+  left: -20px;
+
+}
+.wormtail {
+  visibility: inherit;
+  padding: 0px;
+  display: inline-block;
+  vertical-align: middle;
+  position: absolute;
+  clip:  rect(61px,60px,80px,41px);
+  top: -60px;
+  left: -40px;
+
 }
