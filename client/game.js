@@ -545,24 +545,15 @@ Game.prototype.killBoardEffect = function() {
     .onUpdate( function(){
       var tmp = document.getElementById("gameboard");
       tmp.style["top"] = this.y+"px";
-    });
-
-  var nothing = new TWEEN.Tween( { s:0.0} )
-    .to({ s:1.0}, 1000)
-    .easing( TWEEN.Easing.Bounce.InOut)
-    .onStart( function(){
-
-      console.log('here');
-      //kill gamegrid.
+    })
+    .onComplete( function() {
       var grid = document.getElementById("gamegrid");
       grid.parentNode.removeChild(grid);
       document.getElementById("gameboard").style["top"] = "0px";
-      self.displayEndStats( self.score);
-    })
-    .onUpdate( function(){})
+      self.displayEndStats( self.score);    
+    });
 
   rumble.chain(drop);
-  drop.chain(nothing);
   rumble.start();
 },
 
