@@ -457,7 +457,6 @@ Game.prototype.initGame = function(msg) {
     this.worm = new Worm();
     this.gameArea = new GameArea();
     this.amountOfFood = 8;
-    this.foods = [];
     this.food = new Food();
   }
   // load worm images
@@ -466,8 +465,12 @@ Game.prototype.initGame = function(msg) {
     new Image().src = './media/spaceworm_'+color[c]+'.png';
   }
 
+  this.word = undefined;
   this.initGameboard();
   this.score = 0;
+  this.prevScore = 0;
+  // for detecting letter collisions properly.
+  this.foods = [];
 
 },
 
