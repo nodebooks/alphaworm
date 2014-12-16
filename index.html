@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Alphaworm Iteration Ten</title>
+  <title>Alphaworm Iteration Eleven</title>
 
   <meta charset="utf-8" />
   <link rel="stylesheet" type="text/css" href="client/uistyle.css">
 
+  <script src="./client/RequestAnimationFrame.js" type="text/javascript"></script>
+  <script src="./client/tween.min.js" type="text/javascript"></script>
   <script src="./client/messagebroker.js" type="text/javascript"></script>
   <script src="./client/messagehandler.js" type="text/javascript"></script>
   <script src="./client/game.js" type="text/javascript"></script>
@@ -22,11 +24,43 @@
     function initAlphaworm() {
       // TODO: Improve game init in the near future
       messageHandler = new MessageHandler();
-    }
 
+      /* Drop effect */
+      var r = document.getElementById("login").getBoundingClientRect();
+      var endpoint = document.getElementById('logo')
+        .getBoundingClientRect().bottom + r.height;
+      
+      var tween = new TWEEN.Tween( { y: -600 } )
+        .to( { y: endpoint }, 1000 )
+        .easing( TWEEN.Easing.Bounce.Out )
+        .onStart(function(){
+
+          var tmp = document.getElementById("login");
+          tmp.style.visibility = "visible";
+
+        })
+        .onUpdate( function () {
+
+          var tmp = document.getElementById("login");
+          tmp.style.top = this.y+"px";
+          
+        }).start();
+    }
+  
     function logout() {
       // Not the most elegant way to logout, but now we will just reload the webpage
-      location.reload();
+      var hidePlayers = HideEffect('onlineplayers');
+      var hideRanking = HideEffect('rankinglist');
+    
+      hideRanking.onComplete(function(){
+	location.reload();
+      });
+            
+      hidePlayers.start();
+      window.setTimeout(function(){
+	hideRanking.start();
+      },250);
+    
     }
 
     function login() {
@@ -102,7 +136,9 @@
     <source src="../media/bicycle_1.wav" type="audio/wav">
   </audio>
   <audio src="../media/retro.ogg" id="retro_music" preload="auto"></audio>
-
+  <div id="completed" class="wordcomplete">
+    Word complete!
+  </div>
   <div class="container">
 
     <div class="wide">
@@ -126,8 +162,8 @@
 	</div>
       </div>
       <div id="logo">
+        <img src="media/alphaworm-logo.png">
 	<div id="logotext">
-	  <img src="media/alphaworm-logo.png">
 	  <h1>A Planetscale Hunger For Words.</h1>
 	</div>
       </div>

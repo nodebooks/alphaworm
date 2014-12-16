@@ -95,6 +95,8 @@ input {
 #login {
   position: absolute;
   width: 100%;
+  visibility: hidden;
+  z-index: 12;
 }
 
 #loginwindow {
@@ -134,12 +136,10 @@ input {
 }
 
 #gameboard {
-  margin-left: 20%;
-  border-left: 1px solid gray;
-  margin-right: 20%;
-  border-right: 1px solid gray;
+  position: relative;
+  width: 100%;
+
   text-align: center;
-  font-weight: bold;
   visibility: hidden;
 }
 
@@ -163,16 +163,27 @@ input {
 
 
 #rankinglist {
-  float: right;
-  margin: 0;
-  overflow-Y: auto;
-  visibility: hidden;
+    width: 200px;
+    height: 300px;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    overflow-Y: auto;
+    visibility: hidden;
 }
 
 #rankings {
   width: 100%;
   margin: auto;
   text-align: left;
+}
+
+.wordcomplete {
+  z-index: 12;
+  position: absolute;
+  text-align: center;
+  width: 500px;
+  visibility: hidden;
 }
 
 #challengebox {

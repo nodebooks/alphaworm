@@ -1,3 +1,89 @@
+var HideEffect = function(target){
+  
+  var t = new TWEEN.Tween( { s: 1.0, obj: target})
+    .to ( { s: 0.0 }, 550)
+    .easing( TWEEN.Easing.Elastic.InOut)
+    .onStart( function(){
+      
+      document.getElementById(this.obj).style["-webkit-transform"] = "scale(1)";
+      document.getElementById(this.obj).style["transform"] = "scale(1)";
+      document.getElementById(this.obj).style["-o-transform"] = "scale(1)";
+      document.getElementById(this.obj).style["-ms-transform"] = "scale(1)";
+    })
+    .onUpdate( function(){
+      
+      document.getElementById(this.obj).style["-webkit-transform"] = "scale("+this.s+")";
+      document.getElementById(this.obj).style["transform"] = "scale("+this.s+")";
+      document.getElementById(this.obj).style["-o-transform"] = "scale("+this.s+")";
+      document.getElementById(this.obj).style["-ms-transform"] = "scale("+this.s+")";
+      
+    }).onComplete(function(){
+      
+      document.getElementById(this.obj).style.visibility = 'hidden';
+      
+    });
+  return t;
+}
+
+var ShowEffect = function(target){
+  
+  var t = new TWEEN.Tween( { s: 0.10, obj: target})
+    .to ( { s: 1.0 }, 550)
+    .easing( TWEEN.Easing.Elastic.InOut)
+    .onStart( function(){
+      
+      document.getElementById(this.obj).style["-webkit-transform"] = "scale(0)";
+      document.getElementById(this.obj).style["transform"] = "scale(0)";
+      document.getElementById(this.obj).style["-o-transform"] = "scale(0)";
+      document.getElementById(this.obj).style["-ms-transform"] = "scale(0)";
+      document.getElementById(this.obj).style.visibility = 'visible';
+    })
+    .onUpdate( function(){
+      
+      document.getElementById(this.obj).style["-webkit-transform"] = "scale("+this.s+")";
+      document.getElementById(this.obj).style["transform"] = "scale("+this.s+")";
+      document.getElementById(this.obj).style["-o-transform"] = "scale("+this.s+")";
+      document.getElementById(this.obj).style["-ms-transform"] = "scale("+this.s+")";
+      
+    });
+  return t;
+}
+
+var SlideFromRight = function(which) {
+    var tween = new TWEEN.Tween( { y: -500 })
+	.to ( { y: 0 }, 500)
+	.easing( TWEEN.Easing.Exponential.Out )
+	.onStart( function(){
+	    document.getElementById(which).style.visibility = 'visible';
+	    document.getElementById(which).style["-webkit-transform"] = "scale(1)";
+	    document.getElementById(which).style["transform"] = "scale(1)";
+	    document.getElementById(which).style["-o-transform"] = "scale(1)";
+	    document.getElementById(which).style["-ms-transform"] = "scale(1)";
+	})
+	.onUpdate( function(){
+	    document.getElementById(which).style.right = this.y +"px";
+	});
+    return tween;
+}
+
+var SlideFromLeft = function(which) {
+    var tween = new TWEEN.Tween( { y: -500 })
+	.to ( { y: 0 }, 500)
+	.easing( TWEEN.Easing.Exponential.Out )
+	.onStart( function(){
+	    document.getElementById(which).style.visibility = 'visible';
+	    document.getElementById(which).style["-webkit-transform"] = "scale(1)";
+	    document.getElementById(which).style["transform"] = "scale(1)";
+	    document.getElementById(which).style["-o-transform"] = "scale(1)";
+	    document.getElementById(which).style["-ms-transform"] = "scale(1)";
+	})
+	.onUpdate( function(){
+	    document.getElementById(which).style.left = this.y +"px";
+	});
+    return tween;
+}
+
+
 function Game(messagehandler) {
 
   this.messageHandler = messagehandler;
@@ -29,11 +115,22 @@ Game.prototype.onRegistrationFail = function() {
 
 Game.prototype.onLoginSuccess = function( username ){
 
-  document.getElementById('infotext').style.color = "black";
-  document.getElementById('login').style['visibility'] = 'hidden';
-  document.getElementById('rankinglist').style['visibility'] = 'visible';
-  document.getElementById('onlineplayers').style['visibility'] = 'visible';
-
+ var hideTween = HideEffect('login');
+  
+  document.getElementById('logotext').innerHTML = '<h1>Hello '+username+'!</h1>';
+  // initialize appear effects 
+  var showRanking = SlideFromLeft('onlineplayers');
+  var showPlayers = SlideFromRight('rankinglist');
+  
+  // set fancy timing sequence for elements to appear
+  hideTween.onComplete( function(){
+    showRanking.start();
+    window.setTimeout( function(){
+      showPlayers.start();
+    },250);
+  });
+  // start animation
+  hideTween.start();
 },
 
 Game.prototype.onLoginFail = function() {
@@ -63,11 +160,100 @@ Game.prototype.hideChat = function() {
 }
 
 Game.prototype.onFoodCollect = function( food, collectType  ) {
-  var cell = document.getElementById(food.location);
-  cell.innerHTML = "";
+    console.log('onfoodCollect', food, collectType);
+  if ( collectType == 0 ) { 
+    // collect, but not from us
+    document.getElementById(food.location).innerHTML = "";
+
+  } else {
+
+    // when we collected
+    var cell = document.getElementById(food.location);
+    var rect = cell.getBoundingClientRect();
+    var effectDiv = document.createElement("div");
+    effectDiv.appendChild(document.createTextNode(food.character.toUpperCase()));
+    effectDiv.style["position"]= "absolute";
+    effectDiv.style["z-index"]= "3";
+    effectDiv.style["top"] = rect.top + "px";
+    effectDiv.style["left"] = rect.left + "px";
+    document.body.appendChild(effectDiv);
+    // clear character after collect
+    cell.innerHTML = "";        
+
+    var tween = new TWEEN.Tween( { s: 1 } )
+      .to( { s: 12 }, 1000 )
+      .easing( TWEEN.Easing.Back.Out )
+      .onUpdate( function () {
+       var tmp = effectDiv;
+       tmp.style.transform = "scale("+this.s+")";
+       tmp.style["-webkit-transform"] = "scale("+this.s+")";
+       tmp.style["-o-transform"] = "scale("+this.s+")";
+       tmp.style["-ms-transform"] = "scale("+this.s+")";
+       
+      });
+    
+    var tweenFade = new TWEEN.Tween( { o: 1.0 } )
+      .to( { o: 0.0 }, 500 )
+      .easing( TWEEN.Easing.Exponential.Out )
+      .onUpdate( function () {
+	var tmp = effectDiv;
+	tmp.style.opacity = this.o;
+	
+      })
+      .onComplete( function(){
+	var tmp = effectDiv;
+	document.body.removeChild(tmp);
+      }); 
+    tween.chain(tweenFade);
+    tween.start();
+    
+  }
 },
 
 Game.prototype.onWordComplete = function(message){
+
+  var r = document.getElementById("logotext").getBoundingClientRect();  
+  /* Hide logo text, get its position on screen. */
+  document.getElementById("logotext").style["visibility"] = 'hidden';
+
+  
+  // position completed-text where logo text was with proper word
+  var tmp = document.getElementById("completed");
+
+  tmp.innerHTML = '<h1>'+message+'</h1>';
+  tmp.style.opacity = 1.0;
+  tmp.style['top'] = r.top+'px';
+  tmp.style['left'] = r.left+'px';
+  tmp.style['width'] = r.width+'px';
+  tmp.style['height'] = r.height+'px';
+  
+  tmp.style.visibility = 'visible';
+  tmp.style.transform = 'scaleX(1)';
+  tmp.style["-webkit-transform"] = 'scaleX(1)';
+  tmp.style["-o-transform"] = 'scaleX(1)';
+  tmp.style["-ms-transform"] = 'scaleX(1)';
+  
+
+  var scaleAndHide = new TWEEN.Tween( { o: 1.0, x: 1.0, y:2.0 } )
+  
+    .to( { o: 0.0, x:12, y:0.0 }, 2000 )
+    .easing( TWEEN.Easing.Bounce.Out  )
+    .onUpdate( function () {
+
+      // change opacity
+      tmp.style.opacity = this.o;
+      // define non-uniform scale transformation 
+      tmp.style.transform = 'scale('+this.x+','+this.y+')';
+      tmp.style["-webkit-transform"] = 'scale('+this.x+','+this.y+')';
+      tmp.style["-o-transform"] = 'scale('+this.x+','+this.y+')';
+      tmp.style["-ms-transform"] = 'scale('+this.x+','+this.y+')';
+
+    })
+    .onComplete( function(){
+      document.getElementById("completed").style['visibility'] = 'hidden';
+      document.getElementById("logotext").style["visibility"] = 'visible';
+    });
+  scaleAndHide.start();
 
 },
 // Tells us which part of of worm sprite gets drawn to which tile.
@@ -339,41 +525,112 @@ Game.prototype.getWormTileByPosition = function ( positions, i ) {
   return worm.body.horizontal;
 }
 
+Game.prototype.killBoardEffect = function() {
+
+  var self = this;
+  var board = document.getElementById("gameboard");
+  
+  var rumble = new TWEEN.Tween( { s: 20.0 } )
+    .to( { s:0.0 }, 1750 )
+    .easing( TWEEN.Easing.Bounce.InOut )
+    .onUpdate( function () {
+      var tmp = document.getElementById("gameboard");
+      tmp.style["top"] = this.s*Math.random() + "px";
+      tmp.style["left"] = this.s*Math.random() +"px";
+    });
+
+  var drop = new TWEEN.Tween( { y: 0.0 } )
+    .to( { y : window.innerHeight}, 750)
+    .easing( TWEEN.Easing.Exponential.In )
+    .onUpdate( function(){
+      var tmp = document.getElementById("gameboard");
+      tmp.style["top"] = this.y+"px";
+    });
+
+  var nothing = new TWEEN.Tween( { s:0.0} )
+    .to({ s:1.0}, 1000)
+    .easing( TWEEN.Easing.Bounce.InOut)
+    .onStart( function(){
+
+      console.log('here');
+      //kill gamegrid.
+      var grid = document.getElementById("gamegrid");
+      grid.parentNode.removeChild(grid);
+      document.getElementById("gameboard").style["top"] = "0px";
+      self.displayEndStats( self.score);
+    })
+    .onUpdate( function(){})
+
+  rumble.chain(drop);
+  drop.chain(nothing);
+  rumble.start();
+},
+
 Game.prototype.displayEndStats = function( collected ) {
 
-  var r = document.getElementById('logotext').getBoundingClientRect(); 
-  var tmp = document.getElementById('gameover');
-  tmp.style['top'] = r.bottom + "px";
-  tmp.style['visibility'] = 'visible';
+  // Show "menu" again with same animation as before
 
-  window.setTimeout( function(){
-    document.getElementById('gameover').style['visibility'] = 'hidden';
-  },2500);
+  var hideStats = HideEffect('score');
+  hideStats.start();
+
+  document.getElementById('gameboard').style['visibility'] = 'hidden';      
+
+  hideStats.onComplete(function(){
+    
+    var r = document.getElementById('logotext').getBoundingClientRect(); 
+    var tmp = document.getElementById('gameover');
+    tmp.style['top'] = r.bottom + "px";
+    tmp.style['visibility'] = 'visible';
+    
+    window.setTimeout( function(){
+      document.getElementById('gameover').style['visibility'] = 'hidden';
+
+      var showRanking = SlideFromRight('rankinglist');
+      var showPlayers = SlideFromLeft('onlineplayers');
+      document.getElementById("logotext").innerHTML = "<h1>A Planetscale Hunger For Words.</h1>";
+      
+      showRanking.start();
+      window.setTimeout( function(){
+	showPlayers.start();
+      },250);
+    },2500);
+  });
 },
 
 Game.prototype.onGameStart = function(msg) {
-  this.initGame(msg);
-  this.playMusic(this.preferredVolume);
-  this.inGame = true;
 
-  document.getElementById('onlineplayers').style['visibility'] = 'hidden';
-  document.getElementById('rankinglist').style['visibility'] = 'hidden';
-  document.getElementById('score').style['visibility'] = 'visible';
-  document.getElementById('gameboard').style['visibility'] = 'visible';
-},
+  var self = this;
+  var hidePlayers = HideEffect('onlineplayers');
+  var hideRanking = HideEffect('rankinglist');
+
+  hideRanking.onComplete(function(){
+
+    self.initGame(msg);
+    self.playMusic(self.preferredVolume);
+    self.inGame = true;
+
+    self.playMusic(self.preferredVolume);
+    var showStats = SlideFromRight('score');
+    showStats.start();
+    document.getElementById('gameboard').style['visibility'] = 'visible';
+
+  });
+
+  hidePlayers.start();
+  window.setTimeout(function(){
+    hideRanking.start();
+  },250);
+
+}
 
 Game.prototype.onGameEnd = function(msg) {
   this.inGame = false;
   this.stopMusic();
   this.updateGameboard();
-
-  document.getElementById('onlineplayers').style['visibility'] = 'visible';
-  document.getElementById('rankinglist').style['visibility'] = 'visible';
-  document.getElementById('score').style['visibility'] = 'hidden';
-  document.getElementById('gameboard').style['visibility'] = 'hidden';
-
-  this.displayEndStats(this.score);
+  this.killBoardEffect();
+  //this.displayEndStats(this.score);
 },
+
 Game.prototype.onPlayerListChange = function() {
 
   document.getElementById('onlineplayerlist').innerHTML = "";
@@ -419,7 +676,8 @@ Game.prototype.onChallenge = function(msg){
   document.getElementById('challenge').innerHTML = 'You\'ve been challenged by<br /><h1>' + msg.challenger + '</h1><br />';
   document.getElementById('challenge').innerHTML += '<input type="button" class="button ui-space-blue" value="Accept" onclick="acceptChallenge(\''+msg.challenger+'\')"><input type="button" class="button ui-space-blue" value="Reject" onclick="rejectChallenge(\''+msg.challenger+'\')">';
   document.getElementById('challengebox').style.visibility="visible";
-  
+  var slideIn = SlideFromLeft('challengebox');
+  slideIn.start();
 },
 
 Game.prototype.onChatMessage = function(msg){
@@ -434,11 +692,13 @@ Game.prototype.onChatMessage = function(msg){
 },
 
 Game.prototype.onAcceptChallenge = function(challenger){
-  document.getElementById('challengebox').style.visibility="hidden";
+  var hide = HideEffect('challengebox');
+  hide.start();
 },
 
 Game.prototype.onRejectChallenge = function(challenger){
-  document.getElementById('challengebox').style.visibility="hidden";
+  var hide = HideEffect('challengebox');
+  hide.start();
 },
 
 Game.prototype.init = function() {
@@ -468,7 +728,6 @@ Game.prototype.initGame = function(msg) {
 
   this.initGameboard();
   this.score = 0;
-
 },
 
 Game.prototype.playMusic = function(volume) {
@@ -660,7 +919,11 @@ Game.prototype.onGameUpdate = function(msg) {
   var from = msg.word['from'];
   var answer = msg.word['answer'];
 
-  document.getElementById("score").innerHTML = "<strong>" + from.toUpperCase() + " = " + answer.toUpperCase() + "</strong><br />";
+  document.getElementById("logotext").innerHTML = "<h1>" + 
+     from.toUpperCase() + " = " + answer.toUpperCase() + "</h1><br />";
+
+  document.getElementById('score').innerHTML = ""
+  
   for (var x=0; x<msg.worms.length; x++) {
 
     var line = '<div>';
@@ -740,4 +1003,11 @@ Game.prototype.handleInput = function(event) {
 
 Game.prototype.isRunning = function() {
   return this.inGame;
+}
+
+// for tweening library to work.
+animate();
+function animate() {
+    requestAnimationFrame( animate ); 
+    TWEEN.update();
 }
