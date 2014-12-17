@@ -198,6 +198,16 @@ input {
   margin-right: auto;
 }
 
+#particles{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 1px;
+  height: 1px;
+  overflow: visible;
+  z-index: 15;
+}
+
 #score {
   font-weight: bold;
   letter-spacing: 2px;

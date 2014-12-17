@@ -1,3 +1,5 @@
+var proton = new Proton;
+
 var HideEffect = function(target){
   
   var t = new TWEEN.Tween( { s: 1.0, obj: target})
@@ -93,6 +95,12 @@ function Game(messagehandler) {
   this.preferredVolume = 0.3;
   this.maxVolume = 1.0;
 
+
+  // initialize particle effects area with proton library  
+  var particles = document.getElementById("particles");
+  var renderer = new Proton.Renderer('dom', proton, particles);
+  renderer.start();
+
   this.init();
 }
 
@@ -159,6 +167,57 @@ Game.prototype.hideChat = function() {
 
 }
 
+Game.prototype.puff = function( x, y ) {    
+
+  var emitter = new Proton.Emitter();
+  emitter.rate = new Proton.Rate(new Proton.Span(18, 12), new Proton.Span(.1, .2));
+  emitter.addInitialize(new Proton.Mass(1));
+  emitter.addInitialize(new Proton.Radius(1, 12));
+  emitter.addInitialize(new Proton.Life(1, 2));
+  emitter.addInitialize(new Proton.V(new Proton.Span(1, 4), new Proton.Span(0, 360), 'polar'));
+  emitter.addInitialize(new Proton.ImageTarget(['media/particle1.png','media/particle2.png','media/particle3.png']));
+  emitter.addBehaviour(new Proton.Alpha(1, 0));
+  emitter.addBehaviour(new Proton.Scale(3, 1));
+  emitter.addBehaviour(new Proton.CrossZone(new Proton.CircleZone(x, y, 250), 'dead'));
+  emitter.addBehaviour(new Proton.Gravity(3));
+  
+  emitter.p.x = x;
+  emitter.p.y = y;
+
+  //add emitter to the proton
+  proton.addEmitter(emitter);
+  console.log("puffing away at", x, y);
+  emitter.emit('once', true);
+}
+
+Game.prototype.makeGameBoardPieces = function( x, y ) {    
+  
+  var emitter = new Proton.Emitter();
+  emitter.rate = new Proton.Rate(new Proton.Span(25), new Proton.Span(.1, .2));
+  emitter.addInitialize(new Proton.ImageTarget(['media/bgpiece.png']));
+  emitter.addInitialize(new Proton.Mass(0.8));
+
+  emitter.addInitialize(new Proton.Life(1, 4));
+  emitter.addInitialize(new Proton.V(new Proton.Span(20, 10), new Proton.Span(-45, 45), 'polar'));
+  
+  emitter.addBehaviour(new Proton.Rotate(new Proton.Span(0, 360), new Proton.Span(-15, 15), 'add'));
+  
+  emitter.addBehaviour(new Proton.Alpha(1, 0));
+  emitter.addBehaviour(new Proton.Scale(1, 1));
+  emitter.addBehaviour(new Proton.Color('random'));
+  emitter.addBehaviour(new Proton.CrossZone(new Proton.CircleZone(x, y, window.innerWidth), 'dead'));
+  emitter.addBehaviour(new Proton.Gravity(10));
+  emitter.addBehaviour(new Proton.RandomDrift(10, 10, .05));
+  emitter.p.x = x;
+  emitter.p.y = y;
+
+  //add emitter to the proton
+  proton.addEmitter(emitter);
+
+  console.log("Crushing board at", x, y);
+  emitter.emit('once', true);
+}
+
 Game.prototype.onFoodCollect = function( food, collectType  ) {
     console.log('onfoodCollect', food, collectType);
   if ( collectType == 0 ) { 
@@ -206,7 +265,8 @@ Game.prototype.onFoodCollect = function( food, collectType  ) {
       }); 
     tween.chain(tweenFade);
     tween.start();
-    
+
+    this.puff(rect.left,rect.top);
   }
 },
 
@@ -547,6 +607,7 @@ Game.prototype.killBoardEffect = function() {
       tmp.style["top"] = this.y+"px";
     })
     .onComplete( function() {
+      self.makeGameBoardPieces( window.innerWidth/2, window.innerHeight*1.25);
       var grid = document.getElementById("gamegrid");
       grid.parentNode.removeChild(grid);
       document.getElementById("gameboard").style["top"] = "0px";
@@ -1005,4 +1066,5 @@ animate();
 function animate() {
     requestAnimationFrame( animate ); 
     TWEEN.update();
+    proton.update();
 }
