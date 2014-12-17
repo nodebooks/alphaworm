@@ -109,6 +109,7 @@ Game.prototype.onRegistrationSuccess = function(username) {
   document.getElementById('infotext').innerHTML = "New player <strong>" +
     username + "</strong> registered.";
   document.getElementById('infotext').innerHTML += '&nbsp;&nbsp;<input id="logout_button" type="submit" value="Logout" onclick="logout();">';
+  document.getElementById('register_success_audio').play();
 },
 
 Game.prototype.onRegistrationFail = function() {
@@ -119,11 +120,12 @@ Game.prototype.onRegistrationFail = function() {
     document.getElementById('infotext').innerHTML = tmp; 
     document.getElementById('infotext').style.color = "black"; 
   }, 2000)
+  document.getElementById('fail_audio').play();
 }
 
 Game.prototype.onLoginSuccess = function( username ){
 
- var hideTween = HideEffect('login');
+  var hideTween = HideEffect('login');
   
   document.getElementById('logotext').innerHTML = '<h1>Hello '+username+'!</h1>';
   // initialize appear effects 
@@ -139,6 +141,7 @@ Game.prototype.onLoginSuccess = function( username ){
   });
   // start animation
   hideTween.start();
+  document.getElementById('login_success_audio').play();
 },
 
 Game.prototype.onLoginFail = function() {
@@ -150,6 +153,7 @@ Game.prototype.onLoginFail = function() {
     document.getElementById('infotext').innerHTML = tmp; 
     document.getElementById('infotext').style.color = "black"; 
   }, 2000)
+  document.getElementById('fail_audio').play();
 },
 
 Game.prototype.showChat = function() {
@@ -225,6 +229,8 @@ Game.prototype.onFoodCollect = function( food, collectType  ) {
     document.getElementById(food.location).innerHTML = "";
 
   } else {
+    if ( collectType == 1 ) document.getElementById('correctletter_audio').play();
+    else document.getElementById('fail_audio').play();
 
     // when we collected
     var cell = document.getElementById(food.location);
@@ -276,7 +282,7 @@ Game.prototype.onWordComplete = function(message){
   /* Hide logo text, get its position on screen. */
   document.getElementById("logotext").style["visibility"] = 'hidden';
 
-  
+
   // position completed-text where logo text was with proper word
   var tmp = document.getElementById("completed");
 
@@ -314,6 +320,7 @@ Game.prototype.onWordComplete = function(message){
       document.getElementById("logotext").style["visibility"] = 'visible';
     });
   scaleAndHide.start();
+  document.getElementById('word_complete_audio').play();
 
 },
 // Tells us which part of of worm sprite gets drawn to which tile.
@@ -680,7 +687,7 @@ Game.prototype.onGameEnd = function(msg) {
   this.stopMusic();
   this.updateGameboard();
   this.killBoardEffect();
-  //this.displayEndStats(this.score);
+  document.getElementById('gameover_audio').play();
 },
 
 Game.prototype.onPlayerListChange = function() {
@@ -722,7 +729,7 @@ Game.prototype.onRankingListChange = function (playerList){
 },
 
 Game.prototype.onChallenge = function(msg){
-  var audio = document.getElementById('challenge_request_audio').play();
+  document.getElementById('challenge_request_audio').play();
   
   console.log("handleChallengeRequest", msg);
   document.getElementById('challenge').innerHTML = 'You\'ve been challenged by<br /><h1>' + msg.challenger + '</h1><br />';
@@ -746,11 +753,13 @@ Game.prototype.onChatMessage = function(msg){
 Game.prototype.onAcceptChallenge = function(challenger){
   var hide = HideEffect('challengebox');
   hide.start();
+  document.getElementById('challenge_accept_audio').play();
 },
 
 Game.prototype.onRejectChallenge = function(challenger){
   var hide = HideEffect('challengebox');
   hide.start();
+  document.getElementById('challenge_reject_audio').play();
 },
 
 Game.prototype.init = function() {
@@ -790,7 +799,17 @@ Game.prototype.playMusic = function(volume) {
   console.log("Game: playMusic");
   if (this.music == null) {
     console.log("Game: creating new audio instance");
-    this.music = new Audio('../media/retro.ogg');
+    this.music = new Audio();
+    var canPlayOgg = !!this.music.canPlayType && this.music.canPlayType('audio/ogg') != '';
+    
+    if ( canPlayOgg ){
+      this.music.setAttribute("src","./media/dyst.ogg");
+    } else {
+      this.music.setAttribute("src","./media/dyst.mp3");    
+    }
+
+    this.music.load(); // required for 'older' browsers
+
     if (typeof this.music.loop == 'boolean')
     {
       this.music.loop = true;

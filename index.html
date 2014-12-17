@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Alphaworm Iteration Twelve</title>
+  <title>Alphaworm Iteration Thirteen</title>
 
   <meta charset="utf-8" />
   <link rel="stylesheet" type="text/css" href="client/uistyle.css">
@@ -129,15 +129,35 @@
 <body onload="initAlphaworm()" onkeypress="return gameInput(event)">
 
   <div id="particles"></div>
-  <audio id="pick_audio" preload="auto">
-    <source src="../media/completetask_0.ogg" type="audio/ogg">
-    <source src="../media/completetask_0.mp3" type="audio/mpeg">
+  <audio id="login_success_audio" preload="auto">
+    <source src="./media/loginok.wav" type="audio/wav">
+  </audio>
+  <audio id="register_success_audio" preload="auto">
+    <source src="./media/regok.wav" type="audio/wav">
   </audio>
   <audio id="challenge_request_audio" preload="auto">
-    <source src="../media/bicycle_1.ogg" type="audio/ogg">
-    <source src="../media/bicycle_1.wav" type="audio/wav">
+    <source src="./media/challenge.wav" type="audio/wav">
   </audio>
-  <audio src="../media/retro.ogg" id="retro_music" preload="auto"></audio>
+  <audio id="challenge_accept_audio" preload="auto">
+    <source src="./media/accept.wav" type="audio/wav">
+  </audio>
+  <audio id="challenge_reject_audio" preload="auto">
+    <source src="./media/reject.wav" type="audio/wav">
+  </audio>
+  <audio id="gameover_audio" preload="auto" >
+    <source src="./media/gameover.wav" type="audio/wav">
+  </audio>
+  <audio id="correctletter_audio" preload="auto">
+    <source src="./media/correctletter.wav" type="audio/wav">
+  </audio>
+  <audio id="fail_audio" preload="auto">
+    <source src="./media/fail.wav" type="audio/wav">
+  </audio>
+  <audio id="word_complete_audio" preload="auto">
+    <source src="./media/wordcomplete.wav" type="audio/wav">
+  </audio>
+  <audio src="../media/dyst.ogg" id="game_music" preload="auto"></audio>
+
   <div id="completed" class="wordcomplete">
     Word complete!
   </div>
