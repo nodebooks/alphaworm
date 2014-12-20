@@ -14,13 +14,13 @@ function Game(messagehandler) {
 Game.prototype.init = function() {
   console.log("Game.init");
   this.initGame(null);
-},
+};
 
 Game.prototype.initGame = function(msg) {
   // TODO: Configure game per server msg 
   console.log("initGame:", msg);
 
-  if (null == msg) {
+  if (null === msg) {
     console.log("create empty gameboard");
     this.gameArea = new GameArea();
   }
@@ -34,7 +34,7 @@ Game.prototype.initGame = function(msg) {
 
   this.initGameboard();
   this.score = 0;
-},
+};
 
 Game.prototype.initGameboard = function() {
   console.log("Game.initGameboard");
@@ -60,7 +60,7 @@ Game.prototype.initGameboard = function() {
   document.getElementById('gameboard').innerHTML = gameboard;
 
   this.updateGameboard();
-},
+};
 
 Game.prototype.updateGameboard = function() {
   //console.log("updateGameboard");
@@ -70,7 +70,7 @@ Game.prototype.updateGameboard = function() {
       document.getElementById(id).bgColor = this.gameArea.color;
     }
   }
-},
+};
 
 Game.prototype.setFood = function() {
   // Check if any food is missing
@@ -84,7 +84,7 @@ Game.prototype.setFood = function() {
       document.getElementById(x).bgColor = this.food.color;
     }
   }
-},
+};
 
 Game.prototype.removeFood = function(cell) {
   //console.log("Remove food", cell);
@@ -95,7 +95,7 @@ Game.prototype.removeFood = function(cell) {
   }
   // Generate new food
   this.setFood();
-},
+};
 
 Game.prototype.updateMatch = function(msg) {
   //console.log("update match");
@@ -138,17 +138,17 @@ Game.prototype.updateMatch = function(msg) {
     this.stopMusic();
     this.endGame();
   }
-},
+};
 
 Game.prototype.startGame = function() {
   console.log("Game: startGame");
   var msg = messages.message.START_SINGLEPLAYER_GAME_REQ.new();
   msg.username = this.messageHandler.getUsername();
   this.messageHandler.send(msg);
-},
+};
 
 Game.prototype.handleInput = function(event) {
-  if(false == this.isRunning()) {
+  if(false === this.isRunning()) {
     console.log("handleInput: not in game");
     return false;
   }
@@ -191,23 +191,23 @@ Game.prototype.handleInput = function(event) {
 
   console.log("Game.handleInput", direction);
 
-  if (direction != null) {
+  if (direction !== null) {
     var msg = messages.message.USER_INPUT.new();
     msg.direction = direction;
     msg.username = this.messageHandler.getUsername();
     this.messageHandler.send(msg);
   }
 
-},
+};
 
 Game.prototype.endGame = function() {
   this.inGame = false;
   this.stopMusic();
-},
+};
 
 Game.prototype.playMusic = function(volume) {
   console.log("Game: playMusic");
-  if (this.music == null) {
+  if (this.music === null) {
     console.log("Game: creating new audio instance");
     this.music = new Audio('../media/retro.ogg');
     if (typeof this.music.loop == 'boolean')
@@ -225,15 +225,15 @@ Game.prototype.playMusic = function(volume) {
     this.music.volume = volume;
   }
   this.music.play();
-},
+};
 
 Game.prototype.stopMusic = function() {
   console.log("Game: stopMusic");
   this.music.pause();
   this.music.duration = 0;
-},
+};
 
 
 Game.prototype.isRunning = function() {
   return this.inGame;
-}
+};

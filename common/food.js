@@ -12,7 +12,7 @@
 
     Food.prototype.getCharacter = function() {
       return this.color;
-    }
+    };
     return Food;
   })();
 

@@ -1,5 +1,4 @@
 function MessageHandler() {
-
   this.messageBroker = undefined;
   this.game = undefined;
   this.username = undefined;
@@ -13,16 +12,16 @@ MessageHandler.prototype.init = function() {
   this.messageBroker = new MessageBroker(this);
   this.game = new Game(this);
 
-},
+};
 
 MessageHandler.prototype.attachBroker = function(messageBroker) {
-  console.log("MessageHandler: messageBroker attached.")
+  console.log("MessageHandler: messageBroker attached.");
   this.messageBroker = messageBroker;
-},
+};
 
 MessageHandler.prototype.send = function(msg) {
   this.messageBroker.send(msg);
-},
+};
 
 MessageHandler.prototype.receive = function(msg) {
   //console.log("MessageHandler.receive", msg);
@@ -66,7 +65,7 @@ MessageHandler.prototype.receive = function(msg) {
     console.log("MessageHandler: default branch reached");
     break;
   }
-},
+};
 
 MessageHandler.prototype.handleLoginResponse = function(msg) {
   if(msg.status == "OK" && msg.username) {
@@ -84,9 +83,9 @@ MessageHandler.prototype.handleLoginResponse = function(msg) {
     var t = setTimeout(function() { 
       document.getElementById('infotext').innerHTML = tmp; 
       document.getElementById('infotext').style.color = "black"; 
-    }, 2000)
+    }, 2000);
   }
-},
+};
 
 MessageHandler.prototype.handleRegistrationResponse = function(msg) {
   if(msg.status == "OK" && msg.username) {
@@ -103,9 +102,9 @@ MessageHandler.prototype.handleRegistrationResponse = function(msg) {
     var t = setTimeout(function() { 
       document.getElementById('infotext').innerHTML = tmp; 
       document.getElementById('infotext').style.color = "black"; 
-    }, 2000)
+    }, 2000);
   }
-},
+};
 
 MessageHandler.prototype.handleChatMessage = function(msg) {
   console.log("handleChatMessage");
@@ -118,7 +117,7 @@ MessageHandler.prototype.handleChatMessage = function(msg) {
   }
   // Messagebox auto-scroll (quick 'n dirty hack, but should work :)
   document.getElementById('chatbox').scrollTop += 20;
-},
+};
 
 MessageHandler.prototype.updatePlayerList = function(msg) {
   console.log("MessageHandler.updatePlayerList", msg);
@@ -126,7 +125,7 @@ MessageHandler.prototype.updatePlayerList = function(msg) {
   for(var item in msg.players) {
     console.log("item:", item);
     var player = msg.players[item];
-    if(player.authenticated == false || player.authenticated == "false") {
+    if(player.authenticated === false || player.authenticated == "false") {
       delete this.playerList[player.username];
     }
     else {
@@ -138,10 +137,10 @@ MessageHandler.prototype.updatePlayerList = function(msg) {
 
   document.getElementById('onlineplayerlist').innerHTML = "";
   for(var player in this.playerList) {
-    console.log("player:", player)
+    console.log("player:", player);
     var pre = '<div id="' + player +'">';
     var text = "";
-    if (this.playerList[player].ingame == false && this.playerList[player].username != this.getUsername()) {
+    if (this.playerList[player].ingame === false && this.playerList[player].username != this.getUsername()) {
       text = ' <a href="#" title="challenge" onclick="challenge(\''+this.playerList[player].username+'\')">'+ this.playerList[player].username + '</a>';
     }
     else {
@@ -152,7 +151,7 @@ MessageHandler.prototype.updatePlayerList = function(msg) {
   }
 
   this.sortDivs(document.getElementById('onlineplayerlist'));
-},
+};
 
 MessageHandler.prototype.updateRankingList = function(msg) {
 
@@ -162,10 +161,10 @@ MessageHandler.prototype.updateRankingList = function(msg) {
     tmpusers += '<td><strong>' + msg.players[item].username + '</strong></td><td>' + msg.players[item].highscore + '</td>';
     tmpusers += '</tr>';
   }
-  tmpusers += '</table>'
+  tmpusers += '</table>';
   document.getElementById('rankedplayers').innerHTML = tmpusers;
   console.log("MessageHandler: Ranking list updated");
-},
+};
 
 MessageHandler.prototype.sortDivs = function(container) {
   //console.log("sorting", container);
@@ -187,7 +186,7 @@ MessageHandler.prototype.sortDivs = function(container) {
   for(var i=0, l = toSort.length; i<l; i++) {
     parent.appendChild(toSort[i]);
   }
-},
+};
 
 MessageHandler.prototype.handleChallengeRequest = function(msg) {
   // Pop a dialog
@@ -202,7 +201,7 @@ MessageHandler.prototype.handleChallengeRequest = function(msg) {
   document.getElementById('challengebox').style.visibility="visible";
   this.challengeTmo = setTimeout("rejectChallenge(\'" + msg +"\')", 10000);
   //setInterval("this.challengeTimer("+msg+")", 1000);
-},
+};
 
 MessageHandler.prototype.acceptChallenge = function(challenger) {
   clearTimeout(this.challengeTmo);
@@ -214,7 +213,7 @@ MessageHandler.prototype.acceptChallenge = function(challenger) {
   resp.challengee = this.getUsername();
   this.send(resp);
   document.getElementById('challengebox').style.visibility="hidden";
-},
+};
 
 MessageHandler.prototype.rejectChallenge = function(challenger) {
   clearTimeout(this.challengeTmo);
@@ -225,7 +224,7 @@ MessageHandler.prototype.rejectChallenge = function(challenger) {
   resp.challengee = this.getUsername();
   this.send(resp);
   document.getElementById('challengebox').style.visibility="hidden";
-},
+};
 
 MessageHandler.prototype.challenge = function(username) {
   var msg = messages.message.CHALLENGE_REQ.new();
@@ -233,16 +232,16 @@ MessageHandler.prototype.challenge = function(username) {
   msg.challengee = username;
 
   this.send(msg);
-},
+};
 
 MessageHandler.prototype.handleChallengeResponse = function(msg) {
   console.log("handleChallengeResponse():", msg);
-},
+};
 
 MessageHandler.prototype.setUsername = function(username) {
   this.username = username;
-},
+};
 
 MessageHandler.prototype.getUsername = function() {
   return this.username;
-}
+};

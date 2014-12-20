@@ -21,7 +21,7 @@
       }
 
       //console.log("worm", name, "location:", self.location);
-    }
+    };
     return Worm;
   })();
     

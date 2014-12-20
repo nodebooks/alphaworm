@@ -112,7 +112,7 @@ DatabaseProxy.prototype.setHighscore = function(username, score) {
   var self = this;
 
   this.connection.query("UPDATE userdata SET highscore=? WHERE username = ? AND ? > highscore", [ score, username, score ], function(err, rows){
-    if(err != null) {
+    if(err !== null) {
       console.log("DatabaseProxy.setHighscore failed", err);
     }
     else {
@@ -132,7 +132,7 @@ DatabaseProxy.prototype.updateRanking = function(player) {
 
   // TODO: Try to understand the magic behind the SQL spell below :)
   this.connection.query("SELECT username, highscore FROM userdata ORDER BY highscore DESC LIMIT 100", [], function(err, rows){
-    if(err != null) {
+    if(err !== null) {
       console.log("DatabaseProxy.updateRanking failed", err);
     }
     else {

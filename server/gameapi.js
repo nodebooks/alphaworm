@@ -173,25 +173,25 @@ GameAPI.prototype.createSinglePlayerGame = function(username) {
 
   // Check if user is already in game
   if(typeof this.gameSessions[username] === "undefined") {
-      // Nope, create a new game
-      this.gameSessions[username] = new GameSession([username], this.messageHandler, this.databaseProxy);
+    // Nope, create a new game
+    this.gameSessions[username] = new GameSession([username], this.messageHandler, this.databaseProxy);
 
-      // Wait for game events
-      this.gameSessions[username].on('end', function(username) {
-        console.log("Event GameSession.end");
-        self.endGame(username);
-      });
+    // Wait for game events
+    this.gameSessions[username].on('end', function(username) {
+      console.log("Event GameSession.end");
+      self.endGame(username);
+    });
 
-      this.startGame([username]);
-    }
-    else {
-      // Yep, return NOK
-      //console.log("User", username, "already in game.");
-      return "NOK";
-    }
-  },
+    this.startGame([username]);
+  }
+  else {
+    // Yep, return NOK
+    //console.log("User", username, "already in game.");
+    return "NOK";
+  }
+},
 
-  GameAPI.prototype.createMultiplayerGame = function (playerList) {
+GameAPI.prototype.createMultiplayerGame = function (playerList) {
   // Create a multiplayer game
   var newGame = null;
 

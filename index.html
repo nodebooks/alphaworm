@@ -58,7 +58,7 @@
           event.preventDefault;
         //console.log("event.which:", event.which, "event.keyCode:", event.keyCode, "event.charCode:", event.charCode);
         if (event.which == 13 || event.keyCode == 13) {
-            // Lähetä tekstirimpsu jos sen length > 0
+            // Send only if length > 0
             var chatmsg = document.getElementById('chatmessage').value;
             if (chatmsg) {
               var msg = messages.message.CHAT_MESSAGE.new();
