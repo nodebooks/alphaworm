@@ -23,12 +23,12 @@ MessageBroker.prototype.init = function() {
       console.log("MessageBroker: received message:", JSON.parse(data));
     });
   });
-},
+};
 
 MessageBroker.prototype.attachMessageHandler = function(messageHandler) {
   this.messageHandler = messageHandler;
   console.log("MessageBroker: MessageHandler attached");
-}
+};
 
 // Make MessageBroker available outside this file
 module.exports = MessageBroker;

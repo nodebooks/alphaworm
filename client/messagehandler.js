@@ -8,6 +8,6 @@ MessageHandler.prototype.init = function() {
 },
 
 MessageHandler.prototype.attachBroker = function(messageBroker) {
-  console.log("MessageHandler: messageBroker attached.")
+  console.log("MessageHandler: messageBroker attached.");
   this.messageBroker = messageBroker;
 }

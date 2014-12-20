@@ -6,6 +6,6 @@ function GameAPI() {
 
 GameAPI.prototype.attachMessageHandler = function(messageHandler) {
   this.messageHandler = messageHandler;
-}
+};
 
 module.exports = GameAPI;
