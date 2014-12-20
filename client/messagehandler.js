@@ -7,16 +7,15 @@ function MessageHandler() {
 MessageHandler.prototype.init = function() {
   console.log("MessageHandler started");
   this.messageBroker = new MessageBroker(this);
-},
-
+};
 MessageHandler.prototype.attachBroker = function(messageBroker) {
-  console.log("MessageHandler: messageBroker attached.")
+  console.log("MessageHandler: messageBroker attached.");
   this.messageBroker = messageBroker;
-},
+};
 
 MessageHandler.prototype.send = function(msg) {
   this.messageBroker.send(msg);
-},
+};
 
 MessageHandler.prototype.receive = function(msg) {
   switch(msg.name) {
@@ -33,7 +32,7 @@ MessageHandler.prototype.receive = function(msg) {
     console.log("MessageHandler: default branch reached");
     break;
   }
-},
+};
 
 MessageHandler.prototype.handleLoginResponse = function(msg) {
   if(msg.status == "OK" && msg.username) {
@@ -48,9 +47,9 @@ MessageHandler.prototype.handleLoginResponse = function(msg) {
     //console.log(tmp);
     document.getElementById('infotext').style.color = "red";
     document.getElementById('infotext').innerHTML = "Login failed.";
-    var t = setTimeout(function() { document.getElementById('infotext').innerHTML = tmp; document.getElementById('infotext').style.color = "black"; }, 2000)
+    var t = setTimeout(function() { document.getElementById('infotext').innerHTML = tmp; document.getElementById('infotext').style.color = "black"; }, 2000);
   }
-},  
+};  
 
 MessageHandler.prototype.handleRegistrationResponse = function(msg) {
   if(msg.status == "OK" && msg.username) {
@@ -64,14 +63,14 @@ MessageHandler.prototype.handleRegistrationResponse = function(msg) {
     var tmp = document.getElementById('infotext').innerHTML;
     document.getElementById('infotext').style.color = "red";
     document.getElementById('infotext').innerHTML = "Login failed.";
-    var t = setTimeout(function() { document.getElementById('infotext').innerHTML = tmp; document.getElementById('infotext').style.color = "black"; }, 2000)
+    var t = setTimeout(function() { document.getElementById('infotext').innerHTML = tmp; document.getElementById('infotext').style.color = "black"; }, 2000);
   }
-},
+};
 
 MessageHandler.prototype.setUsername = function(username) {
   this.username = username;
-},
+};
 
 MessageHandler.prototype.getUsername = function() {
   return this.username;
-}
+};

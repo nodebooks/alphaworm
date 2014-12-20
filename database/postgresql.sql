@@ -1,5 +1,5 @@
 CREATE DATABASE mygamedb;
-\c mygamedatabase;
+\c mygamedb;
 
 CREATE EXTENSION pgcrypto;
 CREATE OR REPLACE FUNCTION SHA1(bytea) returns text AS $$

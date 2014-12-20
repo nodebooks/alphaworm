@@ -40,12 +40,13 @@ MessageBroker.prototype.init = function() {
       }
     });
   });
-},
+};
 
 MessageBroker.prototype.attachMessageHandler = function(messageHandler) {
+
   console.log("MessageBroker: MessageHandler attached");
   this.messageHandler = messageHandler;
-},
+};
 
 // Received data from Client
 MessageBroker.prototype.receive = function(from, data) {
@@ -56,16 +57,17 @@ MessageBroker.prototype.receive = function(from, data) {
   else {
     console.log("MessageBroker: MessageHandler is not attached");
   }
-},
+};
 
 // Sending data to Client
 MessageBroker.prototype.send = function(to, msg) {
+
   // TODO: Make sure that websocket is still open, sending to closed socket will crash the server
   var stringified_msg = JSON.stringify(msg);
   var websocket = this.clients[to.toLowerCase()];
   
   websocket.send(stringified_msg);
-},
+};
 
 MessageBroker.prototype.authenticate = function(websocket, msg) {
 
@@ -73,6 +75,7 @@ MessageBroker.prototype.authenticate = function(websocket, msg) {
     case 'REGISTRATION_REQUEST':
     this.messageHandler.gameAPI.createUser(websocket, msg);
     break;
+
 
     case 'LOGIN_REQUEST':
     this.messageHandler.gameAPI.login(websocket, msg);
@@ -82,11 +85,12 @@ MessageBroker.prototype.authenticate = function(websocket, msg) {
     // TODO: what to do?
     break;
   }
-},
+};
 
 MessageBroker.prototype.logout = function(websocket) {
+
   this.messageHandler.gameAPI.logout(websocket);
-}
+};
 
 // Make MessageBroker available outside this file
 module.exports = MessageBroker;

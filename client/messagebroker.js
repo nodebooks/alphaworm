@@ -32,14 +32,14 @@ MessageBroker.prototype.init = function() {
     console.log("websocket disconnected");
     document.getElementById('system-messages').innerHTML += "<br />Websocket disconnected";
   };
-},
+};
 
 MessageBroker.prototype.receive = function(msg) {
   // Use JSON.parse() to deserialize the JavaScript object
   this.messageHandler.receive(JSON.parse(msg));
-},
+};
 
 MessageBroker.prototype.send = function(msg) {
   // Use JSON.stringify() to serialize message to a JavaScript object
   this.ws.send(JSON.stringify(msg));
-}
+};

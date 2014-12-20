@@ -46,7 +46,7 @@
         return JSON.parse(JSON.stringify(this.message));
       }
     }
-  }
+  };
 
   exports.message = message;
 

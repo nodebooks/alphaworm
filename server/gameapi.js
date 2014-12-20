@@ -11,39 +11,44 @@ function GameAPI() {
 }
 
 GameAPI.prototype.init = function() {
+
   // Create and initialize database connection
   this.databaseProxy = new DatabaseProxy(this);
-},
+};
 
 GameAPI.prototype.attachMessageHandler = function(messageHandler) {
-  console.log("GameAPI: MessageHandler attached");
 
+  console.log("GameAPI: MessageHandler attached");
   this.messageHandler = messageHandler;
-}
+};
 
 GameAPI.prototype.createUser = function(websocket, msg) {
+
   this.databaseProxy.createUser(websocket, msg);
-},
+};
 
 GameAPI.prototype.login = function(websocket, msg) {
+
   this.databaseProxy.login(websocket, msg);
-},
+};
 
 GameAPI.prototype.logout = function(websocket) {
+
   if(typeof websocket.username !== 'undefined') {
     console.log("User", websocket.username, "logged out.");
     delete this.players[websocket.username];
   }
-},
+};
 
 GameAPI.prototype.send = function(to, msg){
+
   this.messageHandler.send(to, msg);
-}
+};
 
 
 function DatabaseProxy(gameAPI) {
-  // See https://github.com/felixge/node-mysql for more details.
 
+  // See https://github.com/felixge/node-mysql for more details.
   this.gameAPI = gameAPI;
   this.connection = null;
 
@@ -81,6 +86,7 @@ DatabaseProxy.prototype.init = function() {
   },
 
 DatabaseProxy.prototype.createUser = function(websocket, msg) {
+  
   console.log("DatabaseProxy.createUser", msg);
 
   // Generate response message
@@ -105,6 +111,7 @@ DatabaseProxy.prototype.createUser = function(websocket, msg) {
 },
 
 DatabaseProxy.prototype.login = function(websocket, msg) {
+  
   console.log("DatabaseProxy.login", msg);
 
   // Hook for callback(s)
@@ -141,6 +148,6 @@ DatabaseProxy.prototype.login = function(websocket, msg) {
   else {
       // Possible hacker, don't send any response? :)
   }
-}
+};
 
 module.exports = GameAPI;
