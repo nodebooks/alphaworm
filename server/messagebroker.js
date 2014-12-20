@@ -21,6 +21,12 @@ MessageBroker.prototype.init = function() {
       self.logout(websocket);
     });
 
+    // CONNECTION ERROR, e.g. timeout
+    websocket.on('error', function() {
+      console.log("MessageBroker: client connection failed");
+      self.logout(websocket);
+    });
+
     // RECEIVE A MESSAGE
     websocket.on('message', function(data, flags) {
       var msg = JSON.parse(data);

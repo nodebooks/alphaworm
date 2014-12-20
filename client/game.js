@@ -226,7 +226,7 @@ Game.prototype.handleInput = function(event) {
 
   //console.log("Game.handleInput", direction);
   
-  if (direction != null) {
+  if (direction !== null) {
     var msg = messages.message.USER_INPUT.new();
     msg.direction = direction;
     msg.username = this.messageHandler.getUsername();
