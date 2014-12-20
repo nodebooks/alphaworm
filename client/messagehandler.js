@@ -9,16 +9,16 @@ function MessageHandler() {
 MessageHandler.prototype.init = function() {
   console.log("MessageHandler started");
   this.messageBroker = new MessageBroker(this);
-},
+};
 
 MessageHandler.prototype.attachBroker = function(messageBroker) {
-  console.log("MessageHandler: messageBroker attached.")
+  console.log("MessageHandler: messageBroker attached.");
   this.messageBroker = messageBroker;
-},
+};
 
 MessageHandler.prototype.send = function(msg) {
   this.messageBroker.send(msg);
-},
+};
 
 MessageHandler.prototype.receive = function(msg) {
   console.log("MessageHandler.receive", msg);
@@ -52,7 +52,7 @@ MessageHandler.prototype.receive = function(msg) {
     console.log("MessageHandler: default branch reached");
     break;
   }
-},
+};
 
 MessageHandler.prototype.handleLoginResponse = function(msg) {
   if(msg.status == "OK" && msg.username) {
@@ -70,41 +70,41 @@ MessageHandler.prototype.handleLoginResponse = function(msg) {
     var t = setTimeout(function() { 
       document.getElementById('infotext').innerHTML = tmp; 
       document.getElementById('infotext').style.color = "black"; 
-    }, 2000)
+    }, 2000);
   }
-},
+};
 
-  MessageHandler.prototype.handleRegistrationResponse = function(msg) {
-    if(msg.status == "OK" && msg.username) {
-      this.setUsername(msg.username);
-      document.getElementById('infotext').style.color = "black";
-      document.getElementById('infotext').innerHTML = "New player <strong>" +
-      msg.username + "</strong> registered.";
-      document.getElementById('infotext').innerHTML += '&nbsp;&nbsp;<input id="logout_button" type="submit" value="Logout" onclick="logout();">';
-    }
-    else {
-      var tmp = document.getElementById('infotext').innerHTML;
-      document.getElementById('infotext').style.color = "red";
-      document.getElementById('infotext').innerHTML = "Login failed.";
-      var t = setTimeout(function() { 
-        document.getElementById('infotext').innerHTML = tmp; 
-        document.getElementById('infotext').style.color = "black"; 
-      }, 2000)
-    }
-  },
+MessageHandler.prototype.handleRegistrationResponse = function(msg) {
+  if(msg.status == "OK" && msg.username) {
+    this.setUsername(msg.username);
+    document.getElementById('infotext').style.color = "black";
+    document.getElementById('infotext').innerHTML = "New player <strong>" +
+    msg.username + "</strong> registered.";
+    document.getElementById('infotext').innerHTML += '&nbsp;&nbsp;<input id="logout_button" type="submit" value="Logout" onclick="logout();">';
+  }
+  else {
+    var tmp = document.getElementById('infotext').innerHTML;
+    document.getElementById('infotext').style.color = "red";
+    document.getElementById('infotext').innerHTML = "Login failed.";
+    var t = setTimeout(function() { 
+      document.getElementById('infotext').innerHTML = tmp; 
+      document.getElementById('infotext').style.color = "black"; 
+    }, 2000);
+  }
+};
 
-  MessageHandler.prototype.handleChatMessage = function(msg) {
-    console.log("handleChatMessage");
+MessageHandler.prototype.handleChatMessage = function(msg) {
+  console.log("handleChatMessage");
 
-    if (msg.username == "System notice") {
-      document.getElementById('messagebox').innerHTML += '<div id="message">' + msg.username + ':&nbsp;&nbsp;' + msg.text + '</div>';
-    }
-    else {
-      document.getElementById('messagebox').innerHTML += '<div id="message"><a href="#" title="message">'+ msg.username + ':</a>&nbsp;&nbsp;' + msg.text + '</div>';
-    }
-  // Messagebox auto-scroll (quick 'n dirty hack, but should work :)
-  document.getElementById('chatbox').scrollTop += 20;
-},
+  if (msg.username == "System notice") {
+    document.getElementById('messagebox').innerHTML += '<div id="message">' + msg.username + ':&nbsp;&nbsp;' + msg.text + '</div>';
+  }
+  else {
+    document.getElementById('messagebox').innerHTML += '<div id="message"><a href="#" title="message">'+ msg.username + ':</a>&nbsp;&nbsp;' + msg.text + '</div>';
+  }
+// Messagebox auto-scroll (quick 'n dirty hack, but should work :)
+document.getElementById('chatbox').scrollTop += 20;
+};
 
 MessageHandler.prototype.updatePlayerList = function(msg) {
   switch(msg.type) {
@@ -113,7 +113,7 @@ MessageHandler.prototype.updatePlayerList = function(msg) {
     for (var item in msg.players) {
       console.log("partial update", item, ":", msg.players[item]);
 
-      if (msg.players[item].authenticated == true || msg.players[item].authenticated == "true") {
+      if (msg.players[item].authenticated === true || msg.players[item].authenticated == "true") {
         var pre = '<div id="' + msg.players[item].username +'">';
         var player = msg.players[item].username;
         post = '</div>';
@@ -145,7 +145,7 @@ MessageHandler.prototype.updatePlayerList = function(msg) {
     break;
   }
   this.sortDivs(document.getElementById('onlineplayerlist'));
-},
+};
 
 MessageHandler.prototype.updateRankingList = function(msg) {
 
@@ -155,10 +155,10 @@ MessageHandler.prototype.updateRankingList = function(msg) {
     tmpusers += '<td><strong>' + msg.players[item].username + '</strong></td><td>' + msg.players[item].highscore + '</td>';
     tmpusers += '</tr>';
   }
-  tmpusers += '</table>'
+  tmpusers += '</table>';
   document.getElementById('rankedplayers').innerHTML = tmpusers;
   console.log("MessageHandler: Ranking list updated");
-},
+};
 
 MessageHandler.prototype.sortDivs = function(container) {
   //console.log("sorting", container);
@@ -180,12 +180,12 @@ MessageHandler.prototype.sortDivs = function(container) {
   for(var i=0, l = toSort.length; i<l; i++) {
     parent.appendChild(toSort[i]);
   }
-},
+};
 
 MessageHandler.prototype.setUsername = function(username) {
   this.username = username;
-},
+};
 
 MessageHandler.prototype.getUsername = function() {
   return this.username;
-}
+};

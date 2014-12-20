@@ -43,15 +43,15 @@ MessageBroker.prototype.init = function() {
     self.messageHandler.receive(recv);
 
   };
-},
+};
 
 MessageBroker.prototype.receive = function(msg) {
   // JSON.parse creates a JavaScript object
   this.messageHandler.receive(JSON.parse(msg));
-},
+};
 
 MessageBroker.prototype.send = function(msg) {
   // JSON.stringify serialises a JavaScript object 
   // (i.e. makes object a string)
   this.ws.send(JSON.stringify(msg));
-}
+};

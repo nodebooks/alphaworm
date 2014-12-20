@@ -19,7 +19,7 @@ GameServer.prototype.setupVariables = function() {
   this.domain     = process.env.OPENSHIFT_APP_DNS || '127.0.0.1';
   // Use websocket port 8000 in OpenShift, otherwise port 8080
   this.clientport = (process.env.OPENSHIFT_NODEJS_IP) ? 8000:8080;
-}
+};
 
 GameServer.prototype.init = function() {
   console.log("Initialising server...");
@@ -66,7 +66,7 @@ GameServer.prototype.init = function() {
   this.messageHandler.attachMessageBroker(this.messageBroker);
 
   console.log("game server started");
-}
+};
 
 // Create the game server
 var gameServer = new GameServer();

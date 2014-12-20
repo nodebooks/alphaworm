@@ -43,7 +43,7 @@ DatabaseProxy.prototype.init = function() {
       console.log("DatabaseProxy: database connection failed:", err);
     }
   });
-},
+};
 
 DatabaseProxy.prototype.createUser = function(websocket, msg) {
   console.log("DatabaseProxy.createUser", msg);
@@ -66,7 +66,7 @@ DatabaseProxy.prototype.createUser = function(websocket, msg) {
       // Send response message back to client directly through websocket
     websocket.send(JSON.stringify(response));
   });
-},
+};
 
 DatabaseProxy.prototype.login = function(websocket, msg) {
   console.log("DatabaseProxy.login", msg);
@@ -103,7 +103,7 @@ DatabaseProxy.prototype.login = function(websocket, msg) {
   else {
     // Possible hacker, don't send any response? :)
   }
-},
+};
 
 DatabaseProxy.prototype.setHighscore = function(username, score) {
   console.log("DatabaseProxy.setHighscore", score, "for", username);
@@ -112,7 +112,7 @@ DatabaseProxy.prototype.setHighscore = function(username, score) {
   var self = this;
 
   this.connection.query("UPDATE userdata SET highscore=? WHERE username = ? AND ? > highscore", [ score, username, score ], function(err, rows){
-    if(err != null) {
+    if(err !== null) {
       console.log("DatabaseProxy.setHighscore failed", err);
     }
     else {
@@ -121,7 +121,7 @@ DatabaseProxy.prototype.setHighscore = function(username, score) {
       self.updateRanking('broadcast');
     }
   });
-},
+};
 
 // player = username of a certain player, or 'broadcast' or '' if sent to all logged in players
 DatabaseProxy.prototype.updateRanking = function(player) {
@@ -132,7 +132,7 @@ DatabaseProxy.prototype.updateRanking = function(player) {
 
   // TODO: Try to understand the magic behind the SQL spell below :)
   this.connection.query("SELECT username, highscore FROM userdata ORDER BY highscore DESC LIMIT 100", [], function(err, rows){
-    if(err != null) {
+    if(err !== null) {
       console.log("DatabaseProxy.updateRanking failed", err);
     }
     else {
@@ -149,6 +149,6 @@ DatabaseProxy.prototype.updateRanking = function(player) {
       }
     }
   });
-}
+};
 
 module.exports = DatabaseProxy;

@@ -35,7 +35,8 @@ function GameAPI() {
 
     for(var item in this.players) {
       var player = { username: item,
-                     authenticated: true}
+                     authenticated: true
+      };
       broadcastmsg.players.push(player);
     }
     broadcastmsg.players.splice(0, 1);
@@ -75,31 +76,31 @@ GameAPI.prototype.init = function() {
   this.databaseProxy.on('login', function(websocket) {
     self.loginPlayer(websocket);
   });
-},
+};
 
 GameAPI.prototype.attachMessageHandler = function(messageHandler) {
   console.log("GameAPI: MessageHandler attached");
   this.messageHandler = messageHandler;
-},
+};
 
 GameAPI.prototype.createUser = function(websocket, msg) {
   this.databaseProxy.createUser(websocket, msg);
-},
+};
 
 GameAPI.prototype.login = function(websocket, msg) {
   this.databaseProxy.login(websocket, msg);
-},
+};
 
 GameAPI.prototype.logout = function(websocket) {
   if(typeof websocket.username !== 'undefined') {
     this.logoutPlayer(websocket);
   }
-},
+};
 
 GameAPI.prototype.send = function(to, msg){
   console.log("GameAPI.send:", msg);
   this.messageHandler.send(to, msg);
-},
+};
 
 GameAPI.prototype.broadcast = function(from, msg) {
   console.log("GameAPI.broadcast:", msg);
@@ -107,6 +108,6 @@ GameAPI.prototype.broadcast = function(from, msg) {
   for(var player in this.players) {
     this.messageHandler.send(this.players[player].username, msg);
   }
-}
+};
 
 module.exports = GameAPI;
