@@ -8,4 +8,4 @@ Alphaworm source codes, check branches per iteration:
 
 a) Iteration Five [http://alphaworm-nodebooks.rhcloud.com/](http://alphaworm-nodebooks.rhcloud.com/)
 
-b) Final [http://betaworm-nodebooks.rhcloud.com/](http://betaworm-nodebooks.rhcloud.com/]
+b) Final [http://betaworm-nodebooks.rhcloud.com/](http://betaworm-nodebooks.rhcloud.com/)
