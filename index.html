@@ -182,6 +182,11 @@
             </div>
 	  </fieldset>
 	</div>
+
+	 <div id="feedback">
+          <h1 id="feedbacktext"></h1>
+         </div>
+	 
       </div>
       <div id="logo">
         <img src="media/alphaworm-logo.png">
@@ -213,10 +218,12 @@
            Please login, or hit register<br/>
            if you do not have account yet.
           </div>
-          Player: <input type="text" id="username" size="10" maxlength="10">
-          Password: <input type="password" id="password" size="10" maxlength="20">
-          <input class="button ui-space-blue" id="login_button" type="submit" value="Login" onclick="login()">
-          <input class="button ui-space-blue" id="register_button" type="submit" value="Register" onclick="register()">
+          <input type="text" id="username" size="10" maxlength="10" placeholder="Username">
+          <input type="password" id="password" size="10" maxlength="20"  placeholder="Password">
+	  <div id="loginbuttons">
+            <input class="button ui-space-blue" id="login_button" type="submit" value="Login" onclick="login()">
+            <input class="button ui-space-blue" id="register_button" type="submit" value="Register" onclick="register()">
+	  </div>
         </fieldset>
       </div>
     </div>
@@ -231,10 +238,23 @@
     </div>
 
     <div id="gameover">
-      <div class="stats" >
-	<h1>Game over!</h1>
-	Collected: <h1 id="numcollected">0</h1><br/>
+      
+      <div class="trophies">
+
+        <img class="bronze" style="float:left;" src="./media/goblet-bronze.png"/>
+        <img class="bronze" style="float:right;" src="./media/goblet-bronze.png"/>
+
+	<div class="stats" >
+	  <h1>Game over!</h1>
+	  Collected: <h1 id="numcollected">0</h1><br/>
+	  Result: <div>
+	    <img id="star1" class="star" src="./media/star.png"/>
+	    <img id="star2" class="star" src="./media/star.png"/>
+	    <img id="star3" class="star" src="./media/star.png"/>
+	  </div>
+	</div>
       </div>
+
     </div>
 
     <div id="chat">

@@ -51,6 +51,15 @@ var ShowEffect = function(target){
   return t;
 }
 
+function DisplayFeedback(text) {
+  document.getElementById('feedbacktext').innerHTML = text;
+  var appear = ShowEffect('feedbacktext');
+  var disappear = HideEffect('feedbacktext');
+  disappear.delay(1000);
+  appear.chain(disappear);
+  appear.start();
+}
+
 var SlideFromRight = function(which) {
     var tween = new TWEEN.Tween( { y: -500 })
 	.to ( { y: 0 }, 500)
@@ -85,6 +94,24 @@ var SlideFromLeft = function(which) {
     return tween;
 }
 
+var BounceDropFromAbove = function(which) {
+  var r = document.getElementById(which).getBoundingClientRect();  
+  var tween = new TWEEN.Tween( { y: -600 })
+    .to ( { y: r.top }, 750)
+    .easing( TWEEN.Easing.Bounce.Out)
+    .onStart( function(){
+      document.getElementById(which).style.visibility = 'visible';
+      document.getElementById(which).style["-webkit-transform"] = "scale(1)";
+      document.getElementById(which).style["transform"] = "scale(1)";
+      document.getElementById(which).style["-o-transform"] = "scale(1)";
+      document.getElementById(which).style["-ms-transform"] = "scale(1)";
+    })
+    .onUpdate( function(){
+      var tmp = document.getElementById(which);
+      tmp.style["top"] = this.y + "px";
+    });
+  return tween;
+}
 
 function Game(messagehandler) {
 
@@ -102,6 +129,11 @@ function Game(messagehandler) {
   renderer.start();
 
   this.init();
+  this.cheerWords = ["Great!", "Outstanding!", "Yes!", "Nice!", "Good!",
+		     "Amazing!" ];
+  this.tauntWords = ["Ouch!", "Not quite!", "Try harder!", "Whatta?!" ];
+  // star achievement limits 
+  this.starLimits = [ 3, 10, 15 ];
 }
 
 Game.prototype.onRegistrationSuccess = function(username) {
@@ -118,7 +150,7 @@ Game.prototype.onRegistrationFail = function() {
   document.getElementById('infotext').innerHTML = "Registration failed.";
   var t = setTimeout(function() { 
     document.getElementById('infotext').innerHTML = tmp; 
-    document.getElementById('infotext').style.color = "black"; 
+    document.getElementById('infotext').style.color = "while"; 
   }, 2000)
   document.getElementById('fail_audio').play();
 }
@@ -151,7 +183,7 @@ Game.prototype.onLoginFail = function() {
   document.getElementById('infotext').innerHTML = "Login failed.";
   var t = setTimeout(function() { 
     document.getElementById('infotext').innerHTML = tmp; 
-    document.getElementById('infotext').style.color = "black"; 
+    document.getElementById('infotext').style.color = "white"; 
   }, 2000)
   document.getElementById('fail_audio').play();
 },
@@ -229,8 +261,14 @@ Game.prototype.onFoodCollect = function( food, collectType  ) {
     document.getElementById(food.location).innerHTML = "";
 
   } else {
-    if ( collectType == 1 ) document.getElementById('correctletter_audio').play();
-    else document.getElementById('fail_audio').play();
+    if ( collectType == 1 ) {
+      document.getElementById('correctletter_audio').play();
+      DisplayFeedback( this.cheerWords[Math.floor(Math.random()*this.cheerWords.length)]);
+    }
+    else {
+      document.getElementById('fail_audio').play();
+      DisplayFeedback( this.tauntWords[Math.floor(Math.random()*this.tauntWords.length)]);
+    }
 
     // when we collected
     var cell = document.getElementById(food.location);
@@ -592,6 +630,41 @@ Game.prototype.getWormTileByPosition = function ( positions, i ) {
   return worm.body.horizontal;
 }
 
+Game.prototype.initBoardEffect = function() {
+
+  document.getElementById('gameboard').style['visibility'] = 'visible';
+  var self = this;
+  var tween = new TWEEN.Tween( { s:0.0 })
+    .to( { s:1.0 }, 1050 )
+    .easing( TWEEN.Easing.Bounce.Out)
+    .onStart( function(){
+      for(var i=0; i<self.gameArea.height; i++) {
+	for(var j=0; j<self.gameArea.width; j++) {
+	  var id = (j+(i*self.gameArea.height)) + "_bg";
+	  document.getElementById(id).style["-webkit-transform"] = "scale(0)";
+	  document.getElementById(id).style["transform"] = "scale(0)";
+	  document.getElementById(id).style["-o-transform"] = "scale(0)";
+	  document.getElementById(id).style["-ms-transform"] = "scale(0)";
+	  document.getElementById(id).style["visibility"] = "visible";
+	  //document.getElementById(id).style["opacity"] = "0.0";
+	}
+      }
+    })
+    .onUpdate( function(){
+      for(var i=0; i<self.gameArea.height; i++) {
+	for(var j=0; j<self.gameArea.width; j++) {
+	  var id = (j+(i*self.gameArea.height)) + "_bg";
+	  document.getElementById(id).style["-webkit-transform"] = "scale("+this.s+")";
+	  document.getElementById(id).style["transform"] = "scale("+this.s+")";
+	  document.getElementById(id).style["-o-transform"] = "scale("+this.s+")";
+	  document.getElementById(id).style["-ms-transform"] = "scale("+this.s+")";
+	  //document.getElementById(id).style["opacity"] = this.s;
+	}
+      }
+    });
+    tween.start();
+}
+
 Game.prototype.killBoardEffect = function() {
 
   var self = this;
@@ -627,23 +700,34 @@ Game.prototype.killBoardEffect = function() {
 
 Game.prototype.displayEndStats = function( collected ) {
 
-  // Show "menu" again with same animation as before
-
-  var hideStats = HideEffect('score');
-  hideStats.start();
-
+  var self = this;
   document.getElementById('gameboard').style['visibility'] = 'hidden';      
+  // hide stars
+  for(var i = 1;i<4;i++){
+    var name = "star"+i;
+    document.getElementById(name).style["-webkit-transform"] = "scale(0)";
+    document.getElementById(name).style["transform"] = "scale(0)";
+    document.getElementById(name).style["-o-transform"] = "scale(0)";
+    document.getElementById(name).style["-ms-transform"] = "scale(0)";
+  }
+  
+  var countTween = new TWEEN.Tween( { count: 0 })
+    .to ( { count: collected }, 2000)
+    .easing( TWEEN.Easing.Quintic.Out)
+    .onUpdate( function(){
+	
+      var tmp = document.getElementById("numcollected");
+      tmp.innerHTML = Math.floor(this.count);
+      
+    });
+  
+  var hideGameOver = new TWEEN.Tween( {})
+    .to( {}, 250)
+    .easing( TWEEN.Easing.Linear.None )
+    .onComplete( function(){
 
-  hideStats.onComplete(function(){
-    
-    var r = document.getElementById('logotext').getBoundingClientRect(); 
-    var tmp = document.getElementById('gameover');
-    tmp.style['top'] = r.bottom + "px";
-    tmp.style['visibility'] = 'visible';
-    
-    window.setTimeout( function(){
-      document.getElementById('gameover').style['visibility'] = 'hidden';
-
+      HideEffect('gameover').start();
+      // Show "menu" again with same animation as before
       var showRanking = SlideFromRight('rankinglist');
       var showPlayers = SlideFromLeft('onlineplayers');
       document.getElementById("logotext").innerHTML = "<h1>A Planetscale Hunger For Words.</h1>";
@@ -652,8 +736,54 @@ Game.prototype.displayEndStats = function( collected ) {
       window.setTimeout( function(){
 	showPlayers.start();
       },250);
-    },2500);
+    });
+  
+  var hideStats = HideEffect('score');
+  hideStats.onComplete(function(){
+
+    var drop = BounceDropFromAbove('gameover');
+    drop.chain(countTween);
+    // determine how many stars should be created
+    console.log('limits', self.starLimits);
+    var showStarsCount = 0;
+    if      ( collected >= self.starLimits[2] ) showStarsCount = 3;
+    else if ( collected >= self.starLimits[1] ) showStarsCount = 2;
+    else if ( collected >= self.starLimits[0] ) showStarsCount = 1;
+
+    // generate tween and chain it.
+    if ( showStarsCount > 0 )
+      countTween.chain(createStarTween(1,showStarsCount));
+    else
+      countTween.chain(hideGameOver);
+    
+    function createStarTween(which, numStars){
+
+      var starTween = new TWEEN.Tween( { s: 0, id:which})
+	.to ( { s: 1.0 }, 550)
+	.easing( TWEEN.Easing.Elastic.Out)
+	.onUpdate( function(){
+	  var name = 'star'+this.id;
+	  document.getElementById(name).style["-webkit-transform"] = "scale("+this.s+")";
+	  document.getElementById(name).style["transform"] = "scale("+this.s+")";
+	  document.getElementById(name).style["-o-transform"] = "scale("+this.s+")";
+	  document.getElementById(name).style["-ms-transform"] = "scale("+this.s+")";
+	  
+	})
+	.onComplete(function(){
+	  if ( this.id < numStars ) {
+	    createStarTween(this.id+1, numStars).start();
+	  } else {
+	    hideGameOver.start();
+	  }
+	});
+      return starTween;
+    }
+    
+    drop.start();
+    
   });
+  hideStats.start();
+
 },
 
 Game.prototype.onGameStart = function(msg) {
@@ -671,7 +801,9 @@ Game.prototype.onGameStart = function(msg) {
     self.playMusic(self.preferredVolume);
     var showStats = SlideFromRight('score');
     showStats.start();
-    document.getElementById('gameboard').style['visibility'] = 'visible';
+    
+
+    self.initBoardEffect();
 
   });
 
@@ -714,16 +846,15 @@ Game.prototype.onPlayerListChange = function() {
   this.messageHandler.sortDivs(document.getElementById('onlineplayerlist'));
 },
 
-
-
 Game.prototype.onRankingListChange = function (playerList){
-  var tmpusers = '<table id="rankings">';
+  var tmpusers = '<div id="rankings">';
+  tmpusers += '<ol>';
   for(var item in playerList) {
-    tmpusers += '<tr>';
-    tmpusers += '<td><strong>' + playerList[item].username + '</strong></td><td>' + playerList[item].highscore + '</td>';
-    tmpusers += '</tr>';
+    tmpusers += '<li>';
+    tmpusers += playerList[item].username + '<span style="float:right;">' + playerList[item].highscore +'</span>';
+    tmpusers += '</li>';
   }
-  tmpusers += '</table>'
+  tmpusers += '</div>'
   document.getElementById('rankedplayers').innerHTML = tmpusers;
   console.log("MessageHandler: Ranking list updated");
 },
@@ -792,7 +923,7 @@ Game.prototype.initGame = function(msg) {
   this.prevScore = 0;
   // for detecting letter collisions properly.
   this.foods = [];
-
+  
 },
 
 Game.prototype.playMusic = function(volume) {
@@ -883,6 +1014,7 @@ Game.prototype.initGameboard = function() {
 
   document.getElementById('gameboard').innerHTML = gameboard;
   this.updateGameboard();
+  this.hideBackgroundTiles();
 },
 
 Game.prototype.updateGameboard = function() {
@@ -895,6 +1027,15 @@ Game.prototype.updateGameboard = function() {
     }
   }
 },
+
+Game.prototype.hideBackgroundTiles = function(){
+  for(var i=0; i<this.gameArea.height; i++) {
+    for(var j=0; j<this.gameArea.width; j++) {
+      var id = (j+(i*this.gameArea.height));
+      document.getElementById(id+'_bg').style["visibility"] = "hidden";
+    }
+  }
+}
 
 Game.prototype.setFood = function() {
   // Check if any food is missing

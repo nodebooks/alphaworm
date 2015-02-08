@@ -39,6 +39,14 @@
   top:50%;
   text-align: center;    
 }
+.bronze {
+  transform: scale(0.75);
+}
+.trophies {
+  width: 650px;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 .stats {
   position: relative;
@@ -85,11 +93,33 @@ H3 {
 
 input {
   color: black;
+  min-height: 25px;
 }
+
+#feedback {
+    height: 300px;
+    width: 200px;
+    position: absolute;
+    left:0px;
+    top:0px;
+    margin: 0;
+    display: inline-block;
+    visibility: hidden;
+}
+
+
 
 .container {
   width: 94%;
   margin: 3%;
+}
+
+#infotext {
+    margin: 0.5cm 0.5cm 0.5cm 0.5cm;
+}
+
+#loginbuttons {
+    margin: 0.5cm 0.5cm 0.5cm 0.5cm;
 }
 
 #login {
@@ -97,6 +127,8 @@ input {
   width: 100%;
   visibility: hidden;
   z-index: 12;
+  text-align: center;
+
 }
 
 #loginwindow {
@@ -217,15 +249,6 @@ input {
   visibility: hidden;
 }
 
-table, th, td, tr {
-  border: 0px solid green;
-  padding: 0px;
-  margin: auto;
-}
-td {
-  width: 19px;
-  height: 19px;
-}
 .worm {
   visibility: inherit;
   position: relative;
