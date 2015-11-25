@@ -40,7 +40,10 @@
   text-align: center;    
 }
 .bronze {
-  transform: scale(0.75);
+    transform: scale(0.75);
+    -webkit-transform: scale(0.75);
+    -ms-transform: scale(0.75);
+    -o-transform: scale(0.75);
 }
 .trophies {
   width: 650px;
