@@ -55,7 +55,8 @@ Game.prototype.initGameboard = function() {
   gameboard += '</table>';
   gameboard += "W = up, A = left, S = down, D = right";
   gameboard += "&nbsp;&nbsp;&nbsp;";
-  gameboard += '<input id="start_game" type="submit" value="StartGame" onclick="messageHandler.game.startGame()">';
+  gameboard += '<input id="start_game" type="submit" ' +
+  'value="StartGame" onclick="messageHandler.game.startGame()">';
 
   document.getElementById('gameboard').innerHTML = gameboard;
 
@@ -76,9 +77,10 @@ Game.prototype.setFood = function() {
   // Check if any food is missing
   // Set foods to random positions
   while(this.foods.length < this.amountOfFood) {
-    // A long worm may cause problems when an empty slot is selected
+    // A long worm may cause problems
     // TODO: better algorithm for finding empty slot for food
-    var x = Math.floor(Math.random()*this.gameArea.height*this.gameArea.width);
+    var gameAreaSize = this.gameArea.height*this.gameArea.width;
+    var x = Math.floor(Math.random()*gameAreaSize);
     if (document.getElementById(x).bgColor == this.gameArea.color) {
       this.foods.push(x);
       document.getElementById(x).bgColor = this.food.color;
@@ -104,27 +106,36 @@ Game.prototype.updateMatch = function(msg) {
   // Render worms
   for (var id=0; id<msg.worms.length; id++) {
     for (var x=0; x<msg.worms[id].location.length; x++) {
-      document.getElementById(msg.worms[id].location[x]).bgColor = msg.worms[id].color;
+      document.getElementById(msg.worms[id].location[x]).bgColor= 
+        msg.worms[id].color;
     }
   }
 
   // Render foods
-  for (var x=0; x<msg.food.length; x++) {
-    document.getElementById(msg.food[x].location).bgColor = msg.food[x].color;
+  for (var y=0; y<msg.food.length; y++) {
+    document.getElementById(msg.food[y].location).bgColor = 
+      msg.food[y].color;
   }
 
   document.getElementById("score").innerHTML = "";
-  for (var x=0; x<msg.worms.length; x++) {
+  for (var z=0; z<msg.worms.length; z++) {
     // Play pick_audio when score is increased
-    if (msg.worms[x].name == this.messageHandler.username && this.score < msg.worms[x].score) {
+    if (msg.worms[z].name == this.messageHandler.username && 
+        this.score < msg.worms[z].score) {
 
       document.getElementById('pick_audio').play();
 
-      this.score = msg.worms[x].score;
+      this.score = msg.worms[z].score;
     }
-    var separator = (x+1 != msg.worms.length) ? "&nbsp;&nbsp|&nbsp;&nbsp;" : "";
-    document.getElementById("score").innerHTML += '<strong><font color="' + msg.worms[x].color + '">' + msg.worms[x].name +'</font></strong>';
-    document.getElementById("score").innerHTML += ":&nbsp;" + msg.worms[x].score + separator;
+    var separator = (z+1 != msg.worms.length) ? 
+                    "&nbsp;&nbsp|&nbsp;&nbsp;" : "";
+                    
+    document.getElementById("score").innerHTML += 
+      '<strong><font color="' + msg.worms[z].color + '">' + 
+      msg.worms[z].name +'</font></strong>';
+
+    document.getElementById("score").innerHTML += ":&nbsp;" + 
+      msg.worms[z].score + separator;
 
   }
   if (msg.phase == "INIT") {

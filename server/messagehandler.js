@@ -6,20 +6,23 @@ function MessageHandler() {
   this.messageBroker = undefined;
 }
 
-MessageHandler.prototype.attachGameAPI = function(gameAPI) {
+MessageHandler.prototype.attachGameAPI = 
+function(gameAPI) {
   console.log("MessageHandler: GameAPI attached");
   this.gameAPI = gameAPI;
-},
+};
 
-MessageHandler.prototype.attachGameServer = function(gameServer) {
+MessageHandler.prototype.attachGameServer = 
+function(gameServer) {
   console.log("MessageHandler: GameServer attached");
   this.gameServer = gameServer;
-},
+};
 
-MessageHandler.prototype.attachMessageBroker = function(messageBroker) {
+MessageHandler.prototype.attachMessageBroker = 
+function(messageBroker) {
   console.log("MessageHandler: MessageBroker attached");
   this.messageBroker = messageBroker;
-},
+};
 
 MessageHandler.prototype.receive = function(from, msg) {
 
@@ -38,7 +41,7 @@ MessageHandler.prototype.receive = function(from, msg) {
     break;
 
     case 'DISCONNECT_REQ':
-    console.log("MessageHandler: DISCONNECT_REQ from", msg.username);
+    console.log("DISCONNECT_REQ from", msg.username);
     this.gameAPI.userData(from, msg);
     // Send update to clients
     this.removeFromPlayerList(msg.username);
@@ -54,28 +57,31 @@ MessageHandler.prototype.receive = function(from, msg) {
     break;
 
     default:
-    console.log("MessageHandler.receive: default branch reached for msg", msg.name);
+    console.log("default branch reached for msg", msg.name);
     break;
   }
-},
+};
 
-MessageHandler.prototype.send = function(to, msg) {
+MessageHandler.prototype.send = 
+function(to, msg) {
   //console.log("MessageHandler.send:", msg);
   this.messageBroker.send(to, msg);
-},
+};
 
-MessageHandler.prototype.handleChallengeRequest = function(from, msg) {
+MessageHandler.prototype.handleChallengeRequest = 
+function(from, msg) {
 
   // Route challenge request to challenged player
   if(msg.challenger == from) {
     this.send(msg.challengee, msg);
   }
   else {
-    console.log("MessageHandler.handleChallengeRequest malformed CHALLENGE_REQ", msg);
+    console.log("malformed CHALLENGE_REQ", msg);
   }
-},
+};
 
-MessageHandler.prototype.handleChallengeResponse = function(from, msg) {
+MessageHandler.prototype.handleChallengeResponse = 
+function(from, msg) {
   // If challenge is accepted, create multiplayer game
   // Now only two players are possible, the first to accept challenge will be 
   // the one in game
@@ -83,6 +89,6 @@ MessageHandler.prototype.handleChallengeResponse = function(from, msg) {
     var playerList = [msg.challengee, msg.challenger];
     this.gameAPI.createMultiplayerGame(playerList);
   }
-}
+};
 
 module.exports = MessageHandler;

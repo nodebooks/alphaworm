@@ -28,7 +28,8 @@ MessageHandler.prototype.receive = function(msg) {
 
   switch(msg.name) {
     case 'REGISTRATION_RESPONSE':
-    console.log("MessageHandler: REGISTRATION_RESPONSE", msg.status);
+    console.log("MessageHandler: REGISTRATION_RESPONSE", 
+                msg.status);
     break;
 
     case 'LOGIN_RESPONSE':
@@ -71,15 +72,21 @@ MessageHandler.prototype.handleLoginResponse = function(msg) {
   if(msg.status == "OK" && msg.username) {
     this.setUsername(msg.username);
     document.getElementById('infotext').style.color = "black";
-    document.getElementById('infotext').innerHTML = "Player <strong>" +
-    msg.username + "</strong> logged in.";
-    document.getElementById('infotext').innerHTML += '<br /><input id="logout_button" type="submit" value="Exit" onclick="logout();">';
+
+    document.getElementById('infotext').innerHTML = 
+    "Player <strong>" + msg.username + "</strong> logged in.";
+
+    document.getElementById('infotext').innerHTML += 
+    '<br /><input id="logout_button" type="submit" value="Exit"'+
+    ' onclick="logout();">';
   }
   else {
     var tmp = document.getElementById('infotext').innerHTML;
     //console.log(tmp);
     document.getElementById('infotext').style.color = "red";
-    document.getElementById('infotext').innerHTML = "Login failed.";
+    document.getElementById('infotext').innerHTML = 
+                                                "Login failed.";
+
     var t = setTimeout(function() { 
       document.getElementById('infotext').innerHTML = tmp; 
       document.getElementById('infotext').style.color = "black"; 
@@ -87,18 +94,24 @@ MessageHandler.prototype.handleLoginResponse = function(msg) {
   }
 };
 
-MessageHandler.prototype.handleRegistrationResponse = function(msg) {
+MessageHandler.prototype.handleRegistrationResponse = 
+function(msg) {
   if(msg.status == "OK" && msg.username) {
     this.setUsername(msg.username);
     document.getElementById('infotext').style.color = "black";
-    document.getElementById('infotext').innerHTML = "New player <strong>" +
-    msg.username + "</strong> registered.";
-    document.getElementById('infotext').innerHTML += '&nbsp;&nbsp;<input id="logout_button" type="submit" value="Logout" onclick="logout();">';
+    document.getElementById('infotext').innerHTML = 
+      "New player <strong>" +
+      msg.username + "</strong> registered.";
+    document.getElementById('infotext').innerHTML += 
+    '&nbsp;&nbsp;<input id="logout_button" type="submit" '+
+    'value="Logout" onclick="logout();">';
   }
   else {
     var tmp = document.getElementById('infotext').innerHTML;
     document.getElementById('infotext').style.color = "red";
-    document.getElementById('infotext').innerHTML = "Login failed.";
+    document.getElementById('infotext').innerHTML = 
+      "Login failed.";
+
     var t = setTimeout(function() { 
       document.getElementById('infotext').innerHTML = tmp; 
       document.getElementById('infotext').style.color = "black"; 
@@ -110,12 +123,16 @@ MessageHandler.prototype.handleChatMessage = function(msg) {
   console.log("handleChatMessage");
 
   if (msg.username == "System notice") {
-    document.getElementById('messagebox').innerHTML += '<div id="message">' + msg.username + ':&nbsp;&nbsp;' + msg.text + '</div>';
+    document.getElementById('messagebox').innerHTML += 
+      '<div id="message">' + msg.username + ':&nbsp;&nbsp;' + 
+      msg.text + '</div>';
   }
   else {
-    document.getElementById('messagebox').innerHTML += '<div id="message"><a href="#" title="message">'+ msg.username + ':</a>&nbsp;&nbsp;' + msg.text + '</div>';
+    document.getElementById('messagebox').innerHTML += 
+      '<div id="message"><a href="#" title="message">'+ 
+      msg.username + ':</a>&nbsp;&nbsp;' + msg.text + '</div>';
   }
-  // Messagebox auto-scroll (quick 'n dirty hack, but should work :)
+  // Messagebox auto-scroll (quick hack, but should work :)
   document.getElementById('chatbox').scrollTop += 20;
 };
 
@@ -140,14 +157,18 @@ MessageHandler.prototype.updatePlayerList = function(msg) {
     console.log("player:", player);
     var pre = '<div id="' + player +'">';
     var text = "";
-    if (this.playerList[player].ingame === false && this.playerList[player].username != this.getUsername()) {
-      text = ' <a href="#" title="challenge" onclick="challenge(\''+this.playerList[player].username+'\')">'+ this.playerList[player].username + '</a>';
+    if (this.playerList[player].ingame === false && 
+      this.playerList[player].username != this.getUsername()) {
+      text = ' <a href="#" title="challenge" ' +
+      'onclick="challenge(\''+this.playerList[player].username+
+      '\')">'+ this.playerList[player].username + '</a>';
     }
     else {
       text = player;
     }
     post = '</div>';
-    document.getElementById('onlineplayerlist').innerHTML += pre + text + post;
+    document.getElementById('onlineplayerlist').innerHTML += 
+      pre + text + post;
   }
 
   this.sortDivs(document.getElementById('onlineplayerlist'));
@@ -158,7 +179,9 @@ MessageHandler.prototype.updateRankingList = function(msg) {
   var tmpusers = '<table id="rankings">';
   for(var item in msg.players) {
     tmpusers += '<tr>';
-    tmpusers += '<td><strong>' + msg.players[item].username + '</strong></td><td>' + msg.players[item].highscore + '</td>';
+    tmpusers += '<td><strong>' + msg.players[item].username + 
+      '</strong></td><td>' + msg.players[item].highscore + 
+      '</td>';
     tmpusers += '</tr>';
   }
   tmpusers += '</table>';
@@ -193,13 +216,24 @@ MessageHandler.prototype.handleChallengeRequest = function(msg) {
   // TODO: support for multiple dialogs
   //document.getElementById('haasteajastin').innerHTML = "10";
 
-  var audio = document.getElementById('challenge_request_audio').play();
+  var audio = 
+    document.getElementById('challenge_request_audio').play();
 
   console.log("handleChallengeRequest", msg);
-  document.getElementById('challenge').innerHTML = 'You\'ve been challenged by<br /><strong>' + msg.challenger + '</strong><br />';
-  document.getElementById('challenge').innerHTML += '<input type="button" value="Accept" onclick="acceptChallenge(\''+msg.challenger+'\')"><input type="button" value="Reject" onclick="rejectChallenge(\''+msg.challenger+'\')">';
-  document.getElementById('challengebox').style.visibility="visible";
-  this.challengeTmo = setTimeout("rejectChallenge(\'" + msg +"\')", 10000);
+  document.getElementById('challenge').innerHTML = 
+    'You\'ve been challenged by<br /><strong>' + msg.challenger +
+    '</strong><br />';
+  document.getElementById('challenge').innerHTML += 
+    '<input type="button" value="Accept" '+ 
+    'onclick="acceptChallenge(\''+msg.challenger+
+    '\')"><input type="button" value="Reject" '+
+    'onclick="rejectChallenge(\''+msg.challenger+'\')">';
+
+  document.getElementById('challengebox').style.visibility=
+    "visible";
+
+  this.challengeTmo = 
+    setTimeout("rejectChallenge(\'" + msg +"\')", 10000);
   //setInterval("this.challengeTimer("+msg+")", 1000);
 };
 
