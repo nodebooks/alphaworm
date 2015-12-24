@@ -4,7 +4,8 @@ function GameAPI() {
   this.messageHandler = undefined;
 }
 
-GameAPI.prototype.attachMessageHandler = function(messageHandler) {
+GameAPI.prototype.attachMessageHandler = 
+function(messageHandler) {
   this.messageHandler = messageHandler;
 };
 
