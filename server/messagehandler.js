@@ -26,7 +26,8 @@ MessageHandler.prototype.receive = function(from, msg) {
     break;
 
     default:
-    console.log("MessageHandler.receive: default branch reached for msg", msg.name);
+    console.log("MessageHandler.receive: default branch reached for msg",
+                msg.name);
     break;
   }
 };

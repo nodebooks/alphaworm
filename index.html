@@ -29,11 +29,13 @@
     function login() {
 
       // Check user input fields
-      if (document.getElementById("username").value && document.getElementById("password").value) {
+      if (document.getElementById("username").value && 
+          document.getElementById("password").value) {
         // Send login request
+        var password = document.getElementById("password").value;
         var msg = messages.message.LOGIN_REQUEST.new();
         msg.username = document.getElementById("username").value;
-        msg.passwordhash = Sha1.hash(document.getElementById("password").value);
+        msg.passwordhash = Sha1.hash(password);
         messageHandler.send(msg);
         messageHandler.username = msg.username;
       }
@@ -41,11 +43,13 @@
 
     function register() {
       // Check user input fields
-      if (document.getElementById("username").value && document.getElementById("password").value) {
+      if (document.getElementById("username").value && 
+          document.getElementById("password").value) {
         // Send registration request
+        var password = document.getElementById("password").value;
         var msg = messages.message.REGISTRATION_REQUEST.new();
         msg.username = document.getElementById("username").value;
-        msg.passwordhash = Sha1.hash(document.getElementById("password").value);
+        msg.passwordhash = Sha1.hash(password);
         messageHandler.send(msg);
       }
     }

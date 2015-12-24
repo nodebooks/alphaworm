@@ -15,7 +15,8 @@ MessageBroker.prototype.init = function() {
   this.wss = new WebSocketServer({server: this.serverapp});
 
   this.wss.on('connection', function(websocket) {
-    console.log("MessageBroker: client connected to port", websocket._socket.remotePort);
+    console.log("MessageBroker: client connected to port", 
+                websocket._socket.remotePort);
 
     // CONNECTION CLOSE
     websocket.on('close', function() {
@@ -62,7 +63,8 @@ MessageBroker.prototype.receive = function(from, data) {
 // Sending data to Client
 MessageBroker.prototype.send = function(to, msg) {
 
-  // TODO: Make sure that websocket is still open, sending to closed socket will crash the server
+  // TODO: Make sure that websocket is still open, sending to closed socket
+  // will crash the server
   var stringified_msg = JSON.stringify(msg);
   var websocket = this.clients[to.toLowerCase()];
   

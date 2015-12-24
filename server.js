@@ -29,7 +29,8 @@ GameServer.prototype.init = function() {
 
   // Pass the websocket information to the client
   this.app.use('/websocketURI.js', function(req, res) {
-    console.log("domain = ", gameServer.domain, "port:", gameServer.clientport);
+    console.log("domain = ", gameServer.domain, "port:", 
+                gameServer.clientport);
 
     var websocketURI = gameServer.domain + ':' + gameServer.clientport;
     console.log("websocketURI = ", websocketURI);
@@ -51,7 +52,8 @@ GameServer.prototype.init = function() {
   // Create server application (express.js)
   this.serverapp = http.createServer(this.app);
   this.serverapp.listen(this.port, this.ipaddress);
-  console.log("game server running @ http://" + this.ipaddress + ":" + this.port);
+  console.log("game server running @ http://" + this.ipaddress + ":" +
+               this.port);
 
   // Create server objects
   this.messageBroker = new MessageBroker(this);

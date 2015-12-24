@@ -20,17 +20,20 @@ MessageBroker.prototype.init = function() {
 
   this.ws.onerror = function (event) {
     console.log("websocket failed");
-    document.getElementById('system-messages').innerHTML += "<br />Websocket failed";
+    document.getElementById('system-messages').innerHTML += 
+                            "<br />Websocket failed";
   };
 
   this.ws.onopen = function (event) {
     console.log("websocket connected");
-    document.getElementById('system-messages').innerHTML += "<br />Websocket connected";
+    document.getElementById('system-messages').innerHTML += 
+                            "<br />Websocket connected";
   };
 
   this.ws.onclose = function (event) {
     console.log("websocket disconnected");
-    document.getElementById('system-messages').innerHTML += "<br />Websocket disconnected";
+    document.getElementById('system-messages').innerHTML += 
+                            "<br />Websocket disconnected";
   };
 };
 

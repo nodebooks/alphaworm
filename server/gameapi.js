@@ -62,7 +62,8 @@ DatabaseProxy.prototype.init = function() {
   this.port       = 3306;
   this.user       = process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'root';
   this.password   = process.env.OPENSHIFT_MYSQL_DB_PASSWORD || 'test1234';
-  this.database   = "alphaworm";  // Make sure that the db name is correct (check MySQL code)
+  this.database   = "alphaworm";  // Make sure that the db name is correct
+                                  // (check MySQL code)
 
   // Initialize database connection
   var mysql = require('mysql');
@@ -83,7 +84,7 @@ DatabaseProxy.prototype.init = function() {
         console.log("DatabaseProxy: database connection failed:", err);
       }
   });
-  },
+};
 
 DatabaseProxy.prototype.createUser = function(websocket, msg) {
   
@@ -93,22 +94,23 @@ DatabaseProxy.prototype.createUser = function(websocket, msg) {
   var response = Messages.message.REGISTRATION_RESPONSE.new();
   response.username = msg.username;
 
-
+  var sql = 'INSERT INTO userdata (username, password_hash) VALUES (?, ?)';
   // TODO: Prevent SQL inject (check username and password parameters)
-  this.connection.query('INSERT INTO userdata (username, password_hash) VALUES (?, ?)',
-                       [ msg.username, msg.passwordhash ], function(err, rows) {
-    if(!err) {
-      console.log("DatabaseProxy: createUser succeeded");
-      response.status = "OK";
+  this.connection.query(sql, [ msg.username, msg.passwordhash ], 
+      function(err, rows) {
+      if(!err) {
+        console.log("DatabaseProxy: createUser succeeded");
+        response.status = "OK";
+      }
+      else {
+        console.log("DatabaseProxy: createUser failed:", err);
+        response.status = "NOK";
+      }
+      // Send response message back to client directly through websocket
+      websocket.send(JSON.stringify(response));
     }
-    else {
-      console.log("DatabaseProxy: createUser failed:", err);
-      response.status = "NOK";
-    }
-    // Send response message back to client directly through websocket
-    websocket.send(JSON.stringify(response));
-  });
-},
+  );
+};
 
 DatabaseProxy.prototype.login = function(websocket, msg) {
   
@@ -124,8 +126,9 @@ DatabaseProxy.prototype.login = function(websocket, msg) {
 
   // TODO: Prevent SQL injection (validate username before using it)
   if(typeof this.gameAPI.players[msg.username] === 'undefined') {
-      this.connection.query('SELECT password_hash FROM userdata WHERE username = ?',
-                           [ msg.username ], 
+      var sql = 'SELECT password_hash FROM userdata WHERE username = ?';
+
+      this.connection.query(sql, [ msg.username ], 
       function(err, rows) {
         if(!err) {
           console.log("DatabaseProxy: query ok, checking result");

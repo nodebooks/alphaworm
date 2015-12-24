@@ -40,14 +40,19 @@ MessageHandler.prototype.handleLoginResponse = function(msg) {
     document.getElementById('infotext').style.color = "black";
     document.getElementById('infotext').innerHTML = "Player <strong>" +
     msg.username + "</strong> logged in.";
-    document.getElementById('infotext').innerHTML += '<br /><input id="logout_button" type="submit" value="Exit" onclick="logout();">';
+    document.getElementById('infotext').innerHTML += 
+    '<br /><input id="logout_button" type="submit"' +
+    'value="Exit" onclick="logout();">';
   }
   else {
     var tmp = document.getElementById('infotext').innerHTML;
     //console.log(tmp);
     document.getElementById('infotext').style.color = "red";
     document.getElementById('infotext').innerHTML = "Login failed.";
-    var t = setTimeout(function() { document.getElementById('infotext').innerHTML = tmp; document.getElementById('infotext').style.color = "black"; }, 2000);
+    var t = setTimeout(function() { 
+      document.getElementById('infotext').innerHTML = tmp; 
+      document.getElementById('infotext').style.color = "black"; 
+    }, 2000);
   }
 };  
 
@@ -57,13 +62,18 @@ MessageHandler.prototype.handleRegistrationResponse = function(msg) {
     document.getElementById('infotext').style.color = "black";
     document.getElementById('infotext').innerHTML = "New player <strong>" +
     msg.username + "</strong> registered.";
-    document.getElementById('infotext').innerHTML += '&nbsp;&nbsp;<input id="logout_button" type="submit" value="Logout" onclick="logout();">';
+    document.getElementById('infotext').innerHTML += 
+    '&nbsp;&nbsp;<input id="logout_button" type="submit" value="Logout"' +
+    'onclick="logout();">';
   }
   else {
     var tmp = document.getElementById('infotext').innerHTML;
     document.getElementById('infotext').style.color = "red";
     document.getElementById('infotext').innerHTML = "Login failed.";
-    var t = setTimeout(function() { document.getElementById('infotext').innerHTML = tmp; document.getElementById('infotext').style.color = "black"; }, 2000);
+    var t = setTimeout(function() { 
+      document.getElementById('infotext').innerHTML = tmp; 
+      document.getElementById('infotext').style.color = "black"; 
+    }, 2000);
   }
 };
 

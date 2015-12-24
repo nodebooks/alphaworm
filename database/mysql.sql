@@ -8,4 +8,3 @@ CREATE TABLE userdata (
   password_hash VARCHAR(40) NOT NULL,
   registered TIMESTAMP DEFAULT NOW()
 );
-
