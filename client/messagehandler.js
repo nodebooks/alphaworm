@@ -60,7 +60,9 @@ MessageHandler.prototype.handleLoginResponse = function(msg) {
     document.getElementById('infotext').style.color = "black";
     document.getElementById('infotext').innerHTML = "Player <strong>" +
     msg.username + "</strong> logged in.";
-    document.getElementById('infotext').innerHTML += '<br /><input id="logout_button" type="submit" value="Exit" onclick="logout();">';
+    document.getElementById('infotext').innerHTML += 
+    '<br /><input id="logout_button" type="submit" value="Exit"' +
+    'onclick="logout();">';
   }
   else {
     var tmp = document.getElementById('infotext').innerHTML;
@@ -80,7 +82,8 @@ MessageHandler.prototype.handleRegistrationResponse = function(msg) {
     document.getElementById('infotext').style.color = "black";
     document.getElementById('infotext').innerHTML = "New player <strong>" +
     msg.username + "</strong> registered.";
-    document.getElementById('infotext').innerHTML += '&nbsp;&nbsp;<input id="logout_button" type="submit" value="Logout" onclick="logout();">';
+    document.getElementById('infotext').innerHTML += '&nbsp;&nbsp;<input ' +
+    'id="logout_button" type="submit" value="Logout" onclick="logout();">';
   }
   else {
     var tmp = document.getElementById('infotext').innerHTML;
@@ -97,10 +100,13 @@ MessageHandler.prototype.handleChatMessage = function(msg) {
   console.log("handleChatMessage");
 
   if (msg.username == "System notice") {
-    document.getElementById('messagebox').innerHTML += '<div id="message">' + msg.username + ':&nbsp;&nbsp;' + msg.text + '</div>';
+    document.getElementById('messagebox').innerHTML += '<div id="message">' +
+     msg.username + ':&nbsp;&nbsp;' + msg.text + '</div>';
   }
   else {
-    document.getElementById('messagebox').innerHTML += '<div id="message"><a href="#" title="message">'+ msg.username + ':</a>&nbsp;&nbsp;' + msg.text + '</div>';
+    document.getElementById('messagebox').innerHTML += 
+    '<div id="message">' + '<a href="#" title="message">'+ msg.username +
+    ':</a>&nbsp;&nbsp;' + msg.text + '</div>';
   }
 // Messagebox auto-scroll (quick 'n dirty hack, but should work :)
 document.getElementById('chatbox').scrollTop += 20;
@@ -109,20 +115,25 @@ document.getElementById('chatbox').scrollTop += 20;
 MessageHandler.prototype.updatePlayerList = function(msg) {
   switch(msg.type) {
     case 'update':
-    console.log("preparing partial update on", document.getElementById('onlineplayerlist').innerHTML);
+    console.log("preparing partial update on", 
+      document.getElementById('onlineplayerlist').innerHTML);
     for (var item in msg.players) {
       console.log("partial update", item, ":", msg.players[item]);
 
-      if (msg.players[item].authenticated === true || msg.players[item].authenticated == "true") {
+      if (msg.players[item].authenticated === true || 
+          msg.players[item].authenticated == "true") {
         var pre = '<div id="' + msg.players[item].username +'">';
         var player = msg.players[item].username;
         post = '</div>';
 
-        document.getElementById('onlineplayerlist').innerHTML += pre + player + post;
-        console.log("update ready", document.getElementById('onlineplayerlist').innerHTML);
+        document.getElementById('onlineplayerlist').innerHTML += 
+          pre + player + post;
+        console.log("update ready", 
+          document.getElementById('onlineplayerlist').innerHTML);
       }
       else {
-        console.log("removing", item, ":", document.getElementById(msg.players[item].username));
+        console.log("removing", item, ":", 
+          document.getElementById(msg.players[item].username));
         var rem = document.getElementById(msg.players[item].username);
         rem.remove();
       }
@@ -136,7 +147,8 @@ MessageHandler.prototype.updatePlayerList = function(msg) {
       var pre = '<div id="' + msg.players[item].username +'">';
       var player = msg.players[item].username;
       post = '</div>';
-      document.getElementById('onlineplayerlist').innerHTML += pre + player + post;
+      document.getElementById('onlineplayerlist').innerHTML += 
+        pre + player + post;
     }
     break;
 
@@ -152,7 +164,8 @@ MessageHandler.prototype.updateRankingList = function(msg) {
   var tmpusers = '<table id="rankings">';
   for(var item in msg.players) {
     tmpusers += '<tr>';
-    tmpusers += '<td><strong>' + msg.players[item].username + '</strong></td><td>' + msg.players[item].highscore + '</td>';
+    tmpusers += '<td><strong>' + msg.players[item].username + 
+    '</strong></td><td>' + msg.players[item].highscore + '</td>';
     tmpusers += '</tr>';
   }
   tmpusers += '</table>';

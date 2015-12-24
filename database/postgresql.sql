@@ -14,4 +14,3 @@ CREATE TABLE userdata (
 
 INSERT INTO userdata (username, password_hash) VALUES ('jaakko', SHA1('myexcellentpassword'));
 INSERT INTO userdata (username, password_hash) VALUES ('anssi', SHA1('anotherexcellentpwd'));
-

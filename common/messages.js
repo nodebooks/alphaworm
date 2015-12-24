@@ -18,7 +18,8 @@
     REGISTRATION_RESPONSE: {
       message: {
         name: "REGISTRATION_RESPONSE", 
-        status: null    // OK / NOK (could be, 1/0, true/false, success/failure, etc.)
+        status: null    // OK / NOK (could be, 1/0, true/false, 
+                        // success/failure, etc.)
       },
       new: function() {
         return JSON.parse(JSON.stringify(this.message));
@@ -61,9 +62,11 @@
     PLAYER_LIST: {
       message: {
         name: "PLAYER_LIST",
-        type: "full/update",                // Always check whether this is an update or a full list
+        // Always check whether this is an update or a full list
+        type: "full/update",
         players: [{username: null,
-                  authenticated: null}]     // false if user disconnected, otherwise true
+                  authenticated: null}]
+                  // false if user disconnected, otherwise true     
       },
       new: function() {
         return JSON.parse(JSON.stringify(this.message));
@@ -73,14 +76,16 @@
     RANKING_LIST: {
       message: {
         name: "RANKING_LIST",
-        players: [{username: "Wobotti", // Players are already in descending order (highest rank -> lowest, check SQL SELECT)
+        // Players are already in descending order 
+        // (highest rank -> lowest, check SQL SELECT)
+        players: [{username: "Wobotti", 
         highscore: null}]
       },
       new: function() {
         return JSON.parse(JSON.stringify(this.message));
       }
     }
-  }
+  };
 
   exports.message = message;
 
