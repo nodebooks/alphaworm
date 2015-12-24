@@ -13,12 +13,12 @@ function Game(messagehandler) {
 Game.prototype.init = function() {
   console.log("Called game.init()");
   this.initGame(null);
-},
+};
 
 Game.prototype.initGame = function(msg) {
   console.log("initGame:", msg);
 
-  if (null == msg) {
+  if (null === msg) {
     console.log("create empty gameboard");
     this.gameArea = new GameArea();
   }
@@ -33,11 +33,11 @@ Game.prototype.initGame = function(msg) {
   this.initGameboard();
   this.score = 0;
 
-},
+};
 
 Game.prototype.playMusic = function(volume) {
   console.log("Game: playMusic");
-  if (this.music == null) {
+  if (this.music === null) {
     console.log("Game: creating new audio instance");
     this.music = new Audio('../media/retro.ogg');
     if (typeof this.music.loop == 'boolean')
@@ -55,13 +55,13 @@ Game.prototype.playMusic = function(volume) {
     this.music.volume = volume;
   }
   this.music.play();
-},
+};
 
 Game.prototype.stopMusic = function() {
   console.log("Game: stopMusic");
   this.music.pause();
   this.music.duration = 0;
-},
+};
 
 Game.prototype.initGameboard = function() {
   console.log("initGameboard");
@@ -82,12 +82,14 @@ Game.prototype.initGameboard = function() {
   gameboard += '</table>';
   gameboard += "W = up, A = left, S = down, D = right";
   gameboard += "&nbsp;&nbsp;&nbsp;";
-  gameboard += '<input id="start_game" type="submit" value="StartGame" onclick="messageHandler.game.startGame()">';
+  gameboard += '<input id="start_game" type="submit" ' +
+               'value="StartGame"' +
+               ' onclick="messageHandler.game.startGame()">';
 
   document.getElementById('gameboard').innerHTML = gameboard;
 
   this.updateGameboard();
-},
+};
 
   Game.prototype.updateGameboard = function() {
   //console.log("updateGameboard");
@@ -98,21 +100,22 @@ Game.prototype.initGameboard = function() {
       document.getElementById(id).innerHTML = "";
     }
   }
-},
+};
 
 Game.prototype.setFood = function() {
   // Check if any food is missing
   // Set foods to random positions
   while(this.foods.length < this.amountOfFood) {
-    // A long worm may cause problems when an empty slot is selected
+    // A long worm may cause problems
     // TODO: better algorithm for finding empty slot for food
-    var x = Math.floor(Math.random()*this.gameArea.height*this.gameArea.width);
+    var gameAreaSize = this.gameArea.height*this.gameArea.width;
+    var x = Math.floor(Math.random()*gameAreaSize);
     if (document.getElementById(x).bgColor == this.gameArea.color) {
       this.foods.push(x);
       document.getElementById(x).bgColor = this.food.color;
     }
   }
-},
+};
 
 Game.prototype.removeFood = function(cell) {
   //console.log("Remove food", cell);
@@ -124,7 +127,7 @@ Game.prototype.removeFood = function(cell) {
   // Generate new food
   this.setFood();
 
-},
+};
 
 Game.prototype.updateMatch = function(msg) {
   //console.log("update match");
@@ -134,32 +137,47 @@ Game.prototype.updateMatch = function(msg) {
   // Render worms
   for (var id=0; id<msg.worms.length; id++) {
     for (var x=0; x<msg.worms[id].location.length; x++) {
-      document.getElementById(msg.worms[id].location[x]).bgColor = msg.worms[id].color;
+      document.getElementById(msg.worms[id].location[x]).bgColor= 
+      msg.worms[id].color;
     }
   }
 
   // Render foods
-  for (var x=0; x<msg.food.length; x++) {
-    document.getElementById(msg.food[x].location).bgColor = msg.food[x].color;
+  for (var i=0; i<msg.food.length; i++) {
+    document.getElementById(msg.food[i].location).bgColor = 
+    msg.food[i].color;
     // Iteration 5 onwards - the alphabets
-    document.getElementById(msg.food[x].location).innerHTML = msg.food[x].character.toUpperCase();
+    document.getElementById(msg.food[i].location).innerHTML = 
+    msg.food[i].character.toUpperCase();
   }
 
-  // Print the word that needs a translation (the translation is there too, don't cheat! :)
+  // Print the word that needs a translation 
+  // (the translation is there too, don't cheat! :)
+  // ... or why not make it visible in title?
   var from = msg.word['from'];
   var answer = msg.word['answer'];
 
-  document.getElementById("score").innerHTML = "<strong>" + from.toUpperCase() + " = " + answer.toUpperCase() + "</strong><br />";
-  for (var x=0; x<msg.worms.length; x++) {
+  document.getElementById("score").innerHTML = "<strong>" + 
+  from.toUpperCase() + " = " + answer.toUpperCase() + 
+    "</strong><br />";
+  for (var j=0; j<msg.worms.length; j++) {
     // A little trick to play audio when score is increased
-    if (msg.worms[x].name == this.messageHandler.username && this.score < msg.worms[x].score) {
+    if (msg.worms[j].name == this.messageHandler.username && 
+        this.score < msg.worms[j].score) {
       //console.log("play ding")
       document.getElementById('pick_audio').play();
-      this.score = msg.worms[x].score;
+      this.score = msg.worms[j].score;
     }
-    var separator = (x+1 != msg.worms.length) ? "&nbsp;&nbsp|&nbsp;&nbsp;" : "";
-    document.getElementById("score").innerHTML += '<strong><font color="' + msg.worms[x].color + '">' + msg.worms[x].name +'</font></strong>';
-    document.getElementById("score").innerHTML += ":&nbsp;" + msg.worms[x].score + separator;
+    var htmlSeparator = "&nbsp;&nbsp|&nbsp;&nbsp;";
+    var separator = (j+1 != msg.worms.length) ?  
+                    htmlSeparator : "";
+
+    document.getElementById("score").innerHTML += 
+      '<strong><font color="' + msg.worms[j].color + '">' +
+      msg.worms[j].name +'</font></strong>';
+
+    document.getElementById("score").innerHTML += ":&nbsp;" + 
+      msg.worms[j].score + separator;
 
   }
   if (msg.phase == "INIT") {
@@ -173,17 +191,17 @@ Game.prototype.updateMatch = function(msg) {
     this.stopMusic();
     this.endGame();
   }
-},
+};
 
 Game.prototype.startGame = function() {
   console.log("Game: startGame");
   var msg = messages.message.START_SINGLEPLAYER_GAME_REQ.new();
   msg.username = this.messageHandler.getUsername();
   this.messageHandler.send(msg);
-},
+};
 
 Game.prototype.handleInput = function(event) {
-  if(false == this.isRunning()) {
+  if(false === this.isRunning()) {
     console.log("handleInput: not in game");
     return false;
   }
@@ -232,14 +250,13 @@ Game.prototype.handleInput = function(event) {
     msg.username = this.messageHandler.getUsername();
     this.messageHandler.send(msg);
   }
-
-},
+};
 
 Game.prototype.endGame = function() {
   this.inGame = false;
   this.stopMusic();
-},
+};
 
 Game.prototype.isRunning = function() {
   return this.inGame;
-}
+};

@@ -61,12 +61,12 @@
     PLAYER_LIST: {
       message: {
         name: "PLAYER_LIST",
-        type: "full/update",        // Always check whether this is an update or a full list
+        type: "full/update",
         players: [{
           username: null,
           authenticated: false,
           ingame: false
-        }]                          // false if user is not in game, othwerwise true
+        }]
       },
       new: function() {
           return JSON.parse(JSON.stringify(this.message));
@@ -77,7 +77,7 @@
       message: {
           name: "RANKING_LIST",
           players: [{
-            username: "Wobotti",    // Players are already in descending order (highest rank -> lowest, check SQL SELECT)
+            username: "Wobotti",
             highscore: null
           }]
       },
@@ -151,14 +151,14 @@
       message: {
         name: "START_MULTIPLAYER_GAME_REQ",
         username: "username",
-        type: "single/multi",   // single = single player, multi=multiplayer
-        players: [{}] // Usernames and their responses {username: "username", response: "OK/NOK"}
+        type: "single/multi",// single = single player, multi=multiplayer
+        players: [{}] // {username: "username", response: "OK/NOK"}
       },
       new: function() {
         return JSON.parse(JSON.stringify(this.message));
       }
     }
-  }
+  };
 
 exports.message = message;
 

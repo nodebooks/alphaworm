@@ -22,7 +22,8 @@ DatabaseProxy.prototype.init = function() {
   this.port       = 3306;
   this.user       = process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'root';
   this.password   = process.env.OPENSHIFT_MYSQL_DB_PASSWORD || 'test1234';
-  this.database   = "alphaworm";  // Make sure that the db name is correct (check MySQL code)
+  this.database   = "alphaworm";  // Make sure that the db name is correct
+                                  // (check MySQL code)
 
   // Initialize database connection
   var mysql = require('mysql');
@@ -43,7 +44,7 @@ DatabaseProxy.prototype.init = function() {
       console.log("DatabaseProxy: database connection failed:", err);
     }
   });
-},
+};
 
 DatabaseProxy.prototype.createUser = function(websocket, msg) {
   console.log("DatabaseProxy.createUser", msg);
@@ -66,7 +67,7 @@ DatabaseProxy.prototype.createUser = function(websocket, msg) {
       // Send response message back to client directly through websocket
       websocket.send(JSON.stringify(response));
     });
-},
+};
 
 DatabaseProxy.prototype.login = function(websocket, msg) {
   console.log("DatabaseProxy.login", msg);
@@ -103,7 +104,7 @@ DatabaseProxy.prototype.login = function(websocket, msg) {
   else {
     // Possible hacker, don't send any response? :)
   }
-},
+};
 
 DatabaseProxy.prototype.setHighscore = function(username, score) {
   console.log("DatabaseProxy.setHighscore", score, "for", username);
@@ -121,7 +122,7 @@ DatabaseProxy.prototype.setHighscore = function(username, score) {
       self.updateRanking('broadcast');
     }
   });
-},
+};
 
 // player = username of a certain player, or 'broadcast' or '' if sent to all logged in players
 DatabaseProxy.prototype.updateRanking = function(player) {
@@ -149,6 +150,6 @@ DatabaseProxy.prototype.updateRanking = function(player) {
       }
     }
   });
-}
+};
 
 module.exports = DatabaseProxy;

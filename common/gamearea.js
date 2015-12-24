@@ -18,7 +18,8 @@
     return GameArea;
   })();
 
-  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+  if (typeof module !== 'undefined' && 
+      typeof module.exports !== 'undefined')
     module.exports = GameArea;
   else
     window.GameArea = GameArea;

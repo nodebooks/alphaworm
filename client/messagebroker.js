@@ -40,14 +40,14 @@ MessageBroker.prototype.init = function() {
       text: "<strong>disconnected</strong>"});
 
   };
-},
+};
 
 MessageBroker.prototype.receive = function(msg) {
   // Use JSON.parse() to deserialize the JavaScript object
   this.messageHandler.receive(JSON.parse(msg));
-},
+};
 
 MessageBroker.prototype.send = function(msg) {
   // Use JSON.stringify() to serialize JavaScript object
   this.ws.send(JSON.stringify(msg));
-}
+};

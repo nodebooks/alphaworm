@@ -13,11 +13,12 @@
 
     Food.prototype.getCharacter = function() {
       return this.color;
-    }
+    };
     return Food;
   })();
 
-  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+  if (typeof module !== 'undefined' && 
+      typeof module.exports !== 'undefined')
     module.exports = Food;
   else
     window.Food = Food;
