@@ -3,11 +3,13 @@ function MessageHandler() {
   this.messageBroker = undefined;
 }
 
-MessageHandler.prototype.attachGameAPI = function(gameAPI) {
+MessageHandler.prototype.attachGameAPI = 
+function(gameAPI) {
   this.gameAPI = gameAPI;
 };
 
-MessageHandler.prototype.attachMessageBroker = function(messageBroker) {
+MessageHandler.prototype.attachMessageBroker = 
+function(messageBroker) {
   this.messageBroker = messageBroker;
 };
 

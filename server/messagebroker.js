@@ -11,7 +11,8 @@ MessageBroker.prototype.init = function() {
   this.wss = new WebSocketServer({server: this.serverapp});
 
   this.wss.on('connection', function(websocket) {
-    console.log("MessageBroker: client connected to port", websocket._socket.remotePort);
+    console.log("MessageBroker: client connected to port", 
+      websocket._socket.remotePort);
 
     // CONNECTION CLOSE
     websocket.on('close', function() {
@@ -25,7 +26,8 @@ MessageBroker.prototype.init = function() {
   });
 };
 
-MessageBroker.prototype.attachMessageHandler = function(messageHandler) {
+MessageBroker.prototype.attachMessageHandler = 
+function(messageHandler) {
   this.messageHandler = messageHandler;
   console.log("MessageBroker: MessageHandler attached");
 };
