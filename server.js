@@ -15,7 +15,7 @@ function GameServer() {
 
 GameServer.prototype.setupVariables = function() {
   //  Environment variables for the OpenShift app
-  this.ipaddress  = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+  this.ipaddress  = process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
   this.port       = process.env.OPENSHIFT_NODEJS_PORT || 8080;
   // Applications domain name and port client shall connect
   this.domain     = process.env.OPENSHIFT_APP_DNS || '127.0.0.1';

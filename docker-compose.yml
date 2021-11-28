@@ -1,0 +1,30 @@
+version: '3.9'
+services:
+  mariadb:
+    image: mariadb
+    container_name: mariadb
+    volumes:
+      - vol-mariadb-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=test1234
+      - MYSQL_DATABASE=alphaworm
+      - MYSQL_USER=alphaworm
+      - MYSQL_PASSWORD=test1234
+    networks:
+      - alphaworm-game-network
+
+  alphaworm:
+    build: .
+    container_name: alphaworm-server
+    depends_on:
+      - mariadb
+    ports:
+      - 8080:8080
+    networks:
+      - alphaworm-game-network
+
+networks:
+  alphaworm-game-network:
+
+volumes:
+  vol-mariadb-data:

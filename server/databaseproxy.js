@@ -18,7 +18,7 @@ DatabaseProxy.prototype.init = function() {
   console.log("DatabaseProxy init");
 
   // Define database connection
-  this.hostname   = process.env.OPENSHIFT_MYSQL_DB_HOST || 'localhost';
+  this.hostname   = process.env.OPENSHIFT_MYSQL_DB_HOST || 'mariadb';
   this.port       = 3306;
   this.user       = process.env.OPENSHIFT_MYSQL_DB_USERNAME || 'root';
   this.password   = process.env.OPENSHIFT_MYSQL_DB_PASSWORD || 'test1234';
